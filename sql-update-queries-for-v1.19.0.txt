@@ -1,0 +1,8 @@
+ALTER TABLE `coupon` ADD `max_use_per_user` INT NULL AFTER `use_count`;
+CREATE TABLE coupon_usage_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    coupon_id INT,
+    appuser_id INT
+);
+ALTER TABLE `events` CHANGE `scanner_id` `scanner_id` TEXT NULL DEFAULT NULL;
+INSERT INTO `module` (`id`, `module`, `is_enable`, `is_install`, `updated_at`, `created_at`) VALUES (NULL, 'BankPayout', '0', '0', current_timestamp(), current_timestamp());

@@ -1,0 +1,20 @@
+/node_modules
+/public/hot
+/public/storage
+# /public/images/upload
+# /storage/*.key
+/vendor
+composer.lock
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.vscode/settings.json
+public/images/upload
+.env
+/Modules
+public/modules

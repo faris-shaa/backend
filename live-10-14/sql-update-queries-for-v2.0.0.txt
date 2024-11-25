@@ -1,0 +1,2 @@
+ALTER TABLE `general_settng` ADD `show_link_banner` INT NULL DEFAULT '0' AFTER `help_center`, ADD `googleplay_link` TEXT NULL AFTER `show_link_banner`, ADD `appstore_link` TEXT NULL AFTER `googleplay_link`;
+ALTER TABLE `users` CHANGE `name` `organization_name` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
