@@ -1298,7 +1298,7 @@ class FrontendController extends Controller
             $data->ticket_amount = $ticket_amount;
 
             $data->tax_total = $tax_total;
-            if($id == 121 || $id == 179  ||  $id == 172)
+            if($id == 121 || $id == 179  ||  $id == 187)
             {
                 
                 $data->total_amount = $ticket_amount ;
@@ -1414,7 +1414,7 @@ class FrontendController extends Controller
         }
       
         
-        if($id == 121 || $id == 179 || $id == 172  )
+        if($id == 121 || $id == 179 || $id == 187  )
         {
             
             $data->tax_total = 0;
@@ -1628,7 +1628,13 @@ class FrontendController extends Controller
         $data['organization_id'] = $org->id;
         $data['order_status'] = 'Pending';
         $data['web'] = 2;
+        if(isset($request->slot_event_date) && !is_null($request->slot_event_date))
+        {
 
+            $data['time_slot_id'] = $request->time_slot_id;
+            $data['event_book_date'] = $request->slot_event_date;    
+        }
+        
         if ($user->id == 202) {
             return response("This is eror");
         }
@@ -1719,11 +1725,7 @@ class FrontendController extends Controller
                     $child['customer_id'] = Auth::guard('appuser')->user()->id;
                     $child['checkin'] = $ticket->maximum_checkins ?? null;
                     $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
-                    if(isset($request->slot_event_date) && !is_null($request->slot_event_date))
-                    {
-                        $child['time_slot_id'] = $request->time_slot_id;
-                        $child['event_book_date'] = $request->slot_event_date;    
-                    }
+                    
                     
                     OrderChild::create($child);
                  
@@ -4130,7 +4132,7 @@ class FrontendController extends Controller
             $userData = json_decode((string) $response->getBody(), true);
 
             $user = AppUser::where('email', $userData['email'])->first();
-            
+           
             if ($user) {
                 Auth::guard('appuser')->login($user);
                 Auth::login($user);
@@ -4148,7 +4150,7 @@ class FrontendController extends Controller
             $queryParams = Session::get("google_var");
             unset($queryParams['google_login']);
 
-            
+                 
             return redirect()->intended('/checkout/'.$event_id.'?'.http_build_query($queryParams));
         } catch (Exception $e) {
             return redirect('auth/google');
@@ -4206,7 +4208,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "1851";
+        $order_id = "1855";
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');
         dd($data);*/
@@ -4371,14 +4373,15 @@ class FrontendController extends Controller
         $user = AppUser::where('email',$request->user_name)->where('status',1)->where('is_delete',1)->first();
         if(!is_null($user))
         {
-            $user = AppUser::where('phone',$request->user_name)->where('status',1)->where('is_delete',1)->first();
+            $user = AppUser::where('phone', substr( $request->user_name, -9))->where('status',1)->where('is_delete',1)->first();
         }
 
         if($user)
         {
             $otp = rand(100000, 999999);
 
-            $to = str_replace('+', '', $user->phone);
+            $to =  substr( $user->phone, -9);
+
             $message = "Your phone verification code is $otp for $setting->app_name.";
             if (true) {
 
@@ -4475,4 +4478,6 @@ class FrontendController extends Controller
         return Excel::download(new UsersExport, 'users.xlsx');
 
     }
+
+    
 }

@@ -1,1 +1,0 @@
-ALTER TABLE `app_user` ADD `otp` INT(10) NULL AFTER `password`;

@@ -1484,7 +1484,7 @@ class OrderController extends Controller
         $user = AppUser::where('email',$request->user_name)->where('status',1)->first();
         if(is_null($user))
         {
-            $user = AppUser::where('phone',$request->user_name)->where('status',1)->first();
+            $user = AppUser::where('phone', 'LIKE', '%' . substr($request->user_name, -9) . '%')->where('status',1)->first();
         }
         if(is_null($user))
         {
@@ -1495,7 +1495,7 @@ class OrderController extends Controller
         {
             $otp = rand(1000, 9999);
             
-            $to = str_replace('+966', '', $user->phone);
+            $to = substr( $user->phone, -9);
             $message = "Your phone verification code is $otp for $setting->app_name.";
             $user = AppUser::find($user->id);
             $dataemail['name'] = $user->name;
