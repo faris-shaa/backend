@@ -15,6 +15,7 @@ npm-debug.log
 yarn-error.log
 .vscode/settings.json
 public/images/upload
-.env
+./.env
 /Modules
 public/modules
+./.idea
