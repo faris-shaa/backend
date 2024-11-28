@@ -19,3 +19,4 @@ public/images/upload
 /Modules
 public/modules
 ./.idea
+./server.php
