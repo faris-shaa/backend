@@ -45,16 +45,6 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
       padding: 20px;
       color: #df3e3e;
    }
-  
-    .md\:w-full {
-        width: 100%;
-    }
-
-
-    .md\:mb-3 {
-        margin-bottom: 0.75rem;
-    }
-
 </style>
 
 <div class="container mt-12 md:mt-16 ">
@@ -482,7 +472,210 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
 
 
 
+<!-- user popup -->
+<div id="register_popup" class="hidden pop-modal fixed inset-0 flex items-center justify-center bg-dark bg-opacity-75 p-2 z-50  ">
+   <div class="bg-dark_4  rounded-2xl   p-2  md:p-32-32 relative w-w-500">
+      <!-- register popup -->
+      <div id="register-model" class="relative hidden form-container">
+         <div class="mb-6 md:mb-7  ">
+            <h2 class="text-h3 md:text-h2 text-primary_color_5 font-medium">{{__( 'Sign up to continue')}}</h2>
+            <h4 class="text-gray_9 lg:text-h4 text-h6 mt-1 ">{{__( 'Welcome to Ticketby. Please enter your details.')}}</h4>
+         </div>
+         <div id="responceMessage " class="mb-2 responceMessage hidden text-center">
+            <div class="mx-auto flex items-center justify-center bg-light bg-opacity-5 rounded-full w-14 h-14 border border-primary_color_o10_1   mb-5 fa-bounce">
+               <i class="fa-solid  fa-2x text-white "></i>
+            </div>
+            <h4 class="text-white massage"></h4>
+         </div>
+         <div id="errorMessages" class=" errorMessages hidden text-center rounded-md mb-1 border border-red bg-red_light p-1 text-h8 ">
+            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+            <span class="messages"></span>
+         </div>
+         <form id="registerForm" class=" max-w-lg">
+            @csrf
+            <input type="hidden" value="user" checked name="user_type">
+            <input type="hidden" name="checkout" value="checkout">
 
+            <div class=" mb-2">
+               <input type="text" name="name" required placeholder="{{ __('full Name') }}"
+                  class=" mt-1 w-full focus:border-primary_color_6 outline-0 bg-transparent  border border-gray_s p-3 md:p-16-16 rounded-lg text-white">
+            </div>
+            <div class="mb-2">
+               <div class="flex gap-1 border-gray_s rounded-lg border items-center mt-1 px-2">
+                  <select id="countries" name="Countrycode" required
+                     class="select2 basis-2/6  w-full focus:border-primary_color_6 outline-0 bg-transparent     p-3 md:p-16-16  text-white">
+                     <option value="" disabled selected>{{ __('Select Country') }}</option>
+                     @foreach ($phone as $item)
+                     <option class=" " value="{{ $item->phonecode }}" @if($item->phonecode == "966") selected @endif>
+                        +{{$item->phonecode }}
+                     </option>
+                     @endforeach
+                  </select>
+                  <input type="number" name="phone" required placeholder=" {{ __('Mobile number') }}"
+                     class="  w-full focus:border-primary_color_6 outline-0 bg-transparent    p-3 md:py-2  text-white">
+               </div>
+            </div>
+            <div class="mb-2">
+               <input type="email" name="email" required placeholder="{{ __('Email') }}"
+                  class="mt-1 w-full focus:border-primary_color_6 outline-0 bg-transparent  border border-gray_s  p-3 md:p-16-16 rounded-lg text-white">
+            </div>
+            <div class="mb-2">
+               <input type="password" name="password" id="password" required placeholder="******"
+                  class="mt-1 w-full focus:border-primary_color_6 outline-0 bg-transparent  border border-gray_s  p-3 md:p-16-16 rounded-lg text-white">
+            </div>
+            <button id="submitRegisterForm" class="rounded-full bg-primary_color_8 p-12-24 w-full block mt-7 text-center">{{__( 'Sign up')}}
+            </button>
+            <p class="h7 lg:h5 mt-3 text-gray_9">{{ __('By signing up you agree to our') }} <a href="" class="text-primary_color_6"> terms and conditions</a></p>
+         </form>
+         <div>
+            <p class="text-light text-center mb-7 mt-7 line-thr ">or login with</p>
+            <div class="flex gap-7">
+               <a href="javascript:void(0)" id="Google-login" class="bg-gray_35 rounded-2xl flex items-center gap-1 px-2 py-3 flex-1 justify-center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M15.25 8.1875C15.25 12.625 12.2188 15.75 7.75 15.75C3.4375 15.75 0 12.3125 0 8C0 3.71875 3.4375 0.25 7.75 0.25C9.8125 0.25 11.5938 1.03125 12.9375 2.28125L10.8125 4.3125C8.0625 1.65625 2.9375 3.65625 2.9375 8C2.9375 10.7188 5.09375 12.9062 7.75 12.9062C10.8125 12.9062 11.9688 10.7188 12.125 9.5625H7.75V6.90625H15.125C15.1875 7.3125 15.25 7.6875 15.25 8.1875Z" fill="#FBF9FD" />
+                  </svg>
+                  Google</a>
+            </div>
+         </div><span class=" close-modal absolute    @if($lang == 'ar') left-0 @else right-0 @endif  top-0 cursor-pointer">
+            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M10 20.5C4.45312 20.5 0 16.0469 0 10.5C0 4.99219 4.45312 0.5 10 0.5C15.5078 0.5 20 4.99219 20 10.5C20 16.0469 15.5078 20.5 10 20.5ZM6.83594 7.33594C6.44531 7.72656 6.44531 8.3125 6.83594 8.66406L8.67188 10.5L6.83594 12.3359C6.44531 12.7266 6.44531 13.3125 6.83594 13.6641C7.1875 14.0547 7.77344 14.0547 8.125 13.6641L9.96094 11.8281L11.7969 13.6641C12.1875 14.0547 12.7734 14.0547 13.125 13.6641C13.5156 13.3125 13.5156 12.7266 13.125 12.3359L11.2891 10.5L13.125 8.66406C13.5156 8.3125 13.5156 7.72656 13.125 7.33594C12.7734 6.98438 12.1875 6.98438 11.7969 7.33594L9.96094 9.17188L8.125 7.33594C7.77344 6.98438 7.1875 6.98438 6.83594 7.33594Z" fill="#6C6C6D" />
+            </svg>
+         </span>
+         <div class="  f-bri mt-7 md:mt-7 text-center text-primary_color_6">
+            <span class="text-h5 lg:text-h5 font-bold">{{__( 'Already have account')}}</span>
+            <button data-form-user="login-model" class="from-switch text-h5 lg:text-h5 font-bold underline">{{__( 'sign in')}}</button>
+         </div>
+      </div>
+      <!-- login popup -->
+      <!-- login popup -->
+      <div id="login-model" class="relative hidden form-container  ">
+         <div class="mb-6 md:mb-7  pb-2">
+            <h2 class="text-h3 md:text-h2 text-primary_color_5 font-medium"> {{__( 'login to continue')}}</h2>
+            <h4 class="text-gray_9 lg:text-h4 text-h6 mt-1  ">{{__( 'Welcome back')}}</h4>
+         </div>
+         <div id="responceMessage " class="mb-2 responceMessage hidden text-center">
+            <div class="mx-auto flex items-center justify-center bg-light bg-opacity-5 rounded-full w-14 h-14 border border-primary_color_o10_1   mb-5 fa-bounce">
+               <i class="fa-solid  fa-2x text-white "></i>
+            </div>
+            <h4 class="text-white massage"></h4>
+         </div>
+         <div id="errorMessages" class="errorMessages hidden text-center rounded-md mb-1 border border-red bg-red_light p-1 text-h8 ">
+            <i class="fa-solid fa-triangle-exclamation text-white"></i>
+            <span class="messages"></span>
+         </div>
+         <!-- <form action="{{ url('user/login') }}" method="post" data-qa="form-login" name="login" class=" min-w "> -->
+         <form id="login_form" action="{{ url('/web/login') }}" method="POST" class=" min-w ">
+            @csrf
+            <!-- <input type="hidden" value="user" name="type"> -->
+            <div class="mb-2">
+               <input type="text" value="" name="user_name" placeholder="{{ __('Mobile number or email') }}"
+                  class="text-white bg-transparent  border border-gray_s mt-1 w-full focus:border-primary_color_6  outline-0    rounded-lg  p-16-16  ">
+               @error('email')
+               <div class="_2OcwfRx4" data-qa="email-status-message">{{ $message }}</div>
+               @enderror
+               @if (Session::has('error_msg'))
+               <div class="mt-1 _2OcwfRx4 text-danger" data-qa="email-status-message">
+                  <strong>{{ Session::get('error_msg') }}</strong>
+               </div>
+               @endif
+            </div>
+            <!-- <div>
+               <label class="text-gray_9" for="password">{{ __('Password') }}</label>
+               <input type="password" name="password" placeholder="*******"
+                  class="text-dark mt-1 w-full focus:border-primary_color_6 outline-0  bg-light p-16-16 rounded-lg " name=""
+                  id="">
+               @error('password')
+               <div class="_2OcwfRx4 font-bold-big" data-qa="email-status-message">{{ $message }}</div>
+               @enderror
+               <a data-form-user="password-model" class="cursor-pointer from-switch f-bri mt-1 block text-end text-primary_color_6 h6  underline"> {{__( 'Forget password ?')}}</a>
+            </div> -->
+            <button class="rounded-full bg-primary_color_8 p-12-24 w-full block mt-8 text-center"> {{__( 'Get code')}}
+            </button>
+         </form>
+         <span class=" close-modal absolute  @if($lang == 'ar') left-0 @else right-0 @endif  top-0 cursor-pointer">
+            <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M10 20.5C4.45312 20.5 0 16.0469 0 10.5C0 4.99219 4.45312 0.5 10 0.5C15.5078 0.5 20 4.99219 20 10.5C20 16.0469 15.5078 20.5 10 20.5ZM6.83594 7.33594C6.44531 7.72656 6.44531 8.3125 6.83594 8.66406L8.67188 10.5L6.83594 12.3359C6.44531 12.7266 6.44531 13.3125 6.83594 13.6641C7.1875 14.0547 7.77344 14.0547 8.125 13.6641L9.96094 11.8281L11.7969 13.6641C12.1875 14.0547 12.7734 14.0547 13.125 13.6641C13.5156 13.3125 13.5156 12.7266 13.125 12.3359L11.2891 10.5L13.125 8.66406C13.5156 8.3125 13.5156 7.72656 13.125 7.33594C12.7734 6.98438 12.1875 6.98438 11.7969 7.33594L9.96094 9.17188L8.125 7.33594C7.77344 6.98438 7.1875 6.98438 6.83594 7.33594Z" fill="#6C6C6D" />
+            </svg>
+         </span>
+         <div class="f-bri mt-7 text-center text-primary_color_6">
+            <span class="text-white"> {{__( 'Don’t have account?')}}</span>
+            <button data-form-user="register-model" class="from-switch text-h5 lg:text-h5 font-bold underline">{{__( 'sign up')}}</button>
+         </div>
+      </div>
+      <!-- otp -->
+      <div id="otp-model" class="hidden px-2 lg:px-0 pop-modal fixed inset-0 flex items-center justify-center bg-dark bg-opacity-75  z-30  ">
+         <div class="bg-dark_4  rounded-2xl   p-2  md:p-32-32 relative w-w-500">
+            <div class="mb-6 md:mb-7  pb-2">
+               <div class="flex items-center gap-1">
+                  <button class="@if($lang == 'ar') rotate-180 @endif">
+                     <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0.601562 8.64062L8.10156 1.14062C8.57031 0.632812 9.39062 0.632812 9.85938 1.14062C10.3672 1.60938 10.3672 2.42969 9.85938 2.89844L3.25781 9.5L9.85938 16.1406C10.3672 16.6094 10.3672 17.4297 9.85938 17.8984C9.39062 18.4062 8.57031 18.4062 8.10156 17.8984L0.601562 10.3984C0.09375 9.92969 0.09375 9.10938 0.601562 8.64062Z" fill="#C4ACD3" />
+                     </svg>
+                  </button>
+                  <h2 class="text-h3 md:text-h2 text-primary_color_5 font-medium"> {{__( 'Verification')}}</h2>
+               </div>
+               <h4 class="text-gray_9 lg:text-h4 text-h6 mt-1 ">{{__( 'Enter the 4-digit we just sent to your email')}}</h4>
+            </div>
+            <!-- <form action="{{ url('user/otp-verify') }}" method="POST" class="verfication">
+               @csrf
+               <input hidden type="text" name="otp" required
+                  class="h-14 w-full text-dark mx-auto  focus:border-primary_color_6 outline-0 bg-light p-16-16 rounded-lg">
+               <input type="hidden" name='id' id="user_id" value="">
+               <div id="verfication" class="grid grid-cols-4 ">
+                  <input autofocus type="number" maxlength="1" data-val="p-1" class="text-center  verification-pass h-16 w-16 col-span-1 mx-auto  outline-0  focus:border-primary_color_6  text-white bg-transparent  border border-gray_s p-16-16 rounded-lg" name="" id="">
+                  <input autofocus type="number" maxlength="1" data-val="p-2" class=" text-center verification-pass h-16 w-16 col-span-1 mx-auto  outline-0  focus:border-primary_color_6  text-white bg-transparent  border border-gray_s p-16-16 rounded-lg" name="" id="">
+                  <input autofocus type="number" maxlength="1" data-val="p-3" class=" text-center verification-pass h-16 w-16 col-span-1 mx-auto  outline-0  focus:border-primary_color_6  text-white bg-transparent  border border-gray_s p-16-16 rounded-lg" name="" id="">
+                  <input autofocus type="number" maxlength="1" data-val="p-4" class="text-center  verification-pass h-16 w-16 col-span-1 mx-auto  outline-0  focus:border-primary_color_6  text-white bg-transparent  border border-gray_s p-16-16 rounded-lg" name="" id="">
+               </div>
+               <button class="rounded-full bg-primary_color_8 p-12-24 w-full block mt-7 text-center ">Confirm
+               </button>
+            </form> -->
+            <form id="verificationForm" class="verification">
+               @csrf
+               <input type="hidden" name="otp" required id="otpField">
+               <input type="hidden" name='id' id="user_id" value="">
+               <div id="verification" class="grid grid-cols-4">
+                  <input type="number" maxlength="1" class="text-center verification-pass h-16 w-16 col-span-1 mx-auto outline-0 focus:border-primary_color_6 text-white bg-transparent border border-gray_s p-16-16 rounded-lg" oninput="moveToNext(this, 1)" data-val="p-1">
+                  <input type="number" maxlength="1" class="text-center verification-pass h-16 w-16 col-span-1 mx-auto outline-0 focus:border-primary_color_6 text-white bg-transparent border border-gray_s p-16-16 rounded-lg" oninput="moveToNext(this, 2)" data-val="p-2">
+                  <input type="number" maxlength="1" class="text-center verification-pass h-16 w-16 col-span-1 mx-auto outline-0 focus:border-primary_color_6 text-white bg-transparent border border-gray_s p-16-16 rounded-lg" oninput="moveToNext(this, 3)" data-val="p-3">
+                  <input type="number" maxlength="1" class="text-center verification-pass h-16 w-16 col-span-1 mx-auto outline-0 focus:border-primary_color_6 text-white bg-transparent border border-gray_s p-16-16 rounded-lg" oninput="moveToNext(this, 4)" data-val="p-4">
+               </div>
+               <p class="error" id="login-error"></p>
+               <button type="button" id="confirmButton" class="rounded-full bg-primary_color_8 p-12-24 w-full block mt-7 text-center">{{__('Confirm')}}</button>
+            </form>
+         </div>
+      </div>
+      <!--  password popup -->
+      <div id="password-model" class="hidden form-container">
+         <div class="mb-6 md:mb-7  pb-2">
+            <h2 class="text-h3 md:text-h2 text-primary_color_5 font-medium">{{ __('Forgot password') }} </h2>
+            <h4 class="text-gray_9 lg:text-h4 text-h6 mt-1 ">{{ __('Please enter your email to reset the password') }}</h4>
+         </div>
+         <div id="responceMessage " class="mb-2 responceMessage hidden text-center">
+            <div class="mx-auto flex items-center justify-center bg-light bg-opacity-5 rounded-full w-14 h-14 border border-primary_color_o10_1   mb-5 fa-bounce">
+               <i class="fa-solid  fa-2x text-white "></i>
+            </div>
+            <h4 class="text-white massage"></h4>
+         </div>
+         <form id="resetPasswordForm">
+            @csrf
+            <input type="hidden" value="user" name="type">
+            <div class="mb-2">
+               <input name="email" type="email" placeholder="{{__( 'Email')}}"
+                  class="text-dark mt-1 w-full focus:border-primary_color_6 outline-0  bg-light p-16-16 rounded-lg "
+                  id="">
+               @error('email')
+               <div class="text-danger font-medium">{{ $message }}</div>
+               @enderror
+            </div>
+            <button id="submitResetForm" class="rounded-full bg-primary_color_8 p-12-24 w-full block mt-8 text-center">{{ __('Reset Password') }}
+            </button>
+         </form>
+         <span class=" close-modal absolute -top-50 left-0 cursor-pointer">
+            <i class="fa-regular fa-circle-xmark fa-2xl my-6"></i></span>
+      </div>
+   </div>
+</div>
 
 
 
@@ -753,41 +946,41 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
 
 
    $(document).ready(function() {
-      // $('#login_form').on('submit', function(e) {
-      //    e.preventDefault();
-      //    $.ajax({
-      //       url: "{{ url('api/web/login') }}",
-      //       type: 'POST',
-      //       data: $(this).serialize(),
-      //       headers: {
-      //          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      //       },
-      //       success: function(response) {
-      //          if (response.success) {
-      //             let id = response.data.id
-      //             $('#user_id').val(id);
-      //             $('#otp-model').removeClass('hidden')
-      //             $('#login-model').addClass('hidden')
-      //          } else {
-      //             $('.errorMessages messages').html('');
-      //             $('.errorMessages').removeClass('hidden')
-      //             $('.errorMessages .messages').text(response);
-      //          }
-      //       },
-      //       error: function(xhr) {
-      //          // Handle validation errors or other failures 
-      //          let errors = xhr.responseJSON.errors;
-      //          console.log(errors);
-      //          // Clear any previous error messages
-      //          $('.errorMessages messages').html('');
-      //          $('.errorMessages').removeClass('hidden')
-      //          // Loop through the errors and display them
-      //          $.each(errors, function(field, messages) {
-      //             $('.errorMessages .messages').text(messages[0]);
-      //          });
-      //       }
-      //    });
-      // });
+      $('#login_form').on('submit', function(e) {
+         e.preventDefault();
+         $.ajax({
+            url: "{{ url('api/web/login') }}",
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+               if (response.success) {
+                  let id = response.data.id
+                  $('#user_id').val(id);
+                  $('#otp-model').removeClass('hidden')
+                  $('#login-model').addClass('hidden')
+               } else {
+                  $('.errorMessages messages').html('');
+                  $('.errorMessages').removeClass('hidden')
+                  $('.errorMessages .messages').text(response);
+               }
+            },
+            error: function(xhr) {
+               // Handle validation errors or other failures 
+               let errors = xhr.responseJSON.errors;
+               console.log(errors);
+               // Clear any previous error messages
+               $('.errorMessages messages').html('');
+               $('.errorMessages').removeClass('hidden')
+               // Loop through the errors and display them
+               $.each(errors, function(field, messages) {
+                  $('.errorMessages .messages').text(messages[0]);
+               });
+            }
+         });
+      });
 
 
    });
@@ -909,8 +1102,8 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
          event.preventDefault();
       } else if (!isAuthenticated) {
          e.preventDefault();
-        $(`#register-model`).addClass('hidden');
-         $('#login-model').removeClass('hidden');
+         $(`#register-model`).addClass('hidden');
+         $('#register-model').removeClass('hidden');
          $('#register_popup').removeClass('hidden');
          return
       }

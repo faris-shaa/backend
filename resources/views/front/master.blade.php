@@ -149,6 +149,7 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
 
         @include('front.layout.header')
         @yield('content')
+        @include('front.auth')
         @include('front.layout.footer')
 
 

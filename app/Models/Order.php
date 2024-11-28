@@ -30,6 +30,8 @@ class Order extends Model
         'checkins_count',
         'seat_details',
         'book_seats',
+        'event_book_date',
+        'time_slot_id',
         'web'
     ];
 

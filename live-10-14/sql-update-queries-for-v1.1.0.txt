@@ -1,2 +1,0 @@
-ALTER TABLE `orders` ADD `checkins_count` INT NULL DEFAULT '0' AFTER `event_id`;
-ALTER TABLE `tickets` ADD `maximum_checkins` INT NULL DEFAULT NULL AFTER `quantity`;
