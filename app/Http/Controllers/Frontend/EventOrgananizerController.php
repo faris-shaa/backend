@@ -15,12 +15,20 @@ class EventOrgananizerController extends Controller
 {
     public function __invoke(Event $event, $name)
     {
+        /** @var User $organizer */
         $organizer = $event->organization;
 
         if (!$organizer) {
             abort(404);
         }
 
-        return view("front.organizer_details", compact("organizer"));
+        $recentGalleries = $organizer->events()
+//            ->previous()
+            ->whereNotNull("gallery")
+            ->inRandomOrder()
+            ->limit(10)
+            ->get(["gallery", "name as eventName", "id"]);
+
+        return view("front.organizer_details", compact("organizer", "recentGalleries"));
     }
 }

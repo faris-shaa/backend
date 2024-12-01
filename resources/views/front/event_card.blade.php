@@ -6,13 +6,17 @@
                     <div class="swiper-wrapper">
                         @foreach(explode(",", $event["gallery"]) as $image)
                             <div class="swiper-slide h-32 md:h-48"><img class='w-full h-full object-cover'
+                                                                        loading="lazy"
                                                                         src="{{ $event["imagePath"]. $image }}"
+                                                                        {{--                                                                        src="{{ "https://ticketby.co/images/upload/". $image }}"--}}
                                                                         alt="{{ $event["name"] }}"></div>
                         @endforeach
                     </div>
                 </div>
             @else
-                <img class="w-full h-full object-cover" src="{{$event["imagePath"].$event["image"]}}"
+                <img class="w-full h-full object-cover"
+                     src="{{$event["imagePath"].$event["image"]}}"
+                     {{--                     src="{{ "https://ticketby.co/images/upload/".$event["image"]}}"--}}
                      alt="{{ $event["name"] }}">
             @endif
         </div>

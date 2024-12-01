@@ -1,10 +1,9 @@
-$Ajax = function (method, oVals) {
+$Ajax = function (method, oVals, page = null) {
     oVals = JSON.stringify(oVals);
 
-    console.log(base_url + '/ajax', method)
     $.ajax({
         type: "POST",
-        url: base_url + '/ajax',
+        url: `${base_url}/ajax${page ? `?page=${page}` : ''}`,
         data: {method: method, oVals: oVals, _token: _token},
         cache: false,
         success: function (html) {

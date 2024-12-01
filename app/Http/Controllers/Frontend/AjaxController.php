@@ -29,19 +29,26 @@ class AjaxController extends Controller
     public function fetchOrganizerUpComingEvent($oval)
     {
         $this->ajaxCall("$('.spinner_upcoming_events').show()");
-        $this->ajaxCall("$('.upcomingEventsCon').html('');");
         $organizerId = $oval["user_id"];
         $limit = $oval["limit"] ?? 6;
 
         $baseQuery = Event::upcoming()
             ->where("user_id", $organizerId);
 
+        $events = $baseQuery
+            ->paginate($limit);
 
-        $count = $baseQuery->count();
-        $events = $baseQuery->limit($limit)
-            ->get();
+        $currentPage = $events->currentPage();
+        $nextPage = $currentPage + 1;
 
-        if ($limit >= $count) {
+        if ($currentPage == 1 and $events->count() == 0) {
+            $this->ajaxCall("$('#empty_upcoming_search').show()");
+            $this->ajaxCall("$('#load_more_upcoming').hide()");
+        }
+
+        if ($nextPage <= $events->lastPage()) {
+            $this->ajaxCall("$('#load_more_upcoming').data('page',$nextPage)");
+        } else {
             $this->ajaxCall("$('#load_more_upcoming').hide()");
         }
 
@@ -63,12 +70,19 @@ class AjaxController extends Controller
         $baseQuery = Event::previous()
             ->where("user_id", $organizerId);
 
+        $events = $baseQuery->paginate($limit);
 
-        $count = $baseQuery->count();
-        $events = $baseQuery->limit($limit)
-            ->get();
+        $currentPage = $events->currentPage();
+        $nextPage = $currentPage + 1;
 
-        if ($limit >= $count) {
+        if ($currentPage == 1 and $events->count() == 0) {
+            $this->ajaxCall("$('#empty_previous_search').show()");
+            $this->ajaxCall("$('#load_more_previous').hide()");
+        }
+
+        if ($nextPage <= $events->lastPage()) {
+            $this->ajaxCall("$('#load_more_previous').data('page',$nextPage)");
+        } else {
             $this->ajaxCall("$('#load_more_previous').hide()");
         }
 
@@ -79,6 +93,4 @@ class AjaxController extends Controller
 
         $this->ajaxCall("$('.spinner_previous_events').hide();");
     }
-
-
 }
