@@ -12,7 +12,11 @@ use App\Http\Controllers\GoogleController;
 use App\Models\AppUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Frontend\OrganizerController;
+use App\Http\Controllers\Frontend\EventOrgananizerController;
+use App\Http\Controllers\Frontend\AjaxController;
 
+Route::post('/ajax', [AjaxController::class, "index"]);
 Route::get('auth/google', [FrontendController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [FrontendController::class, 'handleGoogleCallback']);
 Route::post('/applyCoupon', [FrontendController::class, 'applyCoupon']);
@@ -34,11 +38,9 @@ Route::get('/export-data', [FrontendController::class, 'excelExport']);
 Route::get('/logic-testing', [FrontendController::class, 'logicTesting']);
 
 
-
 Route::get('/qr-generate', [FrontendController::class, 'qrcodeGenerator']);
 
 Route::group(['middleware' => ['mode', 'XSS']], function () {
-
 
 
     Route::any('/tamara', [OrderController::class, 'tamara'])->name('tamara');
@@ -75,7 +77,7 @@ Route::group(['middleware' => ['mode', 'XSS']], function () {
         Route::get('login', [FrontendController::class, 'login'])->name('user.login');
         Route::post('/login', [FrontendController::class, 'userLogin']);
         Route::post('/login/verify/otp', [FrontendController::class, 'loginVerifyOtp']);
-        
+
         Route::get('/resetPassword', [FrontendController::class, 'resetPassword']);
         Route::post('/resetPassword', [FrontendController::class, 'userResetPassword']);
         Route::get('/org-register', [FrontendController::class, 'orgRegister']);
@@ -99,6 +101,7 @@ Route::group(['middleware' => ['mode', 'XSS']], function () {
         Route::get('/event-type/{type}', [FrontendController::class, 'eventType']);
         Route::get('/event/{id}/{name}', [FrontendController::class, 'eventDetail']);
         Route::get('/event/details/{id}/{name}', [FrontendController::class, 'eventDetailApi']);
+        Route::get("event/details/{event}/{name}/organizer", EventOrgananizerController::class)->name("events.organizer");
         Route::get('/events/{id}', [FrontendController::class, 'eventDetail']);
         Route::get('/organizations/{id}', [FrontendController::class, 'orgDetail'])->name('organizationDetails');
         Route::post('/report-event', [FrontendController::class, 'reportEvent']);
