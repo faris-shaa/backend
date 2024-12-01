@@ -1,5 +1,5 @@
 @extends('front.master', ['activePage' => 'event'])
-@section('title', __('Event Details'))
+@section('title', __('Organizer'))
 @php
     $gmapkey = \App\Models\Setting::find(1)->map_key;
 @endphp
@@ -288,7 +288,7 @@
     </script>
     <script>
 
-        const swiperee = new Swiper('.swiper-container', {
+        const recentEventSwipper = new Swiper('.swiper-container', {
             loop: true, // Enable looping
             scrollbar: {
                 el: '.swiper-scrollbar',
