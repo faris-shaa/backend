@@ -169,6 +169,7 @@
             background-color: #121212; /* Optional background */
             padding: 2rem; /* Space around the profile */
             gap: 1rem; /* Spacing between image and content */
+            width: 100% !important;
         }
 
         /* Profile Image with Gradient Border */
