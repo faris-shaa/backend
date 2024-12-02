@@ -18,5 +18,5 @@ public/images/upload
 ./.env
 /Modules
 public/modules
-./.idea
-./server.php
+/.idea
+server.php

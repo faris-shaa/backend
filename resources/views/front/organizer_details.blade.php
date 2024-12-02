@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <div class="container mt-9 md:mt-40 xl:mt-m133 hidden lg:block " id="UpcomingEventsSection">
+    <div class="container mt-9 md:mt-40 xl:mt-m133 block " id="UpcomingEventsSection">
         <div class="flex justify-between flex-wrap gap-y-4">
             <h2 class="text-h5 lg:text-h2 text-primary_color_6 lg:text-white font-medium">{{__('Upcoming Events')}}</h2>
         </div>
@@ -82,7 +82,7 @@
         </div>
     </div>
 
-    <div class="container mt-9 md:mt-40 xl:mt-m133 hidden lg:block" id="RecentGallerySection">
+    <div class="container mt-9 md:mt-40 xl:mt-m133 block" id="RecentGallerySection">
         <div class="flex justify-between flex-wrap gap-y-4">
             <h2 class="text-h5 lg:text-h2 text-primary_color_6 lg:text-white font-medium">{{__('Recent events gallery')}}</h2>
         </div>
@@ -119,7 +119,7 @@
     </div>
 
 
-    <div class="container mt-9 md:mt-40 xl:mt-m133 hidden lg:block " id="PreviousEventsSection">
+    <div class="container mt-9 md:mt-40 xl:mt-m133 block " id="PreviousEventsSection">
         <div class="flex justify-between flex-wrap gap-y-4">
             <h2 class="text-h5 lg:text-h2 text-primary_color_6 lg:text-white font-medium">{{__('Previous Events')}}</h2>
         </div>
