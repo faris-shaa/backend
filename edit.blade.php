@@ -53,17 +53,6 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>{{ __('Arabic Name') }}</label>
-                                            <input type="text" name="arabic_name" placeholder="{{ __('Arabic Name') }}"
-                                                value="{{ $ticket->arabic_name }}"
-                                                class="form-control @error('arabic_name')? is-invalid @enderror">
-                                            @error('arabic_name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
                                             <label>{{ __('Quantity') }}</label>
                                             <input type="number" name="quantity" min="1"
                                                 placeholder="{{ __('Quantity') }}" value="{{ $ticket->quantity }}"

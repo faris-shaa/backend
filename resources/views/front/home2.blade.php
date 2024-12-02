@@ -475,11 +475,7 @@ $error = $response->json();
                   }
                   let day = new Date(item.start_time).getUTCDate();
                   let month = dateFormat(item.start_time).shortMonth;
-                  let eventHtml = `
-                        <a href="/event/${item.id}/${item.slug}" class="swiper-slide">
-                            <div class="ticket-wahlist h-full bg-light hover:bg-primary_color_o25_9 bg-opacity-5 rounded-2xl border border-primary_color_o10_1 hover:border-gray_9 overflow-hidden">
-                            <div class="h-32 md:h-48">
-                                 ${item.gallery && item.gallery.length > 0 ? 
+                  /*${item.gallery && item.gallery.length > 0 ? 
                                     `<div class="swiper-event">
                                           <div class="swiper-wrapper">
                                             ${gallery}
@@ -487,7 +483,13 @@ $error = $response->json();
                                     </div>` 
                                     : 
                                     `<img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">`
-                                 }
+                                 }*/
+                  let eventHtml = `
+                        <a href="/event/${item.id}/${item.slug}" class="swiper-slide">
+                            <div class="ticket-wahlist h-full bg-light hover:bg-primary_color_o25_9 bg-opacity-5 rounded-2xl border border-primary_color_o10_1 hover:border-gray_9 overflow-hidden">
+                            <div class="h-32 md:h-48">
+                                 
+                                 <img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">
                               </div>
                                 <div class="relative flex gap-1 md:gap-4 p-1 md:p-4 flex-wrap md:flex-nowrap flex-col lg:flex-row">
                                     <div class="text-center flex  items-baseline gap-1 md:gap-0 md:flex-col">

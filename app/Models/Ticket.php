@@ -13,6 +13,7 @@ class Ticket extends Model
         'user_id',
         'ticket_number',
         'name',
+        'arabic_name',
         'type',
         'quantity',
         'ticket_per_order',

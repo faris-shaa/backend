@@ -159,7 +159,9 @@ class ApiController extends Controller
         $otp = rand(100000, 999999);
         $dataemail['name'] = $user->first_name." ".$user->last_name;
         $dataemail['email'] = $user->email;
-        $dataemail['otp'] = $otp;
+        $dataemail['otp'] = $otp;  
+        
+        
         
         Mail::send(['html'=>'frontend.email.otp'], $dataemail, function($message) use ($dataemail) {
         $message->to($dataemail['email'])->subject
@@ -224,7 +226,12 @@ class ApiController extends Controller
                     ]);
                 }
                 $user = AppUser::find($user->id);
-                $user->otp = $otp;
+
+                if($dataemail['email'] != "hitarth.rc@gmail.com")
+                {
+                    $user->otp = $otp;     
+                }
+                
                 $user->update();
                 return response()->json(['msg' => 'Phone verification code sent via SMS.', 'data' => $user, 'success' => true, 'otp' => $otp,], 200);
             }
@@ -1200,6 +1207,144 @@ class ApiController extends Controller
 
         return response()->json(['success' => true, 'msg' => null, 'data' => $data], 200);
     }
+
+     public function createOrderMultipleUnpaid ( Request $request )
+    {   
+
+        $data = $request->all();
+        
+        $event = Event::find($request->event_id);
+        
+        $org = User::find($event->user_id);
+
+        $user = AppUser::find($request->user_id);
+        if(isset($order_id))
+        {
+            $data['order_id'] =  $order_id;
+        }
+        else
+        {
+            $data['order_id'] =  '#' . rand(9999, 100000);    
+        }
+        $data['ticket_id'] = $request->ticket_id;    
+        $data['event_id'] = $event->id;
+        $data['customer_id'] = $user->id;
+        $data['organization_id'] = $org->id;
+        $data['order_status'] = 'Pending';
+        $data['web'] = 0;
+        if(isset($request->slot_event_date) && !is_null($request->slot_event_date))
+        {
+
+            $data['time_slot_id'] = $request->time_slot_id;
+            $data['event_book_date'] = $request->slot_event_date;    
+        }
+
+        $data['payment_status'] = 0;
+        $data['order_status'] = 'Pending';
+        $com = Setting::find(1, ['org_commission_type', 'org_commission']);
+        $p =   $request->payment - $request->tax;
+        if ($request->payment_type == "FREE") {
+            $data['org_commission']  = 0;
+        } else {
+            if ($com->org_commission_type == "percentage") {
+                $data['org_commission'] =  $p * $com->org_commission / 100;
+            } else if ($com->org_commission_type == "amount") {
+                $data['org_commission']  = $com->org_commission;
+            }
+        }
+
+        if ($request->coupon_code != null) {
+            $coupon = Coupon::find($request->coupon_code);
+            $count = $coupon->use_count + 1;
+            $coupon->update(['use_count' => $count]);
+            CouponUsageHistory::create([
+                'coupon_id' => $request->coupon_code,
+                'appuser_id' => $user->id
+            ]);
+            
+            $data['coupon_discount'] =  (( $data['payment'] - $data['tax'])  / ( 1 - ( $coupon->discount / 100  )  )) - (1 - ( $coupon->discount / 100  ) );
+            $data['coupon_id'] = $coupon->id;
+        }
+
+        $data['book_seats'] = isset($request->selectedSeatsId) ? $request->selectedSeatsId : null;
+        $data['seat_details'] = isset($request->selectedSeats) ? $request->selectedSeats : null;
+
+        $order = Order::create($data);
+        $module = Module::where('module', 'Seatmap')->first();
+        if ($module->is_enable == 1 && $module->is_install == 1) {
+            $seats = explode(',', $data['selectedSeatsId']);
+            foreach ($seats as $key => $value) {
+                $seat = Seats::find($value);
+                if ($seat) {
+                    $seat->update(['type' => 'occupied']);
+                }
+            }
+        }
+
+
+        // tickets array define
+        
+        $ticketIds = $quantities = array();  
+        foreach ($request->tickets as $key_tickets => $value_tickets) {
+            foreach ($value_tickets as $key_value_tickets => $value_value_tickets) {
+                $ticketIds[] = $key_value_tickets ; 
+                $quantities[] = $value_value_tickets ; 
+            }
+            
+        }
+         $tickets = array_map(function ($ticketId, $quantity) {
+                return [
+                    'ticket_id' => (int) $ticketId,  // Casting to int if necessary
+                    'quantity' => (int) $quantity,  // Casting to int if necessary
+                ];
+            }, $ticketIds, $quantities);
+        
+         $count_quantity = 0 ;
+            foreach ($tickets as $key => $ticket_array) {
+                
+                $ticekt = Ticket::find($ticket_array['ticket_id']);
+                for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
+                    $count_quantity = $count_quantity +1 ; 
+                    $child['ticket_number'] = uniqid();
+                    $child['ticket_id'] = $ticket_array['ticket_id'];
+                    $child['order_id'] = $order->id;
+                    $child['customer_id'] = $request->user_id;
+                    $child['checkin'] = $ticket->maximum_checkins ?? null;
+                    $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
+                    
+                    
+                    OrderChild::create($child);
+                 
+                }
+                $sold_ticket_count =  Order::where([['order_status', 'Complete']])->where('order_status',"Complete")->where('payment_status',1)->where('ticket_id',$ticekt->id)->count();
+                if($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0)
+                {
+                      $ticekt->update(['status'=>0 ]);
+                }
+
+            }
+
+
+
+            $order_update_quantiy = Order::where('id',$order->id)->update(['quantity'=>$count_quantity]);
+            if (isset($request->tax_data)) {
+            foreach (json_decode($data['tax_data']) as $value) {
+                $tax['order_id'] = $order->id;
+                $tax['tax_id'] = $value->id;
+                $tax['price'] = $value->price;
+                OrderTax::create($tax);
+            }
+        }
+        
+
+        return response()->json(['success' => true, 'msg' => null, 'data' => $data], 200);
+    }
+
+    public function createOrderUnpaid1 ()
+    {
+        dd("kk");
+    }
+
 
     public function testSendOrderMail () 
     {

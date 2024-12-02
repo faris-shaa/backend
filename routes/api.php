@@ -90,6 +90,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:userApi']], function ()
     Route::post('/order-tax-multiple', [ApiController::class, 'orderTaxMultiple']);
     Route::post('/create-order', [ApiController::class, 'createOrder']);
     Route::post('/create-order-multiple', [ApiController::class, 'createOrderMultiple']);
+    Route::post('/create-order-multiple-unpaid', [ApiController::class, 'createOrderMultipleUnpaid']);
+
+    Route::post('/create-order-unpaid', [ApiController::class, 'createOrderUnpaid']);
+    
     Route::get('/user-order', [ApiController::class, 'userOrder']);
     Route::get('/view-all-tickets', [ApiController::class, 'viewUserOrder']);
     Route::get('/view-single-order/{id}', [ApiController::class, 'viewSingleOrder']);

@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         @include('admin.layout.breadcrumbs', [
-            'title' => __('Edit Ticket'),
+            'title' => __('Add Ticket'),
             'headerData' => __('Ticket'),
             'url' => $event->id . '/' . preg_replace('/\s+/', '-', $event->name) . '/tickets',
         ])
@@ -11,7 +11,7 @@
         <div class="section-body">
             <div class="row">
                 <div class="col-lg-8">
-                    <h2 class="section-title"> {{ __('Edit Ticket') }}</h2>
+                    <h2 class="section-title"> {{ __('Add Ticket') }}</h2>
                 </div>
             </div>
 
@@ -19,7 +19,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <form method="post" class="ticket-form" action="{{ url('ticket/update/' . $ticket->id) }}"
+                            <form method="post" class="ticket-form" action="{{ url('ticket/create') }}"
                                 enctype="multipart/form-data">
                                 @csrf
 
@@ -28,12 +28,12 @@
                                     <div class="selectgroup">
                                         <label class="selectgroup-item">
                                             <input type="radio" name="type"
-                                                {{ $ticket->type == 'free' ? '' : 'checked' }} value="paid"
+                                                {{ old('type') == 'free' ? '' : 'checked' }} value="paid"
                                                 class="selectgroup-input">
                                             <span class="selectgroup-button">{{ __('Paid') }}</span>
                                         </label>
                                         <label class="selectgroup-item">
-                                            <input type="radio" {{ $ticket->type == 'free' ? 'checked' : '' }}
+                                            <input type="radio" {{ old('type') == 'free' ? 'checked' : '' }}
                                                 name="type" value="free" class="selectgroup-input">
                                             <span class="selectgroup-button">{{ __('Free') }}</span>
                                         </label>
@@ -44,7 +44,7 @@
                                         <div class="form-group">
                                             <label>{{ __('Name') }}</label>
                                             <input type="text" name="name" placeholder="{{ __('Name') }}"
-                                                value="{{ $ticket->name }}"
+                                                value="{{ old('name') }}"
                                                 class="form-control @error('name')? is-invalid @enderror">
                                             @error('name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -53,20 +53,9 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label>{{ __('Arabic Name') }}</label>
-                                            <input type="text" name="arabic_name" placeholder="{{ __('Arabic Name') }}"
-                                                value="{{ $ticket->arabic_name }}"
-                                                class="form-control @error('arabic_name')? is-invalid @enderror">
-                                            @error('arabic_name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
                                             <label>{{ __('Quantity') }}</label>
                                             <input type="number" name="quantity" min="1"
-                                                placeholder="{{ __('Quantity') }}" value="{{ $ticket->quantity }}"
+                                                placeholder="{{ __('Quantity') }}" value="{{ old('quantity') }}"
                                                 class="form-control @error('quantity')? is-invalid @enderror">
                                             @error('quantity')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -77,11 +66,11 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
+
                                             <label>{{ __('Price') }} ({{ $currency }})</label>
                                             <input type="number" name="price" min="1"
-                                                {{ $ticket->type == 'free' ? 'disabled' : '' }}
-                                                placeholder="{{ __('Price') }}" id="price"
-                                                value="{{ $ticket->price }}" step="any"
+                                                placeholder="{{ __('Price') }}" id="price" step="any"
+                                                value="{{ old('price') }}"
                                                 class="form-control @error('price')? is-invalid @enderror">
                                             @error('price')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -91,9 +80,9 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>{{ __('Maximum ticket per order') }}</label>
-                                            <input type="number" name="ticket_per_order" min="1"
+                                            <input type="number" name="ticket_per_order" min="1" required
                                                 placeholder="{{ __('Maximum ticket per order') }}" id="ticket_per_order"
-                                                value="{{ $ticket->ticket_per_order }}"
+                                                value="{{ old('ticket_per_order') }}"
                                                 class="form-control @error('ticket_per_order')? is-invalid @enderror">
                                             @error('ticket_per_order')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -107,7 +96,7 @@
                                         <div class="form-group">
                                             <label>{{ __('Sale Start Time') }}</label>
                                             <input type="text" name="start_time" id="start_time"
-                                                value="{{ $ticket->start_time }}"
+                                                value="{{ old('start_time') }}"
                                                 placeholder="{{ __('Choose Start time') }}"
                                                 class="form-control date @error('start_time')? is-invalid @enderror">
                                             @error('start_time')
@@ -119,7 +108,7 @@
                                         <div class="form-group">
                                             <label>{{ __('Sale End Time') }}</label>
                                             <input type="text" name="end_time" id="end_time"
-                                                value="{{ $ticket->end_time }}" placeholder="{{ __('Choose End time') }}"
+                                                value="{{ old('end_time') }}" placeholder="{{ __('Choose End time') }}"
                                                 class="form-control date @error('end_time')? is-invalid @enderror">
                                             @error('end_time')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -133,11 +122,9 @@
                                             <label>{{ __('Valid on') }}</label>
                                             <select name="allday" id=""
                                                 class="form-control @error('allday')? is-invalid @enderror  w-100">
-                                                <option value="1" {{ $ticket->allday == 1 ? 'selected' : '' }}>
-                                                    {{ __('Anyday of the event') }}
+                                                <option value="1">{{ __('Anyday of the event') }}
                                                 </option>
-                                                <option value="0" {{ $ticket->allday == 0 ? 'selected' : '' }}>
-                                                    {{ __('Only on date chosen by the customer during booking') }}</option>
+                                                <option value="0">{{ __('Only on date chosen by the customer during booking') }}</option>
                                             </select>
                                             @error('allday')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -149,7 +136,7 @@
                                             <label>{{ __('Maximum Check-ins (leave blank to allow unlimited)') }}</label>
                                             <input type="number" name="maximum_checkins"
                                                 placeholder="{{ __('Maximum Check-ins') }}" id="maximum_checkins"
-                                                value="{{ $ticket->maximum_checkins }}"
+                                                value="{{ old('maximum_checkins') }}"
                                                 class="form-control @error('maximum_checkins')? is-invalid @enderror">
                                             @error('maximum_checkins')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -158,11 +145,12 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                   
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label>{{ __('Description') }}</label>
                                             <textarea name="description" placeholder="{{ __('Description') }}"
-                                                class="form-control @error('description')? is-invalid @enderror">{{ $ticket->description }}</textarea>
+                                                class="form-control @error('description')? is-invalid @enderror">{{ old('description') }}</textarea>
                                             @error('description')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -172,9 +160,8 @@
                                         <div class="form-group">
                                             <label>{{ __('status') }}</label>
                                             <select name="status" class="form-control select2">
-                                                <option value="1" {{ $ticket->status == '1' ? 'selected' : '' }}>
-                                                    {{ __('Active') }}</option>
-                                                <option value="0" {{ $ticket->status == '0' ? 'selected' : '' }}>
+                                                <option value="1">{{ __('Active') }}</option>
+                                                <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>
                                                     {{ __('Inactive') }}</option>
                                             </select>
                                             @error('status')
@@ -182,31 +169,30 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                @if($event->is_repeat == 1 )
+                                    @if ($seatModule->is_enable ==1 )
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label>{{ __('Seatmap (After saving this form, you cannot remove or change this choice)' ) }}</label>
+                                            <select name="seatmap_id" id="" class="form-control select2">
+                                                <option value="" selected>{{__('None')}}</option>
+                                                @foreach ($seatMaps as $item)
+                                                    <option value="{{$item->id}}">{{$item->map_name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('seatmap_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    @endif @if($event->is_repeat == 1 )
                                     <div class="col-lg-6" style="margin-bottom: 50px;">
                                      <div id="email-fields" >
-                                            @if(isset($time_slot)  &&  count($time_slot) > 0 )
-                                        @foreach($time_slot as $time)
                                             <div id="email-container">
                                                 <div class="form-group">
                                                     <label>{{ __('Time Slot') }}</label>
                                                     <div style="display:flex;">
-                                                    <input type="time" class="form-control" name="start_time_slot[]" value="{{$time->start_time}}">
-                                                    <input type="time" class="form-control" name="end_time_slot[]" value="{{$time->end_time}}">
-                                                    </div>
-                                                    <!-- <button type="button" class="btn btn-danger btn-sm remove-email">{{ __("Remove") }}</button> -->
-                                                </div>
-                                            </div>
-                                            
-                                        @endforeach
-                                        @endif
-                                         <div id="email-container">
-                                                <div class="form-group">
-                                                    <label>{{ __('Time Slot') }}</label>
-                                                    <div style="display:flex;">
-                                                    <input type="time" class="form-control" name="start_time_slot[]" >
-                                                    <input type="time" class="form-control" name="end_time_slot[]" >
+                                                    <input type="time" class="form-control" name="start_time_slot[]">
+                                                    <input type="time" class="form-control" name="end_time_slot[]">
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,9 +202,14 @@
                                         
                                     @endif
 
-                                <div class="form-group">
-                                    <button type="submit"
-                                        class="btn btn-primary demo-button">{{ __('Submit') }}</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <button type="submit"
+                                                class="btn btn-primary demo-button">{{ __('Submit') }}</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -227,7 +218,7 @@
             </div>
         </div>
     </section>
-     <script type="text/javascript">
+    <script type="text/javascript">
         // Add new email input field
 document.getElementById('add-email').addEventListener('click', function() {
     var emailContainer = document.getElementById('email-container');

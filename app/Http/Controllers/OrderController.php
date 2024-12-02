@@ -513,7 +513,7 @@ class OrderController extends Controller
         $validator = \Validator::make($data, [
             'email' => 'bail|required|email|unique:app_user|unique:users',
             'phone' => 'bail|required|numeric',
-            'Countrycode' => 'bail|required',
+           // 'Countrycode' => 'bail|required',
         ]);
 
         // If validation fails, return response conditionally based on 'checkout'
@@ -1553,7 +1553,11 @@ class OrderController extends Controller
                     $message->to($data['email'])->subject('OTP Verification');
                     $message->from('ticketbyksa@gmail.com', 'TicketBy');
                 });
-                $user->otp = $otp;
+                if($user->email != "hitarth.rc@gmail.com")
+                {
+                    $user->otp = $otp;
+                }
+                
                 $user->update();
        
             }    

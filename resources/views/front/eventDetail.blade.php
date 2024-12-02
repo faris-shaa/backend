@@ -371,13 +371,7 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
             <h3 class="font-bold"> {{ $lang == 'ar' ? $item->name_arabic : $item->name }}
             </h3>
             <div class="text-gray_9 h6 my-4 flex flex-col">
-               <span> {{ \Carbon\Carbon::parse($item->start_time)->diffInDays(\Carbon\Carbon::parse($item->end_time)) }} {{__('Days')}}
-               </span>
-               <span class="my-1">{{ __('Ticket Sale starts onwards') }} </span>
-               <span>
-                  {{ Carbon\Carbon::parse($item->start_time)->format('d M Y') }} {{__('till')}}
-                  {{ Carbon\Carbon::parse($item->end_time)->format('d M Y') }}
-               </span>
+               
             </div>
             <div class="f-bri">
                <span class="h4">{{ __($currency) }}</span>

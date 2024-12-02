@@ -208,8 +208,8 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
                             </div>
                         </div>
                         @else
-                        <a href="{{ url('user/login') }}" class=" f-bri rounded-full bg-primary_color_8 p-6-8  min-w-24 text-center  flex items-center justify-center h-8">{{ __('Sign In') }}
-                        </a>
+                        <button class="auth_popup font-medium  f-bri rounded-full bg-primary_color_8 hover:bg-gradient-hover p-6-8  min-w-24 text-center  flex items-center justify-center h-8">{{ __('Login') }}
+                    </button>
                         @endif
                         @if (Session::has('local'))
                         {{ Session::get('local') }}

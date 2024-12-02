@@ -1730,7 +1730,8 @@ class FrontendController extends Controller
                     OrderChild::create($child);
                  
                 }
-                $sold_ticket_count =  Order::where([['order_status', 'Complete']])->where('order_status',"Complete")->where('payment_status',1)->where('ticket_id',$ticekt->id)->count();
+                $order_id =  Order::where([['order_status', 'Complete']])->where('order_status',"Complete")->where('payment_status',1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id',$ticekt->id)->count();
                 if($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0)
                 {
                       $ticekt->update(['status'=>0 ]);
