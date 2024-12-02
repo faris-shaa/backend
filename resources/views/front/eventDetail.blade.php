@@ -124,7 +124,7 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
          </div>
       </div>
       <div class="col-span-12  md:col-span-4 bg-light rounded-xl  p-2">
-         <div class="flex flex-col items-center justify-center h-full	">
+         <div class="flex flex-col items-center justify-center h-full   ">
             <h5 class="text-gray_6"> {{__(key: 'Tickets starting at')}}</h5>
             <span class="h4 text-dark font-medium">{{ __(key: $currency) }} {{$minPrice}}</span>
             <a href="#tickets_section" class="mt-4 rounded-full bg-primary_color_8 p-12-24 flex items-center gap-2 cursor-pointer btn-hover-primary">
