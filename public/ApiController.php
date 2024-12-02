@@ -1269,15 +1269,7 @@ class ApiController extends Controller
         $data['book_seats'] = isset($request->selectedSeatsId) ? $request->selectedSeatsId : null;
         $data['seat_details'] = isset($request->selectedSeats) ? $request->selectedSeats : null;
 
-         if(!isset($request->ticket_id))
-        {
-            foreach ($request->tickets as $key_tickets => $value_tickets) {
-                $data['ticket_id'] = $value_tickets['ticket_id'] ;  
-                break; 
-                        
-            }
-        }
-       
+
 
         $order = Order::create($data);
         $module = Module::where('module', 'Seatmap')->first();
@@ -1297,8 +1289,8 @@ class ApiController extends Controller
         $ticketIds = $quantities = array();  
         foreach ($request->tickets as $key_tickets => $value_tickets) {
            
-                $ticketIds[] = $value_tickets['ticket_id'] ; 
-                $quantities[] = $value_tickets['quantity'] ; 
+                $ticketIds[] = $value_tickets->ticket_id ; 
+                $quantities[] = $value_tickets->quantity ; 
                         
         }
          $tickets = array_map(function ($ticketId, $quantity) {
