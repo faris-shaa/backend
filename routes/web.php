@@ -218,4 +218,6 @@ Route::get('/city/create', [CitiesController::class, 'create'])->name('city.crea
 Route::post('/city', [CitiesController::class, 'store']); 
 Route::get('/cities/{id}/edit', [CitiesController::class, 'edit'])->name('city.edit'); 
 Route::delete('/Cities/{id}', [CitiesController::class, 'destroy']);
-Route::any('/cities/{id}/update', [CitiesController::class, 'update'])->name('city.update'); 
+Route::any('/cities/{id}/update', [CitiesController::class, 'update'])->name('city.update');
+
+Route::view("test-ticket-pdf", "ticket-pdf");
