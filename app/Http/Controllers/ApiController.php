@@ -1208,6 +1208,22 @@ class ApiController extends Controller
         return response()->json(['success' => true, 'msg' => null, 'data' => $data], 200);
     }
 
+    public function updateOrderestatus ( Request $request )
+    {
+        $order = Order::where('id',$request->id)->first();
+        if(!$order)
+        {
+            return response()->json(['success' => false, 'msg' => "Invalid orderid " , 'data' => null], 200);
+        }
+
+        $order->payment_token = $request->payment_token ;
+        $order->payment_status = $request->payment_status ;
+        $order->order_status = $request->order_status ;
+        $order->save();
+
+        return response()->json(['success' => true, 'msg' => null , 'data' => $order], 200);
+    }
+
      public function createOrderMultipleUnpaid ( Request $request )
     {   
 
@@ -1254,11 +1270,15 @@ class ApiController extends Controller
         }
 
         if ($request->coupon_code != null) {
-            $coupon = Coupon::find($request->coupon_code);
+            $coupon = Coupon::find($request->coupon_id);
+            if(!$coupon)
+            {
+                return response()->json(['success' => false, 'msg' => "Invalid coupon code " , 'data' => null], 200);
+            }
             $count = $coupon->use_count + 1;
             $coupon->update(['use_count' => $count]);
             CouponUsageHistory::create([
-                'coupon_id' => $request->coupon_code,
+                'coupon_id' => $request->coupon_id,
                 'appuser_id' => $user->id
             ]);
             
@@ -1346,7 +1366,7 @@ class ApiController extends Controller
         }
         
 
-        return response()->json(['success' => true, 'msg' => null, 'data' => $data], 200);
+        return response()->json(['success' => true, 'msg' => null, 'data' => $order], 200);
     }
 
     public function createOrderUnpaid1 ()
@@ -1551,6 +1571,10 @@ class ApiController extends Controller
 
         if ($request->coupon_id != null) {
             $coupon = Coupon::find($request->coupon_id);
+            if(!$coupon)
+            {
+                return response()->json(['success' => false, 'msg' => "invalid coupon", 'data' => null], 200);
+            }
             $count = $coupon->use_count + 1;
             $coupon->update(['use_count' => $count]);
             CouponUsageHistory::create([
