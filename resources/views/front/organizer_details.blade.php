@@ -104,10 +104,12 @@
                 @foreach($recentGalleries as $gallery)
                     @foreach(explode(",", $gallery["gallery"]) as $img)
                         <div class="ticket-wahlist h-full swiper-slide bg-light hover:bg-primary_color_o25_9 bg-opacity-5 rounded-2xl border border-primary_color_o10_1 hover:border-gray_9 overflow-hidden">
-                            <div class="h-100 md:h-48">
-                                <img src="{{$gallery["imagePath"]. $img }}"
-                                     loading="lazy"
-                                     class='w-full h-full object-cover' alt="{{ $gallery["eventName"] }}"/>
+                            <div class="event-images-container">
+                                <img
+                                        src="{{$gallery["imagePath"]. $img }}"
+                                        {{--                                        src="{{"https://ticketby.co/images/upload/". $img }}"--}}
+                                        loading="lazy"
+                                        class='w-full h-full event-card-images' alt="{{ $gallery["eventName"] }}"/>
                             </div>
                         </div>
                     @endforeach
@@ -233,12 +235,37 @@
         body {
             overflow-x: hidden;
         }
+
+        #RecentGallerySection {
+            overflow-x: clip;
+        }
+
+        .event-images-container {
+            height: 25rem;
+        }
+
+        .swiper-event, .swiper-wrapper {
+            height: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .event-images-container {
+                height: 13rem;
+            }
+        }
+
+        .event-card-images {
+            object-fit: cover;
+            object-position: center;
+            height: 100%;
+        }
+
     </style>
 @endpush
 @push("after-scripts")
     <script>
-        let upcomingLimit = 6;
-        let previousLimit = 6;
+        let upcomingLimit = 3;
+        let previousLimit = 3;
 
         const fetchOrganizerUpcomingEvent = async () => {
             var ovals = {};
@@ -295,11 +322,17 @@
                 el: '.swiper-scrollbar',
                 draggable: true,
             },
-            slidesPerView: 2,
-            spaceBetween: 20,
+            slidesPerView: 1.5,
+            spaceBetween: 10,
             autoplay: {
                 delay: 1200,
                 disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2.5, // Show one slide per view
+                    spaceBetween: 20, // Reduce spacing for smaller screens
+                },
             },
         });
     </script>

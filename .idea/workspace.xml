@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/AjaxController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/AjaxController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/front/event_card.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/event_card.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,7 +222,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Work/TenDEGREES/tickets/backend",
+    "last_opened_file_path": "D:/Work/Herd/tharaco",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -259,7 +261,8 @@
       <workItem from="1732794497450" duration="18761000" />
       <workItem from="1733037507777" duration="12050000" />
       <workItem from="1733057576450" duration="2052000" />
-      <workItem from="1733125954137" duration="7538000" />
+      <workItem from="1733125954137" duration="8210000" />
+      <workItem from="1733233744563" duration="10059000" />
     </task>
     <servers />
   </component>

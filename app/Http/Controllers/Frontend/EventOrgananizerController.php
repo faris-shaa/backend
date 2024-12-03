@@ -28,12 +28,14 @@ class EventOrgananizerController extends Controller
         }
 
         $this->setSeos($organizer);
-        $recentGalleries = $organizer->events()
+        $recentGalleries =
+//            $organizer->events()
 //            ->previous()
-            ->whereNotNull("gallery")
-            ->inRandomOrder()
-            ->limit(10)
-            ->get(["gallery", "name as eventName", "id"]);
+
+            Event::query()->whereNotNull("gallery")
+                ->inRandomOrder()
+                ->limit(10)
+                ->get(["gallery", "name as eventName", "id"]);
 
         return view("front.organizer_details", compact("organizer", "recentGalleries"));
     }
