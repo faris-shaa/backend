@@ -91,7 +91,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:userApi']], function ()
     Route::post('/create-order', [ApiController::class, 'createOrder']);
     Route::post('/create-order-multiple', [ApiController::class, 'createOrderMultiple']);
     Route::post('/create-order-multiple-unpaid', [ApiController::class, 'createOrderMultipleUnpaid']);
-
+    Route::post('/update-order-status', [ApiController::class, 'updateOrderestatus']);
     Route::post('/create-order-unpaid', [ApiController::class, 'createOrderUnpaid']);
     
     Route::get('/user-order', [ApiController::class, 'userOrder']);
