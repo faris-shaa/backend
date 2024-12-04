@@ -29,8 +29,9 @@ class EventOrgananizerController extends Controller
 
         $this->setSeos($organizer);
         $recentGalleries =
-            $organizer->events()
+//            $organizer->events()
 //                ->previous()
+            Event::query()
                 ->whereNotNull("gallery")
                 ->inRandomOrder()
                 ->limit(10)

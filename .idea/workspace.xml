@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/resources/views/ticket-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ticket-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +218,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "staging",
     "last_opened_file_path": "D:/Work/TenDEGREES/tickets/backend/public/fonts",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -260,7 +261,7 @@
       <workItem from="1733057576450" duration="2052000" />
       <workItem from="1733125954137" duration="8210000" />
       <workItem from="1733233744563" duration="15533000" />
-      <workItem from="1733309208171" duration="6067000" />
+      <workItem from="1733309208171" duration="6842000" />
     </task>
     <servers />
   </component>
