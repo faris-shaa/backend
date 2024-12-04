@@ -18,10 +18,10 @@ use Illuminate\Http\Request;
  */
 class EventOrgananizerController extends Controller
 {
-    public function __invoke(Event $event, $name)
+    public function __invoke($externalId, $name)
     {
         /** @var User $organizer */
-        $organizer = $event->organization;
+        $organizer = User::where("external_id", $externalId)->first();
 
         if (!$organizer) {
             abort(404);
