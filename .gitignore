@@ -22,3 +22,4 @@ public/modules
 server.php
 /.idea/workspace.xml
 /.idea/*
+public/tmp/*.tmp
