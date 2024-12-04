@@ -48,28 +48,28 @@
             padding: 0;
         }
 
-        .invoice-box table {
-            direction: ltr;
-            width: 100%;
-            text-align: right;
-            border: 1px solid;
-            font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;
-        }
+        /*.invoice-box table {*/
+        /*    direction: ltr;*/
+        /*    width: 100%;*/
+        /*    text-align: right;*/
+        /*    border: 1px solid;*/
+        /*    font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;*/
+        /*}*/
 
 
-        .row {
-            display: block;
-            padding-left: 24;
-            padding-right: 24;
-            page-break-before: avoid;
-            page-break-after: avoid;
-        }
+        /*.row {*/
+        /*    display: block;*/
+        /*    padding-left: 24;*/
+        /*    padding-right: 24;*/
+        /*    page-break-before: avoid;*/
+        /*    page-break-after: avoid;*/
+        /*}*/
 
-        .column {
-            display: block;
-            page-break-before: avoid;
-            page-break-after: avoid;
-        }
+        /*.column {*/
+        /*    display: block;*/
+        /*    page-break-before: avoid;*/
+        /*    page-break-after: avoid;*/
+        /*}*/
 
         body {
             font-family: 'Amiri', Arial, sans-serif;
@@ -222,7 +222,7 @@
                 <img src="https://ticketby.co/images/upload/6718a1305bb7c.jpeg" alt="Event Image">
             </div>
             <div class="qr-code">
-                <img src="{{ asset("qrcodes/qr-2.png") }}" alt="QR Code">
+                <img src="https://eta.st/assets/img/rsp6/initial-barcode.png" alt="QR Code">
             </div>
         </div>
     </div>

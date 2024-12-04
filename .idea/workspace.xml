@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FrontendController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FrontendController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/ticket-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ticket-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/frontend.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/frontend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,7 +260,7 @@
       <workItem from="1733057576450" duration="2052000" />
       <workItem from="1733125954137" duration="8210000" />
       <workItem from="1733233744563" duration="15533000" />
-      <workItem from="1733309208171" duration="5630000" />
+      <workItem from="1733309208171" duration="6067000" />
     </task>
     <servers />
   </component>
