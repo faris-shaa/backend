@@ -32,7 +32,8 @@ class AjaxController extends Controller
         $organizerId = $oval["user_id"];
         $limit = $oval["limit"] ?? 6;
 
-        $baseQuery = Event::upcoming()
+        $baseQuery = Event::query()
+            ->upcoming()
             ->where("user_id", $organizerId);
 
         $events = $baseQuery
@@ -63,11 +64,11 @@ class AjaxController extends Controller
     public function fetchOrganizerUpPreviousEvent($oval)
     {
         $this->ajaxCall("$('.spinner_previous_events').show()");
-        $this->ajaxCall("$('.previousEventsCon').html('');");
         $organizerId = $oval["user_id"];
         $limit = $oval["limit"] ?? 6;
 
-        $baseQuery = Event::previous()
+        $baseQuery = Event::query()
+            ->previous()
             ->where("user_id", $organizerId);
 
         $events = $baseQuery->paginate($limit);
