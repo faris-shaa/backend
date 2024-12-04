@@ -20,3 +20,5 @@ public/images/upload
 public/modules
 /.idea
 server.php
+/.idea/workspace.xml
+/.idea/*
