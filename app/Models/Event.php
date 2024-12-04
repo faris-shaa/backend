@@ -76,7 +76,9 @@ class Event extends Model
     public function getSoldTicketsAttribute()
     {
         // (new AppHelper)->eventStatusChange();
-        return intval(Order::where('event_id', $this->attributes['id'])->sum('quantity'));
+        $order_id = Order::where('event_id', $this->attributes['id'])->where('payment_status',1)->where('order_status','Complete')->pluck('id')->toArray();
+
+        return intval(OrderChild::whereIn('order_id', $order_id)->count());
         // return  Order::where('event_id', $this->attributes['id'])->sum('quantity');
     }
 

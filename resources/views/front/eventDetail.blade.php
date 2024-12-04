@@ -122,14 +122,14 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
             @endif
          </div>
 
-          <div class="mt-4 flex gap-2 flex-wrap">
+         <!--  <div class="mt-4 flex gap-2 flex-wrap">
               <a href="{{ route("events.organizer", [request("id"), request("name")]) }}">
                   <small>
                       <stron>{{ __("By") }}</stron>
                       {{ $event["event"]["organization"]["organization_name"] }}
                   </small>
               </a>
-          </div>
+          </div> -->
       </div>
       <div class="col-span-12  md:col-span-4 bg-light rounded-xl  p-2">
          <div class="flex flex-col items-center justify-center h-full   ">

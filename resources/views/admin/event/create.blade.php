@@ -101,21 +101,23 @@
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
-                                     <div class="col-lg-6">
+                                      <div class="col-lg-6">
                                         <div class="form-group center">
-                                            <label>{{ __('Image') }} </label>
-                                             
+                                            <label>{{ __('Image') }} {{ __('Upload a squar image for better fit')}}</label>
                                             <div id="image-preview" class="image-preview">
                                                 <label for="image-upload" id="image-label"> <i
                                                         class="fas fa-plus"></i></label>
-                                                <!-- <input type="file" name="image" id="image-upload" /> -->
-                                                 <input type="file" name="image" class="image">
-                                                 
+                                                <input type="file" name="image" id="image-upload" />
                                             </div>
-                                            <input type="hidden" name="cropped_image" id="cropped_image">
+                                            @if ($errors->any())
+                                                @foreach ($errors->all() as $error)
+                                                <div class="invalid-feedback block">{{$error}}</div>
+                                                @endforeach
+                                            @endif
                                             @error('image')
-                                                <div class="invalid-feedback block">{{ $message }}</div>
+                                                <div class="invalid-feedback block">Image upload failed. Please check size is smaller then 2MB.</div>
                                             @enderror
+                                            
                                         </div>
                                     </div>
                                     <div class="col-lg-6">

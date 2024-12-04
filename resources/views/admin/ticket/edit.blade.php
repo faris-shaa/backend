@@ -188,14 +188,14 @@
                                      <div id="email-fields" >
                                             @if(isset($time_slot)  &&  count($time_slot) > 0 )
                                         @foreach($time_slot as $time)
-                                            <div id="email-container">
+                                            <div id="email-container" class="email-container-email-{{$time->id}}">
                                                 <div class="form-group">
                                                     <label>{{ __('Time Slot') }}</label>
                                                     <div style="display:flex;">
                                                     <input type="time" class="form-control" name="start_time_slot[]" value="{{$time->start_time}}">
                                                     <input type="time" class="form-control" name="end_time_slot[]" value="{{$time->end_time}}">
                                                     </div>
-                                                    <!-- <button type="button" class="btn btn-danger btn-sm remove-email">{{ __("Remove") }}</button> -->
+                                                    <button type="button" onclick="remove('<?php echo $time->id; ?> ')" class="btn btn-danger btn-sm remove-email" style="    margin-top: 10px;">{{ __("Remove") }}</button>
                                                 </div>
                                             </div>
                                             
@@ -242,9 +242,15 @@ document.getElementById('add-email').addEventListener('click', function() {
     emailContainer.appendChild(newEmailInput);
 });
 
+function remove(id)
+{
+    $('.email-container-email-'+id).remove();
+}
+
 // Remove email input field
 document.getElementById('email-container').addEventListener('click', function(e) {
     if (e.target.classList.contains('remove-email')) {
+
         e.target.parentElement.remove();
     }
 });

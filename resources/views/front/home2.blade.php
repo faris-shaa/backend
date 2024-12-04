@@ -40,6 +40,50 @@ $error = $response->json();
 }
 
 @endphp
+
+<style type="text/css">
+.sold-out {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 0, 0, 0.7); /* Red background with transparency */
+  color: white;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+.min-height-80
+{
+   min-height: 80px;
+}
+
+.ticket-wahlist {
+    height: 440px;
+}
+@media (min-width: 768px) {
+    .md\:h-48 {
+        height: 22rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sm-event {
+       height: 18rem;
+    }
+    .ticket-wahlist {
+       height: auto;
+   }
+   .event-slider
+   {
+      width: 250px !important;
+   }
+}
+
+
+
+</style> 
 <div class="lg:bg-primary_color_15 hero rounded-b-3xl">
    <div class="container mt-16 pb-0 lg:pb-32 overflow-hidden">
       <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
@@ -485,13 +529,15 @@ $error = $response->json();
                                     `<img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">`
                                  }*/
                   let eventHtml = `
-                        <a href="/event/${item.id}/${item.slug}" class="swiper-slide">
+                        <a href="/event/${item.id}/${item.slug}" class="swiper-slide event-slider">
+
                             <div class="ticket-wahlist h-full bg-light hover:bg-primary_color_o25_9 bg-opacity-5 rounded-2xl border border-primary_color_o10_1 hover:border-gray_9 overflow-hidden">
-                            <div class="h-32 md:h-48">
+                            <div class="h-32 md:h-48 sm-event">
                                  
                                  <img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">
+                                 ${item.totalTickets <= item.soldTickets ? `<div class="sold-out">Sold Out</div>` :  ``} 
                               </div>
-                                <div class="relative flex gap-1 md:gap-4 p-1 md:p-4 flex-wrap md:flex-nowrap flex-col lg:flex-row">
+                                <div class="relative flex gap-1 md:gap-4 p-1 md:p-4 flex-wrap md:flex-nowrap flex-col lg:flex-row min-height-80">
                                     <div class="text-center flex  items-baseline gap-1 md:gap-0 md:flex-col">
                                        ${item.is_repeat == 0 ?
                                        `<span class="text-primary_color_7 text-h7 font-bold uppercase f-bri">${month}

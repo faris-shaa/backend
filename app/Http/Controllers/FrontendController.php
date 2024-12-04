@@ -1298,7 +1298,7 @@ class FrontendController extends Controller
             $data->ticket_amount = $ticket_amount;
 
             $data->tax_total = $tax_total;
-            if($id == 121 || $id == 179  ||  $id == 187)
+            if($id == 121 || $id == 193  ||  $id == 187 ||  $id == 192 ||  $id == 191)
             {
                 
                 $data->total_amount = $ticket_amount ;
@@ -1414,7 +1414,7 @@ class FrontendController extends Controller
         }
       
         
-        if($id == 121 || $id == 179 || $id == 187  )
+        if($id == 121 || $id == 193 || $id == 187  ||  $id == 192 ||  $id == 191     )
         {
             
             $data->tax_total = 0;
@@ -4480,5 +4480,19 @@ class FrontendController extends Controller
 
     }
 
-    
+    public function pdfTest ( )
+    {
+
+        $data = [
+            'title' => 'My PDF Title',
+            'content' => 'This is the content of the PDF.'
+        ];
+
+        // Load the Blade view and pass data to it
+        $pdf = FacadePdf::loadView('ticket-pdf', $data);
+
+        // Download the generated PDF
+        return $pdf->download('myfile.pdf');
+
+    }
 }

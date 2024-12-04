@@ -523,6 +523,14 @@ class ApiController extends Controller
             $data->isLike = false;
         }
         $all_ticket = Ticket::where([['event_id', $id], ['is_deleted', 0], ['status', 1]])->sum('quantity');
+        $ticket_array = array();
+        foreach ($data->ticket as $key => $value) {
+
+            $order_id = Order::where('event_id', $value->event_id)->where('payment_status',1)->where('order_status','Complete')->pluck('id')->toArray();
+            $value->sold = OrderChild::whereIn('order_id',$order_id)->count();
+            $ticket_array[] = $value ; 
+        }
+        $data->ticket= $ticket_array;
         $use_ticket = Order::where('event_id', $id)->sum('quantity');
         if ($all_ticket == 0) {
             $data->sold_out = false;
@@ -1218,7 +1226,7 @@ class ApiController extends Controller
 
         $order->payment_token = $request->payment_token ;
         $order->payment_status = $request->payment_status ;
-        $order->order_status = $request->order_status ;
+        $order->order_status = $request->order_status == "Completed" ?  "Complete"  : $request->order_status;
         $order->save();
 
         return response()->json(['success' => true, 'msg' => null , 'data' => $order], 200);
@@ -2008,7 +2016,7 @@ class ApiController extends Controller
 
     public function searchEventWeb(Request $request)
     {
-
+       
         // if search name 
          if(isset($request->search))
         {
