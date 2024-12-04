@@ -48,29 +48,6 @@
             padding: 0;
         }
 
-        /*.invoice-box table {*/
-        /*    direction: ltr;*/
-        /*    width: 100%;*/
-        /*    text-align: right;*/
-        /*    border: 1px solid;*/
-        /*    font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;*/
-        /*}*/
-
-
-        /*.row {*/
-        /*    display: block;*/
-        /*    padding-left: 24;*/
-        /*    padding-right: 24;*/
-        /*    page-break-before: avoid;*/
-        /*    page-break-after: avoid;*/
-        /*}*/
-
-        /*.column {*/
-        /*    display: block;*/
-        /*    page-break-before: avoid;*/
-        /*    page-break-after: avoid;*/
-        /*}*/
-
         body {
             font-family: 'Amiri', Arial, sans-serif;
             margin: 0;
@@ -166,6 +143,8 @@
             font-weight: bold;
             color: #6a1b9a;
             margin-bottom: 10px;
+            direction: ltr;
+            text-align: start;
         }
 
         .details-grid {
