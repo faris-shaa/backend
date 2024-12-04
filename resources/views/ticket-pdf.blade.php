@@ -7,94 +7,59 @@
     <style>
         * {
             font-family: DejaVu Sans !important;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-size: 16px;
-            font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;
-            padding: 10px;
-            margin: 10px;
-
-            color: #777;
-        }
-
-
-        body {
-            color: #777;
-            text-align: right;
-        }
-
-        body h1 {
-
-            margin-bottom: 0px;
-            padding-bottom: 0px;
-            color: #000;
-        }
-
-        body h3 {
-
-            margin-top: 10px;
-            margin-bottom: 20px;
-            color: #555;
-        }
-
-        body a {
-            color: #06f;
-        }
-
-        @page {
-            size: a4;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Amiri', Arial, sans-serif;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
             margin: 0;
             padding: 0;
             width: 100%;
+            background-color: #f9f9f9;
+            page-break-inside: avoid;
         }
 
         .ticket {
-            width: 800px;
-            max-width: 100%;
-            margin: auto;
+            max-width: 80%; /* Ensures the ticket doesn't exceed the page width */
+            margin: 0 auto; /* Centers the ticket horizontally */
             padding: 20px;
-            background-color: #fff;
-            box-shadow: none; /* PDF does not support shadows */
-        }
-
-        .ticket-body {
-            page-break-inside: avoid; /* Prevents splitting the ticket across pages */
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
         }
 
         .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%;
+            margin: 0 auto; /* Centers the header within the ticket */
             margin-bottom: 20px;
+            display: table;
         }
 
         .ticket-header img {
-            height: 50px;
+            display: table-cell;
+            width: 50px;
+            vertical-align: middle;
         }
 
         .ticket-header .ticket-number {
-            font-size: 14px;
-            color: #333;
+            display: table-cell;
+            text-align: right;
+            font-size: 16px;
+            vertical-align: middle;
         }
-
-        .ticket-header .ticket-number span, .ticket-header .ticket-number strong {
-            display: block;
-            width: 100%;
-            text-align: center;
-        }
-
 
         .ticket-body {
-            background-color: #f1eff3;
-            padding: 30px;
-            border-radius: 20px;
+            width: 100%; /* Subtract padding from the total width */
+            margin: 0 auto; /* Centers the body within the ticket */
+            background: #f1eff3;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .ticket-container {
+            padding: 20px;
         }
 
         .ticket-title {
@@ -104,184 +69,205 @@
 
         .ticket-title h1 {
             font-size: 24px;
-            margin: 0;
             color: #333;
         }
 
         .content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .event-image, .qr-code {
-            width: 45%; /* Both containers have the same width */
-            aspect-ratio: 1; /* Ensures both containers are square */
-            position: relative;
-            border-radius: 10px;
-            background-color: #fff;
-            overflow: hidden; /* Prevents overflow of image */
-        }
-
-        .event-image img, .qr-code img {
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures images fill the container without distortion */
+            display: table; /* Ensures equal heights for child elements */
+            margin: 0 auto 20px auto; /* Centers the content */
+        }
+
+        .content .event-image,
+        .content .qr-code {
+            display: table-cell;
+            width: 50%; /* Divide evenly */
+            padding: 10px;
+            text-align: center; /* Center content within the cell */
+            vertical-align: middle;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+        }
+
+        .content .event-image img,
+        .content .qr-code img {
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            max-height: 200px;
             border-radius: 10px;
         }
 
         .details-section {
             margin-top: 20px;
+            width: 100%;
+            margin: 0 auto; /* Centers the section */
+        }
+
+        .details-section .section-title {
+            font-size: 20px;
+            color: #6a1b9a;
+            margin-bottom: 10px;
+            text-align: start; /* Center the title */
+        }
+
+        .details-table {
+            width: 100%; /* Full width for the table */
+            margin: 0 auto; /* Centers the table within its container */
+            border-spacing: 10px;
+            border-collapse: separate;
+        }
+
+        .details-table td {
+            background: white;
+            border: 1px solid #e5e5e5;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            color: black;
+            border-radius: 10px;
+        }
+
+        .details-table td span {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .terms-condition {
+            display: table;
+            width: 100%;
+            margin: 0 auto; /* Centers the terms section */
+            margin-top: 20px;
+            page-break-inside: avoid;
+        }
+        .terms-condition div{
+            display: table-cell;
+        }
+        .terms-condition h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: start; /* Center the heading */
+        }
+
+        .terms-condition ul {
+            padding-left: 20px;
+        }
+
+        .terms-condition ul li {
+            margin-bottom: 5px;
             font-size: 14px;
             color: #555;
         }
 
-        .details-section .section-title {
-            font-size: 25px;
-            font-weight: bold;
-            color: #6a1b9a;
-            margin-bottom: 10px;
-            direction: ltr;
-            text-align: start;
+        [dir="rtl"] {
+            text-align: right;
         }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Four columns of equal width */
-            gap: 10px;
+        [dir="rtl"] ul {
+            padding-right: 20px;
         }
 
-        .details-grid div {
-            background: white;
-            border: solid #e5e5e5 1px;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: start;
-            font-size: 14px;
-            color: black;
+        [dir="rtl"] ul li {
+            text-align: right;
         }
 
-        .terms-condition {
-            display: grid;
-            margin-top: 20px;
-            page-break-inside: avoid; /* Avoid splitting terms and conditions */
-            grid-template-columns: repeat(2, 1fr); /* Four columns of equal width */
-            gap: 10px;
+        @page {
+            size: A4; /* Adjust to Letter or other dimensions if needed */
+            margin: 20px;
         }
-
-        .terms-condition div {
-            background: white;
-            border: solid #e5e5e5 1px;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: start;
-            font-size: 14px;
-            color: black;
-        }
-
     </style>
 </head>
 <body>
 <div class="ticket">
     <div class="ticket-header">
-        <img src="{{ asset("images/admin-logo-welcome.png") }}" alt="Logo">
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents( public_path("images/admin-logo-welcome.png") ))}}"
+             alt="Logo">
         <div class="ticket-number">
             <span>Ticket Number</span>
             <strong>231557</strong>
         </div>
     </div>
     <div class="ticket-body">
-        <div class="ticket-title">
-            <h1>Electronic Ticket</h1>
-        </div>
-        <div class="content">
-            <div class="event-image">
-                <img src="https://ticketby.co/images/upload/6718a1305bb7c.jpeg" alt="Event Image">
+        <div class="ticket-container">
+            <div class="ticket-title">
+                <h1>Electronic Ticket</h1>
             </div>
-            <div class="qr-code">
-                <img src="https://eta.st/assets/img/rsp6/initial-barcode.png" alt="QR Code">
+            <div class="content">
+                <div class="event-image">
+                    <img
+                            src="data:image/png;base64,{{ base64_encode(file_get_contents( "https://ticketby.co/images/upload/6718a1305bb7c.jpeg" ))}}"
+                            alt="Event Image">
+                </div>
+                <div class="qr-code">
+                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents( "https://eta.st/assets/img/rsp6/initial-barcode.png" ))}}"
+                         alt="QR Code">
+                </div>
             </div>
+
         </div>
     </div>
 
     <div class="details-section">
         <div class="section-title">Afro House Night</div>
-        <div class="details-grid">
-            <div>
-                <span>Category</span>
-                |
-                <span dir="rtl">القسم</span>
-                <br><strong>C</strong>
-            </div>
-            <div>
-                <span>Show Start</span>
-                |
-                <span dir="rtl">بداية العرض</span>
-                <br><strong>20:30 Mon, 29 Apr 24</strong>
-            </div>
-            <div>
-                <span>Gate Close</span>
-                |
-                <span dir="rtl">اغلاق البوابات</span>
-                <br><strong>23:00</strong>
-            </div>
-            <div>
-                <span>Entrance</span>
-                |
-                <span dir="rtl">بوابة الدخول</span>
-                <br><strong>C</strong>
-            </div>
-            <div>
-                <span>Row</span>
-                |
-                <span dir="rtl">الصف</span>
-                <br><strong>FF18</strong>
-            </div>
-            <div>
-                <span>Seat</span>
-                |
-                <span dir="rtl">المقعد</span>
-                <br><strong>23</strong>
-            </div>
-            <div>
-                <span>Location</span>
-                |
-                <span dir="rtl">الموقع</span>
-                <br><strong>King Fahd</strong>
-            </div>
-            <div>
-                <span>Price</span>
-                |
-                <span dir="rtl">السعر</span>
-                <br><strong>100.00SAR incl. of 15%VAT</strong>
-            </div>
-            <div>
-                <span>Age Limit</span>
-                |
-                <span dir="rtl">العمر المحدد</span>
-                <br><strong>15+</strong>
-            </div>
-            <div>
-                <span>Name</span>
-                |
-                <span dir="rtl">الاسم</span>
-                <br><strong>Selim Zahran</strong>
-            </div>
-            <div>
-                <span>Type</span>
-                |
-                <span dir="rtl">نوع التذكرة</span>
-                <br><strong>C</strong>
-            </div>
-            <div>
-                <span>Ticket</span>
-                |
-                <span dir="rtl">رقم التذكرة</span>
-                <br><strong>231557765323456</strong>
-            </div>
-        </div>
+        <table class="details-table">
+            <tr>
+                <td>
+                    <span>Category</span> | <span dir="rtl">القسم</span>
+                    <br><strong>C</strong>
+                </td>
+                <td>
+                    <span>Show Start</span> | <span dir="rtl">بداية العرض</span>
+                    <br><strong>20:30 Mon, 29 Apr 24</strong>
+                </td>
+                <td>
+                    <span>Gate Close</span> | <span dir="rtl">اغلاق البوابات</span>
+                    <br><strong>23:00</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Entrance</span> | <span dir="rtl">بوابة الدخول</span>
+                    <br><strong>C</strong>
+                </td>
+                <td>
+                    <span>Row</span> | <span dir="rtl">الصف</span>
+                    <br><strong>FF18</strong>
+                </td>
+                <td>
+                    <span>Seat</span> | <span dir="rtl">المقعد</span>
+                    <br><strong>23</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Location</span> | <span dir="rtl">الموقع</span>
+                    <br><strong>King Fahd</strong>
+                </td>
+                <td>
+                    <span>Price</span> | <span dir="rtl">السعر</span>
+                    <br><strong>100.00SAR incl. of 15%VAT</strong>
+                </td>
+                <td>
+                    <span>Age Limit</span> | <span dir="rtl">العمر المحدد</span>
+                    <br><strong>15+</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Name</span> | <span dir="rtl">الاسم</span>
+                    <br><strong>Selim Zahran</strong>
+                </td>
+                <td>
+                    <span>Type</span> | <span dir="rtl">نوع التذكرة</span>
+                    <br><strong>C</strong>
+                </td>
+                <td>
+                    <span>Ticket</span> | <span dir="rtl">رقم التذكرة</span>
+                    <br><strong>231557765323456</strong>
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="terms-condition">
         <div>

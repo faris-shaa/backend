@@ -4474,7 +4474,7 @@ class FrontendController extends Controller
     public function pdfTest()
     {
 
-        $html = view('ticket-pdf');//->toArabicHTML();
+        $html = view('ticket-pdf')->toArabicHTML();
 
         $pdf = FacadePdf::loadHTML($html)->output();
 

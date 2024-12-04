@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1.2",
+        "ab-alselwi/laravel-arabic-html": "^0.2.0",
         "artesaos/seotools": "^0.20.1",
         "barryvdh/laravel-dompdf": "^1.0",
         "bavix/laravel-wallet": "^7.3",
