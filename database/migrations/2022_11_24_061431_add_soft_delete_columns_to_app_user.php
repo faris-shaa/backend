@@ -13,10 +13,11 @@ class AddSoftDeleteColumnsToAppUser extends Migration
      */
     public function up()
     {
-        Schema::table('app_user', function (Blueprint $table) {
-            //
-            $table->softDeletes();
-        });
+        if (!Schema::hasColumn("app_user", "deleted_at")) {
+            Schema::table('app_user', function (Blueprint $table) {
+                $table->softDeletes();
+            });
+        }
     }
 
     /**
