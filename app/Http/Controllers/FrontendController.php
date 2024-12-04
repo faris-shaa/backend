@@ -83,7 +83,6 @@ class FrontendController extends Controller
     {
 
 
-
         $language = Session::get('locale');
 
         if ($language == null) {
@@ -129,12 +128,12 @@ class FrontendController extends Controller
 
             $timezone = Setting::find(1)->timezone;
             $date = Carbon::now($timezone);
-            $events  = Event::with(['category:id,name'])
+            $events = Event::with(['category:id,name'])
                 ->where([['status', 1], ['orderby', "!=", 0], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d H:i:s')]])
                 ->orderBy('orderby', 'asc')->orderBy('start_time', 'asc')->limit(3)->get();
 
-            $pervious_events  = Event::with(['category:id,name'])
-                ->where([['status', 1], ['is_deleted', 0], ['is_repeat' ,0] , ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d H:i:s')]])
+            $pervious_events = Event::with(['category:id,name'])
+                ->where([['status', 1], ['is_deleted', 0], ['is_repeat', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d H:i:s')]])
                 ->orderBy('start_time', 'desc')->limit(3)->get();
             $organizer = User::role('Organizer')->orderBy('id', 'DESC')->get();
             $category = Category::where('status', 1)->orderBy('id', 'DESC')->get();
@@ -153,6 +152,7 @@ class FrontendController extends Controller
             return view('front.home2', compact('events', 'organizer', 'category', 'blog', 'banner', 'user', 'showLinkBanner', 'language', 'pervious_events'));
         }
     }
+
     public function login()
     {
         if (Auth::guard('appuser')->check() || Auth::check()) {
@@ -192,6 +192,7 @@ class FrontendController extends Controller
         SEOTools::jsonLd()->addImage($setting->imagePath . $setting->logo);
         return view('frontend.auth.login');
     }
+
     public function userLogin(Request $request)
     {
 
@@ -250,7 +251,7 @@ class FrontendController extends Controller
         if ($request->type == 'user') {
             if (Auth::guard('appuser')->attempt($userdata, $remember)) {
 
-                $user =  Auth::guard('appuser')->user();
+                $user = Auth::guard('appuser')->user();
 
                 $setting = Setting::first();
                 if ($user->status == 0) {
@@ -263,7 +264,7 @@ class FrontendController extends Controller
                     if (!$user->is_verify) {
                         if ($setting->verify_by == 'email' && $setting->mail_host != NULL) {
                             $details = [
-                                'url' => url('user/VerificationConfirm/' .  $user->id)
+                                'url' => url('user/VerificationConfirm/' . $user->id)
                             ];
                             Mail::to($user->email)->send(new \App\Mail\VerifyMail($details));
                             $request->session()->flush();
@@ -325,7 +326,7 @@ class FrontendController extends Controller
         if ($request->type == 'org') {
             if (Auth::attempt($userdata, $remember)) {
                 if (Auth::user()->hasRole('Organizer')) {
-                    $user =  Auth::user();
+                    $user = Auth::user();
                     $setting = Setting::first();
                     if (Auth::user()->status == 0) {
                         $request->session()->flush();
@@ -341,7 +342,7 @@ class FrontendController extends Controller
                         if (!$user->is_verify) {
                             if ($setting->verify_by == 'email' && $setting->mail_host != NULL) {
                                 $details = [
-                                    'url' => url('organizer/VerificationConfirm/' .  $user->id)
+                                    'url' => url('organizer/VerificationConfirm/' . $user->id)
                                 ];
                                 Mail::to($user->email)->send(new \App\Mail\VerifyMail($details));
                                 $request->session()->flush();
@@ -408,6 +409,7 @@ class FrontendController extends Controller
             return redirect('/');
         }
     }
+
     public function register(Request $request)
     {
         if (Auth::guard('appuser')->check() || Auth::check()) {
@@ -455,6 +457,7 @@ class FrontendController extends Controller
 
         return view('frontend.auth.register', compact('logo', 'phone', 'request'));
     }
+
     public function sendOtp($request, $user)
     {
         $setting = Setting::first();
@@ -495,6 +498,7 @@ class FrontendController extends Controller
         $user->update();
         return redirect()->route('form.show')->withInput()->with(['success' => "Phone verification code sent via SMS."]);
     }
+
     public function userRegister(Request $request)
     {
 
@@ -682,11 +686,12 @@ class FrontendController extends Controller
         }
         return redirect('user/login')->with(['success' => "Congratulations! Your account registration was successful. You can now log in to your account and start using our services. Thank you for choosing our platform"]);
     }
+
     public function LoginByMail($id)
     {
         $user = AppUser::find($id);
         if (Auth::guard('appuser')->loginUsingId($id)) {
-            $user =  Auth::guard('appuser')->user();
+            $user = Auth::guard('appuser')->user();
             $verify = AppUser::find($user->id);
             $verify->email_verified_at = Carbon::now();
             $verify->is_verify = 1;
@@ -695,11 +700,12 @@ class FrontendController extends Controller
             return redirect('/');
         }
     }
+
     public function LoginByMailOrganizer($id)
     {
         $user = User::find($id);
         if (Auth::loginUsingId($id)) {
-            $user =  Auth::user();
+            $user = Auth::user();
             $verify = User::find($user->id);
             $verify->email_verified_at = Carbon::now();
             $verify->is_verify = 1;
@@ -708,6 +714,7 @@ class FrontendController extends Controller
             return redirect('organization/home');
         }
     }
+
     public function resetPassword()
     {
         $setting = Setting::first(['app_name', 'logo']);
@@ -769,7 +776,7 @@ class FrontendController extends Controller
             }
         }
 
-        
+
         $password = rand(100000, 999999);
         if ($user) {
             $content = NotificationTemplate::where('title', 'Reset Password')->first()->mail_content;
@@ -791,7 +798,7 @@ class FrontendController extends Controller
             } else {
                 return redirect()->route('user.login')->with('success', 'New password will send in your mail, please check it.');
             }
-            
+
         } else {
             return Redirect::back()->with('error', 'Invalid Email Id, Please try another.');
         }
@@ -863,11 +870,12 @@ class FrontendController extends Controller
 
         return redirect('login');
     }
+
     public function previousEvent(Request $request)
     {
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $events  = Event::with(['category:id,name'])
+        $events = Event::with(['category:id,name'])
             ->where([['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d')]])->limit(10)->get();
 
         return view('frontend.previous_events', compact('events'));
@@ -912,7 +920,7 @@ class FrontendController extends Controller
 
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $events  = Event::with(['category:id,name'])
+        $events = Event::with(['category:id,name'])
             ->where([['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]]);
 
         $chip = array();
@@ -947,7 +955,7 @@ class FrontendController extends Controller
             }
         }
         if ($request->has('category_id') && $request->category_id != null) {
-            
+
             $events = $events->where('category_id', $request->category_id);
         }
         $events = $events->orderBy('start_time', 'ASC')->get();
@@ -973,11 +981,11 @@ class FrontendController extends Controller
 
     public function eventDetail($id, $name = null)
     {
-
         $setting = Setting::first(['app_name', 'logo']);
         $currency = "$"; //Setting::first(['currency_sybmol']);
 
-        $data = Event::with(['category:id,name,image', 'organization:id,first_name,organization_name,bio,last_name,image'])->find($id);
+        $data = Event::with(['category:id,name,image', 'organization:id,external_id,first_name,organization_name,bio,last_name,image'])->find($id);
+
         SEOMeta::setTitle($data->name)
             ->setDescription($data->description)
             ->addMeta('event:category', $data->category->name, 'property')
@@ -1033,33 +1041,33 @@ class FrontendController extends Controller
         //     $used = Order::where('ticket_id', $value->id)->sum('quantity');
         //     $value->available_qty = $value->quantity - $used;
         // }
-        $total_paid =  $used_paid = 0;
+        $total_paid = $used_paid = 0;
         foreach ($data->paid_ticket as $value) {
             if ($data->is_repeat == 1) {
 
                 $start_date = Carbon::now()->subDays(1)->format("Y-m-d") . " " . Carbon::parse($data->end_time)->format("H:i:s");
                 $end_date = Carbon::now()->format("Y-m-d") . " " . Carbon::parse($data->start_time)->format("H:i:s");
-                $used = Order::where('ticket_id', $value->id)->where('created_at', '<', $end_date)->where('created_at', '>', $start_date)->where('payment_status',1)->where('order_status','Complete')->sum('quantity');
+                $used = Order::where('ticket_id', $value->id)->where('created_at', '<', $end_date)->where('created_at', '>', $start_date)->where('payment_status', 1)->where('order_status', 'Complete')->sum('quantity');
                 //dd($start_date , $end_date);
-                $total_paid  =  $total_paid  +  $value->quantity;
+                $total_paid = $total_paid + $value->quantity;
                 $used_paid = $used_paid + $used;
             } else {
-                $used = Order::where('ticket_id', $value->id)->where('payment_status',1)->where('order_status','Complete')->sum('quantity');
-                $total_paid  =  $total_paid  +  $value->quantity;
+                $used = Order::where('ticket_id', $value->id)->where('payment_status', 1)->where('order_status', 'Complete')->sum('quantity');
+                $total_paid = $total_paid + $value->quantity;
                 $used_paid = $used_paid + $used;
             }
         }
 
         foreach ($data->paid_ticket as $value) {
-            $value->available_qty = $total_paid  - $used_paid;
+            $value->available_qty = $total_paid - $used_paid;
         }
         //dd($data->paid_ticket);
         foreach ($data->free_ticket as $value) {
-            $used = Order::where('ticket_id', $value->id)->where('payment_status',1)->where('order_status','Complete')->sum('quantity');
+            $used = Order::where('ticket_id', $value->id)->where('payment_status', 1)->where('order_status', 'Complete')->sum('quantity');
             $value->available_qty = $value->quantity - $used;
         }
         $images = explode(",", string: $data->gallery);
-        $tags =  explode(",", $data->tags);
+        $tags = explode(",", $data->tags);
         $appUser = Auth::guard('appuser')->user();
         $rate = round(Review::where('event_id', $data->id)->avg('rate'));
         if ($data->category_id == 14) {
@@ -1071,7 +1079,10 @@ class FrontendController extends Controller
         // dd($tags);
         // dd($data->paid_ticket[0]->available_qty);
         // return view('frontend.eventDetail', compact('currency', 'data', 'images', 'tags', 'appUser', 'rate' , 'ticket_detail'));
-        return view('front.eventDetail', compact('currency', 'data', 'images', 'tags', 'appUser', 'rate', 'ticket_detail'));
+        $event = $data;
+        $minPrice = $event->paid_ticket->min('price');
+        $lang = session('direction') == 'rtl' ? 'ar' : 'en';
+        return view('front.eventDetail', compact('currency', 'event', 'images', 'tags', 'appUser', 'rate', 'ticket_detail', 'lang', 'minPrice'));
     }
 
     public function orgDetail($id)
@@ -1145,62 +1156,60 @@ class FrontendController extends Controller
     public function checkout(Request $request, $id)
     {
 
-         if(isset($request->google_login) && $request->google_login == 1)
-        {
-                $request->google_login = 0 ;
-                $queryParams = request()->query();
-                $queryParams['google_login'] = '0' ;
-                
-            Session::put('google_var',$queryParams );
+        if (isset($request->google_login) && $request->google_login == 1) {
+            $request->google_login = 0;
+            $queryParams = request()->query();
+            $queryParams['google_login'] = '0';
+
+            Session::put('google_var', $queryParams);
             /*$queryParams = Session::get("google_var");
             dd($queryParams);
             unset($queryParams['google_login']);
             
             Session::put("google_var",$queryParams);*/
-            Session::put('event_id',$id);
+            Session::put('event_id', $id);
 
             return redirect('auth/google');
         }
         $user_id_session = Session::get("user_id");
-        
-        if($user_id_session)
-        {
+
+        if ($user_id_session) {
             $user = AppUser::find($user_id_session);
-            Auth::guard('appuser')->login($user);   
+            Auth::guard('appuser')->login($user);
         }
 
         /*ticket_id =  [date = { time_slot : quantity  }]*/
-            /*$request_ticket_array["101"] = [ "2024-10-03" => [ "4" => 1 , "5" => 2 ] ]; 
-            foreach ($request_ticket_array as $key => $ticket_array) {
-                $ticekt = Ticket::find($key);
-                $selected_ticket_id = $key ; 
-                if(count($ticket_array) > 0 )
-                {
-                    foreach ($ticket_array as $date_key => $date_array) {
-                        $selected_date = $date_key ; 
-                        if(count($date_array) > 0)
-                        {
-                            foreach ($date_array as $time_slot_id_key => $value_quantity) {
-                                
-                                for ($i = 1; $i <= $value_quantity; $i++) {
-                                    $child['ticket_number'] = uniqid();
-                                    $child['ticket_id'] = $selected_ticket_id;
-                                    $child['order_id'] = $order->id;
-                                    $child['customer_id'] = Auth::guard('appuser')->user()->id;
-                                    $child['checkin'] = $ticket->maximum_checkins ?? null;
-                                    $child['time_slot_id'] = $time_slot_id_key;
-                                    $child['event_book_date'] = $selected_date;
-                                    $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
-                                    OrderChild::create($child);
-                                }
+        /*$request_ticket_array["101"] = [ "2024-10-03" => [ "4" => 1 , "5" => 2 ] ];
+        foreach ($request_ticket_array as $key => $ticket_array) {
+            $ticekt = Ticket::find($key);
+            $selected_ticket_id = $key ;
+            if(count($ticket_array) > 0 )
+            {
+                foreach ($ticket_array as $date_key => $date_array) {
+                    $selected_date = $date_key ;
+                    if(count($date_array) > 0)
+                    {
+                        foreach ($date_array as $time_slot_id_key => $value_quantity) {
+
+                            for ($i = 1; $i <= $value_quantity; $i++) {
+                                $child['ticket_number'] = uniqid();
+                                $child['ticket_id'] = $selected_ticket_id;
+                                $child['order_id'] = $order->id;
+                                $child['customer_id'] = Auth::guard('appuser')->user()->id;
+                                $child['checkin'] = $ticket->maximum_checkins ?? null;
+                                $child['time_slot_id'] = $time_slot_id_key;
+                                $child['event_book_date'] = $selected_date;
+                                $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
+                                OrderChild::create($child);
                             }
                         }
                     }
                 }
-            }*/
+            }
+        }*/
 
         // for new design 
-        if ($request->ids  ) {
+        if ($request->ids) {
 
             $ticketIdsString = $request->ids;
             $quantitiesString = $request->quantities;
@@ -1219,12 +1228,11 @@ class FrontendController extends Controller
             }
 
 
-
             // Pair the ticket IDs with their quantities
             $tickets = array_map(function ($ticketId, $quantity) {
                 return [
-                    'ticket_id' => (int) $ticketId,  // Casting to int if necessary
-                    'quantity' => (int) $quantity,  // Casting to int if necessary
+                    'ticket_id' => (int)$ticketId,  // Casting to int if necessary
+                    'quantity' => (int)$quantity,  // Casting to int if necessary
                 ];
             }, $ticketIds, $quantities);
 
@@ -1240,16 +1248,15 @@ class FrontendController extends Controller
                 if ($value['quantity'] > 0) {
                     // Retrieve ticket and event details
                     $ticket = Ticket::find($value['ticket_id']);
-                   /* dd($ticket , $value['ticket_id']);*/
+                    /* dd($ticket , $value['ticket_id']);*/
                     $event = Event::find($ticket->event_id);
-                    if($event->id == 121 && $value['quantity']  >1  )
-                    {
-                        $ticket->price = 200 ; 
-                        
+                    if ($event->id == 121 && $value['quantity'] > 1) {
+                        $ticket->price = 200;
+
                     }
-                    
+
                     // Calculate ticket amount
-                    $ticket_amount += $ticket->price * $value['quantity'];    
+                    $ticket_amount += $ticket->price * $value['quantity'];
 
                     // Calculate used quantity and available quantity
                     $used = Order::where('ticket_id', $value['ticket_id'])->sum('quantity');
@@ -1298,21 +1305,18 @@ class FrontendController extends Controller
             $data->ticket_amount = $ticket_amount;
 
             $data->tax_total = $tax_total;
-            if($id == 121 || $id == 179  ||  $id == 187)
-            {
-                
-                $data->total_amount = $ticket_amount ;
-            
+            if ($id == 121 || $id == 179 || $id == 187) {
+
+                $data->total_amount = $ticket_amount;
+
+            } else {
+                $data->total_amount = $ticket_amount + $tax_total;
             }
-            else
-            {
-                $data->total_amount = $ticket_amount + $tax_total;    
-            }
-            
+
             $data->currency = $setting->currency;
             $data->currency_code = $setting->currency_sybmol;
             $data->totalPersTax = $totalPersTax;
-            $data->totalAmountTax  = $totalAmountTax;
+            $data->totalAmountTax = $totalAmountTax;
             $data->ticket_per_order = 3;
             $data->available_qty = 4;
             $data->price = 4;
@@ -1332,8 +1336,7 @@ class FrontendController extends Controller
                 ['status', 1]
             ])->orderBy('id', 'DESC')->get()->makeHidden(['created_at', 'updated_at']);;
 
-        }
-        // for old design 
+        } // for old design
         else {
             $data = Ticket::find($id);
             $data->event = Event::find($data->event_id);
@@ -1402,32 +1405,27 @@ class FrontendController extends Controller
             $data->totalPersTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'percentage']])->sum('price');
             $data->totalAmountTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'price']])->sum('price');
         }
-        
 
-        if($data->id == 121 )
-        {
-            if($request->quantity > 1)
-            {
-                $data->price = 200 ;     
+
+        if ($data->id == 121) {
+            if ($request->quantity > 1) {
+                $data->price = 200;
             }
-            
+
         }
-      
-        
-        if($id == 121 || $id == 179 || $id == 187  )
-        {
-            
+
+
+        if ($id == 121 || $id == 179 || $id == 187) {
+
             $data->tax_total = 0;
-            $data->totalAmountTax = null ;
-            $data->totalPersTax  = null ;
-            $data->tax = array() ;
-        
-        }
-        else
-        {
-            $data->tax_total = round($data->tax_total, 2);    
+            $data->totalAmountTax = null;
+            $data->totalPersTax = null;
+            $data->tax = array();
+
+        } else {
+            $data->tax_total = round($data->tax_total, 2);
             $data->totalAmountTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'price']])->sum('price');
-             $data->totalPersTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'percentage']])->sum('price');
+            $data->totalPersTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'percentage']])->sum('price');
         }
 
 
@@ -1436,6 +1434,7 @@ class FrontendController extends Controller
         // dd( $data);
         return view('front.checkout', compact('data'));
     }
+
     public function applyCoupon(Request $request)
     {
         $total = $request->total;
@@ -1481,9 +1480,9 @@ class FrontendController extends Controller
                             }
                         }
 
-                        $total_tax =  array_sum($arr);
+                        $total_tax = array_sum($arr);
 
-                        $payment =  $subtotal  + array_sum($arr);
+                        $payment = $subtotal + array_sum($arr);
 
                         return response([
                             'success' => true,
@@ -1521,75 +1520,73 @@ class FrontendController extends Controller
             ]);
         }
     }
+
     public function createOrder(Request $request)
     {
         //dd($request->all());
-        if($request->payment_type == "ApplePay"  ){
-            $data = $request->token;  
-        
-            $publicKeyHash = $data['transactionIdentifier'];  
+        if ($request->payment_type == "ApplePay") {
+            $data = $request->token;
+
+            $publicKeyHash = $data['transactionIdentifier'];
             $identifier = $publicKeyHash;  // Replace with actual identifier
-            $order_id  = '#' . rand(9999, 100000);  // Replace with actual order ID
-            $order_amount = (string)number_format($request->amount, 2, '.', ''); 
+            $order_id = '#' . rand(9999, 100000);  // Replace with actual order ID
+            $order_amount = (string)number_format($request->amount, 2, '.', '');
             $order_currency = 'SAR';  // Replace with actual order currency
             $password = 'a92f7b7f0d869d3e676c5facda5262ae';  // Replace with your actual password 
 
-            $hash = md5(strtoupper(strrev($identifier.$order_id.$order_amount.$order_currency.$password))); 
+            $hash = md5(strtoupper(strrev($identifier . $order_id . $order_amount . $order_currency . $password)));
 
-            $paymentData = '{"paymentData":{"data":"'.@$data['paymentData']['data'].'","signature":"'.@$data['paymentData']['signature'].'","header":{"publicKeyHash":"'.@$data['paymentData']['header']['publicKeyHash'].'","ephemeralPublicKey":"'.@$data['paymentData']['header']['ephemeralPublicKey'].'","transactionId":"'.@$data['paymentData']['header']['transactionId'].'"},"version":"'.@$data['paymentData']['version'].'"},"paymentMethod":{"displayName":"'.@$data['paymentMethod']['displayName'].'","network":"'.@$data['paymentMethod']['network'].'","type":"'.@$data['paymentMethod']['type'].'"},"transactionIdentifier":"'.@$data['transactionIdentifier'].'"}';
-                
+            $paymentData = '{"paymentData":{"data":"' . @$data['paymentData']['data'] . '","signature":"' . @$data['paymentData']['signature'] . '","header":{"publicKeyHash":"' . @$data['paymentData']['header']['publicKeyHash'] . '","ephemeralPublicKey":"' . @$data['paymentData']['header']['ephemeralPublicKey'] . '","transactionId":"' . @$data['paymentData']['header']['transactionId'] . '"},"version":"' . @$data['paymentData']['version'] . '"},"paymentMethod":{"displayName":"' . @$data['paymentMethod']['displayName'] . '","network":"' . @$data['paymentMethod']['network'] . '","type":"' . @$data['paymentMethod']['type'] . '"},"transactionIdentifier":"' . @$data['transactionIdentifier'] . '"}';
+
             $response = Http::withHeaders([
                 'Cookie' => 'PHPSESSID=6hahu1ps9sji5vjeg2pru3no8v',
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ])
-            ->asForm()
-            ->post('https://api.edfapay.com/applepay/orders/s2s/sale', [
-                'action' => 'SALE',
-                'client_key' => 'd857c073-c58c-49dc-906b-24fa667dc306', // Replace with your actual client key
-                'brand' => 'applepay',
-                'order_id' => $order_id,
-                'order_amount' => $order_amount,
-                'order_currency' => 'SAR',
-                'order_description' => 'TickeBy',
-                'payer_first_name' => $request->name,
-                'payer_last_name' =>  $request->name,
-                'payer_address' => $request->email,
-                'payer_country' => 'SA',
-                'payer_state' => 'Riyadh',
-                'payer_city' => 'Riyadh',
-                'payer_zip' => '123221',
-                'payer_email' => $request->email,
-                'payer_phone' =>  $request->phone,
-                'payer_birth_date' => '1987-12-12',
-                'payer_ip' => '176.44.76.100',
-                'return_url' => 'https://ticketby.co',
-                'identifier' => $publicKeyHash,
-                'hash' => $hash, // Replace with the correct hash
-                'parameters' => $paymentData, 
-                'payer_address2' => 'test',
-                'payer_middle_name' => 'test',
-            ]);   
+                ->asForm()
+                ->post('https://api.edfapay.com/applepay/orders/s2s/sale', [
+                    'action' => 'SALE',
+                    'client_key' => 'd857c073-c58c-49dc-906b-24fa667dc306', // Replace with your actual client key
+                    'brand' => 'applepay',
+                    'order_id' => $order_id,
+                    'order_amount' => $order_amount,
+                    'order_currency' => 'SAR',
+                    'order_description' => 'TickeBy',
+                    'payer_first_name' => $request->name,
+                    'payer_last_name' => $request->name,
+                    'payer_address' => $request->email,
+                    'payer_country' => 'SA',
+                    'payer_state' => 'Riyadh',
+                    'payer_city' => 'Riyadh',
+                    'payer_zip' => '123221',
+                    'payer_email' => $request->email,
+                    'payer_phone' => $request->phone,
+                    'payer_birth_date' => '1987-12-12',
+                    'payer_ip' => '176.44.76.100',
+                    'return_url' => 'https://ticketby.co',
+                    'identifier' => $publicKeyHash,
+                    'hash' => $hash, // Replace with the correct hash
+                    'parameters' => $paymentData,
+                    'payer_address2' => 'test',
+                    'payer_middle_name' => 'test',
+                ]);
 
             if ($response['result'] == 'SUCCESS') {
                 $data['payment_status'] = 1;
                 $data['order_status'] = 'Complete';
             } else {
                 $data['payment_status'] = 0;
-                $data['order_status'] = 'Pending'; 
+                $data['order_status'] = 'Pending';
 
                 return response()->json([
                     'error_message' => 'payment_failed',
                     'type' => 'ApplePay',
                     'status' => 500
-                ]); 
+                ]);
 
             }
         }
-        
+
         $data = $request->all();
-
-
-
 
 
         $ticket = Ticket::findOrFail($request->ticket_id);
@@ -1610,31 +1607,25 @@ class FrontendController extends Controller
         $event = Event::find($ticket->event_id);
 
 
-
-
         $org = User::find($event->user_id);
         $user = AppUser::find(Auth::guard('appuser')->user()->id);
-        if(isset($order_id))
-        {
-            $data['order_id'] =  $order_id;
+        if (isset($order_id)) {
+            $data['order_id'] = $order_id;
+        } else {
+            $data['order_id'] = '#' . rand(9999, 100000);
         }
-        else
-        {
-            $data['order_id'] =  '#' . rand(9999, 100000);    
-        }
-        
+
         $data['event_id'] = $event->id;
         $data['customer_id'] = $user->id;
         $data['organization_id'] = $org->id;
         $data['order_status'] = 'Pending';
         $data['web'] = 2;
-        if(isset($request->slot_event_date) && !is_null($request->slot_event_date))
-        {
+        if (isset($request->slot_event_date) && !is_null($request->slot_event_date)) {
 
             $data['time_slot_id'] = $request->time_slot_id;
-            $data['event_book_date'] = $request->slot_event_date;    
+            $data['event_book_date'] = $request->slot_event_date;
         }
-        
+
         if ($user->id == 202) {
             return response("This is eror");
         }
@@ -1649,14 +1640,14 @@ class FrontendController extends Controller
 
 
         $com = Setting::find(1, ['org_commission_type', 'org_commission']);
-        $p =   $request->payment - $request->tax;
+        $p = $request->payment - $request->tax;
         if ($request->payment_type == "FREE") {
-            $data['org_commission']  = 0;
+            $data['org_commission'] = 0;
         } else {
             if ($com->org_commission_type == "percentage") {
-                $data['org_commission'] =  $p * $com->org_commission / 100;
+                $data['org_commission'] = $p * $com->org_commission / 100;
             } else if ($com->org_commission_type == "amount") {
-                $data['org_commission']  = $com->org_commission;
+                $data['org_commission'] = $com->org_commission;
             }
         }
 
@@ -1668,8 +1659,8 @@ class FrontendController extends Controller
                 'coupon_id' => $request->coupon_code,
                 'appuser_id' => $user->id
             ]);
-            
-            $data['coupon_discount'] =  (( $data['payment'] - $data['tax'])  / ( 1 - ( $coupon->discount / 100  )  )) - (1 - ( $coupon->discount / 100  ) );
+
+            $data['coupon_discount'] = (($data['payment'] - $data['tax']) / (1 - ($coupon->discount / 100))) - (1 - ($coupon->discount / 100));
             $data['coupon_id'] = $coupon->id;
         }
 
@@ -1687,13 +1678,12 @@ class FrontendController extends Controller
             }
         }
 
-         // multiple ticket 
-        if(true)
-        {
+        // multiple ticket
+        if (true) {
 
-            $ticketIdsString = $request->ticket_ids; 
-            $quantitiesString = $request->ticket_quantities; 
-            
+            $ticketIdsString = $request->ticket_ids;
+            $quantitiesString = $request->ticket_quantities;
+
             /*$ticketIdsString =  "99,98"; 
             $quantitiesString = "2,0";*/
             // Convert the comma-separated strings into arrays
@@ -1704,65 +1694,60 @@ class FrontendController extends Controller
             if (count($ticketIds) !== count($quantities)) {
                 // Handle the case where arrays do not match in length
                 return response()->json(['error' => 'Mismatch between ticket IDs and quantities.'], 400);
-            }   
+            }
 
             // Pair the ticket IDs with their quantities
             $tickets = array_map(function ($ticketId, $quantity) {
                 return [
-                    'ticket_id' => (int) $ticketId,  // Casting to int if necessary
-                    'quantity' => (int) $quantity,  // Casting to int if necessary
+                    'ticket_id' => (int)$ticketId,  // Casting to int if necessary
+                    'quantity' => (int)$quantity,  // Casting to int if necessary
                 ];
             }, $ticketIds, $quantities);
-            $count_quantity = 0 ;
+            $count_quantity = 0;
             foreach ($tickets as $key => $ticket_array) {
 
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
                 for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
-                    $count_quantity = $count_quantity +1 ; 
+                    $count_quantity = $count_quantity + 1;
                     $child['ticket_number'] = uniqid();
                     $child['ticket_id'] = $ticket_array['ticket_id'];
                     $child['order_id'] = $order->id;
                     $child['customer_id'] = Auth::guard('appuser')->user()->id;
                     $child['checkin'] = $ticket->maximum_checkins ?? null;
                     $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
-                    
-                    
+
+
                     OrderChild::create($child);
-                 
+
                 }
-                $order_id =  Order::where([['order_status', 'Complete']])->where('order_status',"Complete")->where('payment_status',1)->pluck('id')->toArray();
-                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id',$ticekt->id)->count();
-                if($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0)
-                {
-                      $ticekt->update(['status'=>0 ]);
+                $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
+                    $ticekt->update(['status' => 0]);
                 }
 
             }
 
 
-
-            $order_update_quantiy = Order::where('id',$order->id)->update(['quantity'=>$count_quantity]);
+            $order_update_quantiy = Order::where('id', $order->id)->update(['quantity' => $count_quantity]);
         }
         // multiple ticket 
 
         // reperat ticket 
-        else
-        {
-           // format to send data 
+        else {
+            // format to send data
             // $request_ticket_array[ticket_id] = [ "date" => [ "time_slot_id" => quantity , "time_slot_id" => quantity ] ]; 
-           //  $request_ticket_array["101"] = [ "2024-10-03" => [ "4" => 1 , "5" => 2 ] ]; 
-            $request_ticket_array  = $request->ticket_data ;
+            //  $request_ticket_array["101"] = [ "2024-10-03" => [ "4" => 1 , "5" => 2 ] ];
+            $request_ticket_array = $request->ticket_data;
             foreach ($request_ticket_array as $key => $ticket_array) {
                 $ticekt = Ticket::find($key);
-                $selected_ticket_id = $key ; 
-                if(count($ticket_array) > 0 )
-                {
+                $selected_ticket_id = $key;
+                if (count($ticket_array) > 0) {
                     foreach ($ticket_array as $date_key => $date_array) {
-                        $selected_date = $date_key ; 
-                        if(count($date_array) > 0)
-                        {
+                        $selected_date = $date_key;
+                        if (count($date_array) > 0) {
                             foreach ($date_array as $time_slot_id_key => $value_quantity) {
-                                
+
                                 for ($i = 1; $i <= $value_quantity; $i++) {
                                     $child['ticket_number'] = uniqid();
                                     $child['ticket_id'] = $selected_ticket_id;
@@ -1778,9 +1763,9 @@ class FrontendController extends Controller
                         }
                     }
                 }
-            }                                  
+            }
 
-            
+
         }
         // reperat ticket 
 
@@ -1807,8 +1792,6 @@ class FrontendController extends Controller
         $user = AppUser::find($order->customer_id);
         $setting = Setting::find(1);
         //dd($request);
-
-
 
 
         // for user notification
@@ -1921,7 +1904,7 @@ class FrontendController extends Controller
         }
 
 
-         if ($request->payment_type == "TAMARA") {
+        if ($request->payment_type == "TAMARA") {
             $user = Auth::guard('appuser')->user()->id;
             $user = AppUser::find($user);
             $data['user'] = $user;
@@ -1971,7 +1954,6 @@ class FrontendController extends Controller
         // try{
 
 
-
         // Mail::send(['html'=>'emails.ticketbooked'], $dataemail, function($message) use ($dataemail) {
         // $message->to($dataemail['email'])->subject
         //     ('Ticket Booked');
@@ -1980,8 +1962,6 @@ class FrontendController extends Controller
 
 
         // faris and groom mail 
-
-
 
 
         // } catch (\Throwable $th) {
@@ -2187,8 +2167,6 @@ class FrontendController extends Controller
     //     //dd($request);
 
 
-
-
     //     // for user notification
     //     $message = NotificationTemplate::where('title', 'Book Ticket')->first()->message_content;
     //     $detail['user_name'] = $user->name . ' ' . $user->last_name;
@@ -2334,7 +2312,6 @@ class FrontendController extends Controller
     //     // try{
 
 
-
     //     // Mail::send(['html'=>'emails.ticketbooked'], $dataemail, function($message) use ($dataemail) {
     //     // $message->to($dataemail['email'])->subject
     //     //     ('Ticket Booked');
@@ -2343,8 +2320,6 @@ class FrontendController extends Controller
 
 
     //     // faris and groom mail 
-
-
 
 
     //     // } catch (\Throwable $th) {
@@ -2374,7 +2349,7 @@ class FrontendController extends Controller
         $dataemail['user'] = AppUser::find($dataemail['order']->customer_id);
         $dataemail['email'] = $dataemail['user']->email;
         //$dataemail['qrcode'] = $order->order_id ;
-        $child_qr =  OrderChild::where('order_id', $order->id)->get();
+        $child_qr = OrderChild::where('order_id', $order->id)->get();
         foreach ($child_qr as $key => $value) {
 
             $dataemail['qrcode'] = QrCode::format('png')
@@ -2385,7 +2360,6 @@ class FrontendController extends Controller
                 $message->to($dataemail['email'])->subject('Ticket Booked');
                 $message->from('ticketbyksa@gmail.com', 'TicketBy');
             });
-
 
 
             // $dataemail['order'] = Order::find($order->id);
@@ -2413,29 +2387,29 @@ class FrontendController extends Controller
 
     public function sendOrderMailPdfSms($id)
     {
-        
+
         $order = Order::with(['customer'])->find($id);
 
-        $event = Event::where('id',$order->event_id)->first();
-        $org_user = User::where('id',$event->user_id)->first();
-       
+        $event = Event::where('id', $order->event_id)->first();
+        $org_user = User::where('id', $event->user_id)->first();
 
-           $to = "509108875";  // str_replace('+', '', $org_user->phone);
-            $message = "عزيزي ".$org_user->first_name ." ،
-تم حجز تذكرة جديدة لفعاليتك    ".$event->name." من قبل المستخدم  ".$order->customer->name." يرجى مراجعة منصة المنظم لمتابعة الحجوزات.";
-         
-            // Prepare the data array
-            $data = [
-                'recipients' => [$to],
-                'body' => $message,
-                'sender' => 'TICKETBY'
-            ];
 
-            // Convert the data array to JSON
-            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+        $to = "509108875";  // str_replace('+', '', $org_user->phone);
+        $message = "عزيزي " . $org_user->first_name . " ،
+تم حجز تذكرة جديدة لفعاليتك    " . $event->name . " من قبل المستخدم  " . $order->customer->name . " يرجى مراجعة منصة المنظم لمتابعة الحجوزات.";
 
-            if (true) { 
-                try{
+        // Prepare the data array
+        $data = [
+            'recipients' => [$to],
+            'body' => $message,
+            'sender' => 'TICKETBY'
+        ];
+
+        // Convert the data array to JSON
+        $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+
+        if (true) {
+            try {
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -2458,15 +2432,16 @@ class FrontendController extends Controller
                 curl_close($curl);
 
 
-                    $responseData = json_decode($response, true);
-                    
-                } catch (\Throwable $th) {
-                    Log::info("thaqniyat error");
-                    Log::info($th->getMessage());
-                }
+                $responseData = json_decode($response, true);
+
+            } catch (\Throwable $th) {
+                Log::info("thaqniyat error");
+                Log::info($th->getMessage());
             }
+        }
     }
-     public function sendOrderMailPdf($id)
+
+    public function sendOrderMailPdf($id)
     {
 
         //$order_update = Order::where('id',$id)->update(['payment_status'=>1 , 'order_status' =>'Complete']);
@@ -2477,18 +2452,17 @@ class FrontendController extends Controller
         $dataemail['event'] = Event::find($dataemail['order']->event_id);
         $dataemail['user'] = AppUser::find($dataemail['order']->customer_id);
         $dataemail['email'] = $dataemail['user']->email;
-        if($dataemail['event']->is_repeat == 1)
-        {
+        if ($dataemail['event']->is_repeat == 1) {
 
-            $dataemail['time_slot'] =  EventTime::where('id',$order->time_slot_id)->first();
+            $dataemail['time_slot'] = EventTime::where('id', $order->time_slot_id)->first();
             //dd($dataemail['time_slot']);
         }
 
         $dataemail['email'] = $dataemail['user']->email;
 
-          $order = Order::with(['customer', 'event', 'organization', 'ticket'])->find($id);
+        $order = Order::with(['customer', 'event', 'organization', 'ticket'])->find($id);
         $order->tax_data = OrderTax::where('order_id', $order->id)->get();
-        $order->ticket_data = $oder_child =  OrderChild::where('order_id', $order->id)->get();
+        $order->ticket_data = $oder_child = OrderChild::where('order_id', $order->id)->get();
         foreach ($oder_child as $key => $value) {
             QrCode::format('png')
                 ->size(300)
@@ -2501,13 +2475,13 @@ class FrontendController extends Controller
         $data["body"] = "";
         $tempp = $pdf->output();
 
-        Mail::send(['html' => 'emails.ticketpdf'], $dataemail, function ($message) use ($tempp ,$dataemail) {
-                $message->to($dataemail['email'])->subject('Ticket Booked');
-                $message->from('ticketbyksa@gmail.com', 'TicketBy')->attachData($tempp, "ticket.pdf");
-            });
+        Mail::send(['html' => 'emails.ticketpdf'], $dataemail, function ($message) use ($tempp, $dataemail) {
+            $message->to($dataemail['email'])->subject('Ticket Booked');
+            $message->from('ticketbyksa@gmail.com', 'TicketBy')->attachData($tempp, "ticket.pdf");
+        });
 
-        $event = Event::where('id',$order->event_id)->first();
-        $org_user = User::where('id',$event->user_id)->first();
+        $event = Event::where('id', $order->event_id)->first();
+        $org_user = User::where('id', $event->user_id)->first();
         // if($org_user && $org_user->phone )
         // {
         //     $otp = rand(100000, 999999);
@@ -2552,22 +2526,22 @@ class FrontendController extends Controller
         //     }
 
         // sent sms to organizer
-            $to = $org_user->phone;  // str_replace('+', '', $org_user->phone);
-            $message = "عزيزي ".$org_user->first_name ." ،
-تم حجز تذكرة جديدة لفعاليتك    ".$event->name." من قبل المستخدم  ".$order->customer->name." يرجى مراجعة منصة المنظم لمتابعة الحجوزات.";
-         
-            // Prepare the data array
-            $data = [
-                'recipients' => [$to],
-                'body' => $message,
-                'sender' => 'TICKETBY'
-            ];
+        $to = $org_user->phone;  // str_replace('+', '', $org_user->phone);
+        $message = "عزيزي " . $org_user->first_name . " ،
+تم حجز تذكرة جديدة لفعاليتك    " . $event->name . " من قبل المستخدم  " . $order->customer->name . " يرجى مراجعة منصة المنظم لمتابعة الحجوزات.";
 
-            // Convert the data array to JSON
-            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+        // Prepare the data array
+        $data = [
+            'recipients' => [$to],
+            'body' => $message,
+            'sender' => 'TICKETBY'
+        ];
 
-            if (true) { 
-                try{
+        // Convert the data array to JSON
+        $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+
+        if (true) {
+            try {
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -2590,32 +2564,32 @@ class FrontendController extends Controller
                 curl_close($curl);
 
 
-                    $responseData = json_decode($response, true);
-                    
-                } catch (\Throwable $th) {
-                    Log::info("thaqniyat error");
-                    Log::info($th->getMessage());
-                }
-            
+                $responseData = json_decode($response, true);
+
+            } catch (\Throwable $th) {
+                Log::info("thaqniyat error");
+                Log::info($th->getMessage());
             }
 
-            // sent sms to Mr. ghrom
-            $to = "565009999";  // str_replace('+', '', $org_user->phone);
-            $message = "يوجد حجز على فعالية  ".$event->name." 
-من قبل المستخدم   ".$order->customer->name ;
-         
-            // Prepare the data array
-            $data = [
-                'recipients' => [$to],
-                'body' => $message,
-                'sender' => 'TICKETBY'
-            ];
+        }
 
-            // Convert the data array to JSON
-            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+        // sent sms to Mr. ghrom
+        $to = "565009999";  // str_replace('+', '', $org_user->phone);
+        $message = "يوجد حجز على فعالية  " . $event->name . " 
+من قبل المستخدم   " . $order->customer->name;
 
-            if (true) { 
-                try{
+        // Prepare the data array
+        $data = [
+            'recipients' => [$to],
+            'body' => $message,
+            'sender' => 'TICKETBY'
+        ];
+
+        // Convert the data array to JSON
+        $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+
+        if (true) {
+            try {
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -2638,33 +2612,33 @@ class FrontendController extends Controller
                 curl_close($curl);
 
 
-                    $responseData = json_decode($response, true);
-                    
-                } catch (\Throwable $th) {
-                    Log::info("thaqniyat error");
-                    Log::info($th->getMessage());
-                }
-            
+                $responseData = json_decode($response, true);
+
+            } catch (\Throwable $th) {
+                Log::info("thaqniyat error");
+                Log::info($th->getMessage());
             }
-        
+
+        }
+
         // sent sms to Faris
 
-           $to = "509108875";  // str_replace('+', '', $org_user->phone);
-                        $message = "يوجد حجز على فعالية  ".$event->name." 
-من قبل المستخدم   ".$order->customer->name ;
-         
-            // Prepare the data array
-            $data = [
-                'recipients' => [$to],
-                'body' => $message,
-                'sender' => 'TICKETBY'
-            ];
+        $to = "509108875";  // str_replace('+', '', $org_user->phone);
+        $message = "يوجد حجز على فعالية  " . $event->name . " 
+من قبل المستخدم   " . $order->customer->name;
 
-            // Convert the data array to JSON
-            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+        // Prepare the data array
+        $data = [
+            'recipients' => [$to],
+            'body' => $message,
+            'sender' => 'TICKETBY'
+        ];
 
-            if (true) { 
-                try{
+        // Convert the data array to JSON
+        $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
+
+        if (true) {
+            try {
                 $curl = curl_init();
 
                 curl_setopt_array($curl, array(
@@ -2687,33 +2661,34 @@ class FrontendController extends Controller
                 curl_close($curl);
 
 
-                    $responseData = json_decode($response, true);
-                    
-                } catch (\Throwable $th) {
-                    Log::info("thaqniyat error");
-                    Log::info($th->getMessage());
-                }
-            
+                $responseData = json_decode($response, true);
+
+            } catch (\Throwable $th) {
+                Log::info("thaqniyat error");
+                Log::info($th->getMessage());
             }
+
+        }
         // }
         //$dataemail['qrcode'] = $order->order_id ;
-      /*  $child_qr =  OrderChild::where('order_id', $order->id)->get();
-        foreach ($child_qr as $key => $value) {
-            $dataemail['qrcode'] = QrCode::format('png')
-                ->size(300)
-                ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
-            $dataemail['qr_id'] = $value->id;
-            Mail::send(['html' => 'emails.ticketbooked'], $dataemail, function ($message) use ($dataemail) {
-                $message->to($dataemail['email'])->subject('Ticket Booked');
-                $message->from('ticketbyksa@gmail.com', 'TicketBy');
-            });
+        /*  $child_qr =  OrderChild::where('order_id', $order->id)->get();
+          foreach ($child_qr as $key => $value) {
+              $dataemail['qrcode'] = QrCode::format('png')
+                  ->size(300)
+                  ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
+              $dataemail['qr_id'] = $value->id;
+              Mail::send(['html' => 'emails.ticketbooked'], $dataemail, function ($message) use ($dataemail) {
+                  $message->to($dataemail['email'])->subject('Ticket Booked');
+                  $message->from('ticketbyksa@gmail.com', 'TicketBy');
+              });
 
 
 
 
-        }*/
+          }*/
         $order_update = Order::where('id', $id)->update(['payment_status' => 1, 'order_status' => 'Complete']);
     }
+
     public function sendMail($id)
     {
         $order = Order::with(['customer', 'event', 'organization', 'ticket'])->find($id);
@@ -2738,6 +2713,7 @@ class FrontendController extends Controller
         }
         return true;
     }
+
     public function categoryEvents($id, $name)
     {
         $setting = Setting::first(['app_name', 'logo']);
@@ -2777,7 +2753,7 @@ class FrontendController extends Controller
 
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $events  = Event::with(['category:id,name'])
+        $events = Event::with(['category:id,name'])
             ->where([['status', 1], ['is_deleted', 0], ['category_id', $id], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d H:i:s')]])
             ->orderBy('start_time', 'ASC')->get();
         $offlinecount = 0;
@@ -2835,13 +2811,13 @@ class FrontendController extends Controller
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
         if ($type == "all") {
-            $events  = Event::with(['category:id,name'])
+            $events = Event::with(['category:id,name'])
                 ->where([['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d H:i:s')]])
                 ->orderBy('start_time', 'ASC')->get();
 
             return view('frontend.events', compact('events'));
         } else {
-            $events  = Event::with(['category:id,name'])
+            $events = Event::with(['category:id,name'])
                 ->where([['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['type', $type], ['end_time', '>', $date->format('Y-m-d H:i:s')]])
                 ->orderBy('start_time', 'ASC')->get();
             return view('frontend.events', compact('events', 'type'));
@@ -2923,7 +2899,7 @@ class FrontendController extends Controller
 
         curl_close($curl);
         $responseData = json_decode($response, true);*/
-         $url = 'http://open-safari.com/open?url=ticketby.co/';
+        $url = 'http://open-safari.com/open?url=ticketby.co/';
 
         return redirect()->away($url);
         $blogs = Blog::where('status', 1)->orderBy('id', 'DESC')->get();
@@ -3043,7 +3019,7 @@ class FrontendController extends Controller
 
     public function update_profile()
     {
-        $user =  Auth::guard('appuser')->user();
+        $user = Auth::guard('appuser')->user();
 
         $phone = Country::get();
         $languages = Language::where('status', 1)->get();
@@ -3054,7 +3030,7 @@ class FrontendController extends Controller
     public function update_user_profile(Request $request)
     {
         $data = $request->all();
-        $user =  Auth::guard('appuser')->user();
+        $user = Auth::guard('appuser')->user();
         $user->update($data);
         $this->setLanguage($user);
         return redirect('/user/profile2');
@@ -3281,29 +3257,27 @@ class FrontendController extends Controller
         $ordertax = array();
         $tax = array();
 
-        $ticket['upcoming'] = Order::with(['orderchild','event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,start_time,name,price,type', 'organization:id,first_name,last_name,image'])
-           
+        $ticket['upcoming'] = Order::with(['orderchild', 'event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,start_time,name,price,type', 'organization:id,external_id,first_name,last_name,image'])
             ->where([['customer_id', Auth::guard('appuser')->user()->id], ['order_status', 'Complete']])
             ->orderBy('id', 'DESC')->paginate(10);
-            
+
         $event = [];
 
         if (count($ticket['upcoming']) > 0) {
             foreach ($ticket['upcoming'] as $events) {
 
                 if ($events->event->end_time >= Carbon::now()) {
-                    $ticket_qr_code =  OrderChild::where('order_id',$events->id)->get();
+                    $ticket_qr_code = OrderChild::where('order_id', $events->id)->get();
                     $qrs = array();
-                    foreach ($ticket_qr_code as  $qr_code) {
-                        $qrs[] = url('qrcodes/qr-').$qr_code->id.".png";
+                    foreach ($ticket_qr_code as $qr_code) {
+                        $qrs[] = url('qrcodes/qr-') . $qr_code->id . ".png";
                     }
-                     $events->ticket_qr_code = $qrs;
-                   $event[] = $events;
+                    $events->ticket_qr_code = $qrs;
+                    $event[] = $events;
                 }
             }
-           
 
-            
+
             $ticket['upcoming']->event = $event;
         }
 
@@ -3320,8 +3294,8 @@ class FrontendController extends Controller
         $ticket['upcoming']->maintax = $tax;
 
 
-        $ticket['past'] = Order::with(['event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,name,type,price', 'organization:id,first_name,last_name,image'])
-             ->whereHas('event', function ($query) {
+        $ticket['past'] = Order::with(['event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,name,type,price', 'organization:id,external_id,first_name,last_name,image'])
+            ->whereHas('event', function ($query) {
                 // Ensure end_time is compared correctly
                 $query->whereDate('end_time', '<=', Carbon::now());
             })
@@ -3330,29 +3304,29 @@ class FrontendController extends Controller
         if (count($ticket['past']) > 0) {
             foreach ($ticket['past'] as $events) {
                 $past_event = Event::find($events->event_id);
-                
+
                 if ($past_event->end_time <= Carbon::now()) {
-                    
-                    $ticket_qr_code =  OrderChild::where('order_id',$events->id)->get();
+
+                    $ticket_qr_code = OrderChild::where('order_id', $events->id)->get();
 
                     $qrs = array();
-                    foreach ($ticket_qr_code as  $qr_code) {
+                    foreach ($ticket_qr_code as $qr_code) {
 
-                        $qrs[] = url('qrcodes/qr-').$qr_code->id.".png";
+                        $qrs[] = url('qrcodes/qr-') . $qr_code->id . ".png";
 
                     }
-                     $events->ticket_qr_code = $qrs;
+                    $events->ticket_qr_code = $qrs;
                     $event[] = $events;
                     $ticket['past']->event = $event;
                 }
             }
-           
+
         }
         foreach ($ticket['past'] as $item) {
             $ordertaxs = OrderTax::where('order_id', $item->id)->get();
             $ordertax = $ordertaxs;
         }
-        
+
 
         foreach ($ordertax as $item) {
             $taxs = Tax::find($item->tax_id)->get();
@@ -3362,15 +3336,16 @@ class FrontendController extends Controller
 
         $likedEvents = Event::whereIn('id', array_filter(explode(',', $user->favorite)))->where([['status', 1], ['is_deleted', 0]])->orderBy('id', 'DESC')->get();
         foreach ($likedEvents as $value) {
-            $value->description =  str_replace("&nbsp;", " ", strip_tags($value->description));
+            $value->description = str_replace("&nbsp;", " ", strip_tags($value->description));
             $value->time = $value->start_time->format('d F Y h:i a');
         }
         $likedBlogs = Blog::whereIn('id', array_filter(explode(',', $user->favorite_blog)))->where([['status', 1]])->orderBy('id', 'DESC')->get();
         $userFollowing = User::whereIn('id', array_filter(explode(',', $user->following)))->where([['status', 1]])->orderBy('id', 'DESC')->get();
         $wallet = PaymentSetting::first()->wallet;
-        
+
         return view('front.userProfile', compact('likedEvents', 'ticket', 'likedBlogs', 'userFollowing', 'wallet'));
     }
+
     public function userOrderTicket($id)
     {
         $order = Order::with(['event', 'ticket', 'organization'])->find($id);
@@ -3386,10 +3361,10 @@ class FrontendController extends Controller
         return view('frontend.userOrderTicket', compact('order', 'taxes', 'review', 'orderchild'));
     }
 
-  
-    public function  getOrder($id)
+
+    public function getOrder($id)
     {
-        $data = Order::with(['event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,name,price,type', 'organization:id,first_name,last_name,image'])->find($id);
+        $data = Order::with(['event:id,name,image,start_time,type,end_time,address', 'ticket:id,ticket_number,name,price,type', 'organization:id,external_id,first_name,last_name,image'])->find($id);
         $data->review = Review::where('order_id', $id)->first();
         $data->time = $data->created_at->format('D') . ', ' . $data->created_at->format('d M Y') . ' at ' . $data->created_at->format('h:i a');
         $data->start_time = $data->event->start_time->format('d M Y') . ', ' . $data->event->start_time->format('h:i a');
@@ -3443,19 +3418,20 @@ class FrontendController extends Controller
         $policy = Setting::find(1)->appuser_privacy_policy;
         return view('frontend.privacy-policy', compact('policy'));
     }
+
     public function searchEvent(Request $request)
     {
-            
+
         $search = $request->search ?? '';
         if ($search == '') {
             return redirect()->back();
         }
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $events  = Event::with(['category:id,name'])->where('is_deleted',0)
-            ->where([['address', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted',0)
-            ->orWhere([['name', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted',0)
-            ->orWhere([['description', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted',0);
+        $events = Event::with(['category:id,name'])->where('is_deleted', 0)
+            ->where([['address', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted', 0)
+            ->orWhere([['name', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted', 0)
+            ->orWhere([['description', 'LIKE', "%$search%"], ['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '>', $date->format('Y-m-d')]])->where('is_deleted', 0);
         $chip = array();
         if ($request->has('type') && $request->type != null) {
             $chip['type'] = $request->type;
@@ -3485,7 +3461,7 @@ class FrontendController extends Controller
                 }
             }
         }
-        $events = $events->where('is_deleted',0)->orderBy('start_time', 'ASC')->get();
+        $events = $events->where('is_deleted', 0)->orderBy('start_time', 'ASC')->get();
         foreach ($events as $value) {
             $value->total_ticket = Ticket::where([['event_id', $value->id], ['is_deleted', 0], ['status', 1]])->sum('quantity');
             $value->sold_ticket = Order::where('event_id', $value->id)->sum('quantity');
@@ -3504,6 +3480,7 @@ class FrontendController extends Controller
         }
         return view('frontend.events', compact('user', 'events', 'chip', 'onlinecount', 'offlinecount'));
     }
+
     public function eventsByTag($tag)
     {
         $events = Event::where([['tags', 'LIKE', "%$tag%"], ['is_deleted', 0]])->get();
@@ -3522,6 +3499,7 @@ class FrontendController extends Controller
         }
         return view('frontend.events', compact('events', 'onlinecount', 'offlinecount'));
     }
+
     public function blogByTag($tag)
     {
         $blogs = Blog::where('tags', 'LIKE', "%$tag%")->where('status', 1)->orderBy('id', 'DESC')->get();
@@ -3532,11 +3510,13 @@ class FrontendController extends Controller
         }
         return view('frontend.blog', compact('blogs', 'category'));
     }
+
     public function Faqs()
     {
         $data = Faq::where('status', 1)->get();
         return view('frontend.show_faq', compact('data'));
     }
+
     public function otpView($id)
     {
         $user = AppUser::find($id);
@@ -3548,6 +3528,7 @@ class FrontendController extends Controller
         $user = User::find($id);
         return view('frontend.auth.otporganizer', compact('user'));
     }
+
     public function otpVerify(Request $request)
     {
         $request->validate([
@@ -3564,6 +3545,7 @@ class FrontendController extends Controller
             return redirect()->back()->with('error', 'Wrong OTP. Please try again.');
         }
     }
+
     public function otpVerifyOrganizer(Request $request)
     {
         $request->validate([
@@ -3580,6 +3562,7 @@ class FrontendController extends Controller
             return redirect()->back()->with('error', 'Wrong OTP. Please try again.');
         }
     }
+
     public function checkoutSession(Request $request)
     {
         $request->session()->put('request', $request->all());
@@ -3643,6 +3626,7 @@ class FrontendController extends Controller
         $request->session()->put('payment_token', $session->id);
         return response()->json(['id' => $session->id, 'status' => 200]);
     }
+
     public function stripeSuccess()
     {
         $request = Session::get('request');
@@ -3668,14 +3652,14 @@ class FrontendController extends Controller
         $data['payment_status'] = 1;
         $data['order_status'] = 'Complete';
         $com = Setting::find(1, ['org_commission_type', 'org_commission']);
-        $p =   $request['payment'] - $request['tax'];
+        $p = $request['payment'] - $request['tax'];
         if ($request['payment_type'] == "FREE") {
-            $data['org_commission']  = 0;
+            $data['org_commission'] = 0;
         } else {
             if ($com->org_commission_type == "percentage") {
-                $data['org_commission'] =  $p * $com->org_commission / 100;
+                $data['org_commission'] = $p * $com->org_commission / 100;
             } else if ($com->org_commission_type == "amount") {
-                $data['org_commission']  = $com->org_commission;
+                $data['org_commission'] = $com->org_commission;
             }
         }
 
@@ -3711,7 +3695,7 @@ class FrontendController extends Controller
             $child['order_id'] = $order->id;
             $child['customer_id'] = Auth::guard('appuser')->user()->id;
             $child['checkin'] = $ticket->maximum_checkins ?? null;
-            $child['paid'] =  1;
+            $child['paid'] = 1;
             OrderChild::create($child);
         }
         if (isset($request['tax_data'])) {
@@ -3766,7 +3750,7 @@ class FrontendController extends Controller
         }
 
         // for Organizer notification
-        $org =  User::find($order->organization_id);
+        $org = User::find($order->organization_id);
         $or_message = NotificationTemplate::where('title', 'Organizer Book Ticket')->first()->message_content;
         $or_detail['organizer_name'] = $org->first_name . ' ' . $org->last_name;
         $or_detail['user_name'] = $user->name . ' ' . $user->last_name;
@@ -3777,7 +3761,7 @@ class FrontendController extends Controller
         $or_noti_data = ["{{organizer_name}}", "{{user_name}}", "{{quantity}}", "{{event_name}}", "{{date}}", "{{app_name}}"];
         $or_message1 = str_replace($or_noti_data, $or_detail, $or_message);
         $or_notification = array();
-        $or_notification['organizer_id'] =  $org->id;
+        $or_notification['organizer_id'] = $org->id;
         $or_notification['user_id'] = null;
         $or_notification['order_id'] = $order->id;
         $or_notification['title'] = 'New Ticket Booked';
@@ -3807,10 +3791,12 @@ class FrontendController extends Controller
         Session::forget('request');
         return redirect()->route('myTickets');
     }
+
     public function striepCancel()
     {
         return redirect()->back();
     }
+
     public function transcationCheckEdfapay()
     {
         // Define the variables
@@ -3839,6 +3825,7 @@ class FrontendController extends Controller
         // Print the resul
         return $finalResult;
     }
+
     public function edafpayHashMaker($order, $request)
     {
         $password = "a92f7b7f0d869d3e676c5facda5262ae";
@@ -3852,6 +3839,7 @@ class FrontendController extends Controller
         {
             return strrev($str);
         }
+
         $final = strtoupper(reverseString($email) . $password . reverseString(substr($cardNumber, 0, 6) . substr($cardNumber, -4)));
         $sha1Hash = md5($final);
         Session::put('hash', $sha1Hash);
@@ -3950,7 +3938,7 @@ class FrontendController extends Controller
             $url = 'https://api.edfapay.com/payment/post';
             $action = 'GET_TRANS_DETAILS';
             $client_key = 'd857c073-c58c-49dc-906b-24fa667dc306';
-            $trans_id =  Session::get('edfapay_trans');
+            $trans_id = Session::get('edfapay_trans');
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -4005,7 +3993,7 @@ class FrontendController extends Controller
 
         \Log::error('apple pay');
         \Log::error($request->validationURL);
-        $validationURL =  $request->validationURL;
+        $validationURL = $request->validationURL;
 
         $displayName = 'merchant.com.wasltec.Applepaywasltec';
         $displayName = 'TicketBy';
@@ -4097,24 +4085,24 @@ class FrontendController extends Controller
             'response_type' => 'code',
             'scope' => 'email profile openid',
             'access_type' => 'offline',
-            'prompt' => 'select_account', 
+            'prompt' => 'select_account',
         ]);
         $url = 'https://accounts.google.com/o/oauth2/auth?' . $query;
 
 
-          
         return redirect('https://accounts.google.com/o/oauth2/auth?' . $query);
     }
+
     public function handleGoogleCallback(Request $request)
     {
-        
-    
+
+
         try {
             $http = new ClientGuzzel([
-    'headers' => [
-        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    ]
-]);
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                ]
+            ]);
 
             $response = $http->post('https://oauth2.googleapis.com/token', [
                 'form_params' => [
@@ -4126,14 +4114,14 @@ class FrontendController extends Controller
                 ],
             ]);
 
-            $tokenData = json_decode((string) $response->getBody(), true);
-      
+            $tokenData = json_decode((string)$response->getBody(), true);
+
             $response = $http->get('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' . $tokenData['access_token']);
 
-            $userData = json_decode((string) $response->getBody(), true);
+            $userData = json_decode((string)$response->getBody(), true);
 
             $user = AppUser::where('email', $userData['email'])->first();
-           
+
             if ($user) {
                 Auth::guard('appuser')->login($user);
                 Auth::login($user);
@@ -4146,13 +4134,13 @@ class FrontendController extends Controller
                 Auth::guard('appuser')->login($user);
                 Auth::login($user);
             }
-            
+
             $event_id = Session::get('event_id');
             $queryParams = Session::get("google_var");
             unset($queryParams['google_login']);
 
-                 
-            return redirect()->intended('/checkout/'.$event_id.'?'.http_build_query($queryParams));
+
+            return redirect()->intended('/checkout/' . $event_id . '?' . http_build_query($queryParams));
         } catch (Exception $e) {
             return redirect('auth/google');
         }
@@ -4166,10 +4154,11 @@ class FrontendController extends Controller
             $message->from('support@ticketby.co', 'ticketby');
         });
     }
-    public function logicTesting ( Request $request )
+
+    public function logicTesting(Request $request)
     {
 
-          // Define the variables
+        // Define the variables
         $trans_id = "   e109c886-9210-11ef-a1c7-ba82b61470f7";
         $PASSWORD = "a92f7b7f0d869d3e676c5facda5262ae";
         $card_number = Session::get('edfapay_card');
@@ -4215,8 +4204,8 @@ class FrontendController extends Controller
         dd($data);*/
         //$order_id = "880";
         /*$this->sendOrderMailPdf($order_id);*/
-      
-        
+
+
     }
 
 
@@ -4243,7 +4232,7 @@ class FrontendController extends Controller
             $child['ticket_id'] = 230;
             $child['order_id'] = $order->id;
             $child['customer_id'] = 61;
-            $child['checkin'] =  null;
+            $child['checkin'] = null;
             $child['paid'] = 1;
             OrderChild::create($child);
 
@@ -4252,7 +4241,8 @@ class FrontendController extends Controller
                 ->generate($child['ticket_number'], public_path('qrcodes-mannual/qr-' . $child['ticket_number'] . '.png'));
         }
     }
-    //google login 
+
+    //google login
 
     public function deletePending()
     {
@@ -4270,7 +4260,7 @@ class FrontendController extends Controller
         $setting = Setting::first(['app_name', 'logo']);
         $currency = "$"; //Setting::first(['currency_sybmol']);
 
-        $data = Event::with(['category:id,name,image', 'organization:id,first_name,organization_name,bio,last_name,image'])->find($id);
+        $data = Event::with(['category:id,name,image', 'organization:id,external_id,first_name,organization_name,bio,last_name,image'])->find($id);
         SEOMeta::setTitle($data->name)
             ->setDescription($data->description)
             ->addMeta('event:category', $data->category->name, 'property')
@@ -4322,8 +4312,8 @@ class FrontendController extends Controller
         $data->paid_ticket = Ticket::where([['event_id', $data->id], ['is_deleted', 0], ['type', 'paid'], ['status', 1], ['end_time', '>=', $date->format('Y-m-d H:i:s')], ['start_time', '<=', $date->format('Y-m-d H:i:s')]])->orderBy('id', 'DESC')->get();
 
         $data->review = Review::where('event_id', $data->id)->orderBy('id', 'DESC')->get();
-        
-        $total_paid =  $used_paid = 0;
+
+        $total_paid = $used_paid = 0;
         foreach ($data->paid_ticket as $value) {
             if ($data->is_repeat == 1) {
 
@@ -4331,17 +4321,17 @@ class FrontendController extends Controller
                 $end_date = Carbon::now()->format("Y-m-d") . " " . Carbon::parse($data->start_time)->format("H:i:s");
                 $used = Order::where('ticket_id', $value->id)->where('created_at', '<', $end_date)->where('created_at', '>', $start_date)->sum('quantity');
                 //dd($start_date , $end_date);
-                $total_paid  =  $total_paid  +  $value->quantity;
+                $total_paid = $total_paid + $value->quantity;
                 $used_paid = $used_paid + $used;
             } else {
                 $used = Order::where('ticket_id', $value->id)->sum('quantity');
-                $total_paid  =  $total_paid  +  $value->quantity;
+                $total_paid = $total_paid + $value->quantity;
                 $used_paid = $used_paid + $used;
             }
         }
 
         foreach ($data->paid_ticket as $value) {
-            $value->available_qty = $total_paid  - $used_paid;
+            $value->available_qty = $total_paid - $used_paid;
         }
 
         foreach ($data->free_ticket as $value) {
@@ -4349,7 +4339,7 @@ class FrontendController extends Controller
             $value->available_qty = $value->quantity - $used;
         }
         $images = explode(",", string: $data->gallery);
-        $tags =  explode(",", $data->tags);
+        $tags = explode(",", $data->tags);
         $appUser = Auth::guard('appuser')->user();
         $rate = round(Review::where('event_id', $data->id)->avg('rate'));
         if ($data->category_id == 14) {
@@ -4358,30 +4348,29 @@ class FrontendController extends Controller
             $ticket_detail = null;
         }
         $array = array();
-        $array['event'] = $data; 
-        $array['images'] = $images; 
-        $array['tags'] = $tags; 
-        $array['appUser'] = $appUser; 
-        $array['rate'] = $rate; 
+        $array['event'] = $data;
+
+        $array['images'] = $images;
+        $array['tags'] = $tags;
+        $array['appUser'] = $appUser;
+        $array['rate'] = $rate;
         return response()->json($array);
         // return view('front.eventDetail', compact('currency', 'data', 'images', 'tags', 'appUser', 'rate', 'ticket_detail'));
     }
 
-    public function webUserLogin ( Request $request )
+    public function webUserLogin(Request $request)
     {
-        $username = $request->user_name ; 
-       
-        $user = AppUser::where('email',$request->user_name)->where('status',1)->where('is_delete',1)->first();
-        if(!is_null($user))
-        {
-            $user = AppUser::where('phone', substr( $request->user_name, -9))->where('status',1)->where('is_delete',1)->first();
+        $username = $request->user_name;
+
+        $user = AppUser::where('email', $request->user_name)->where('status', 1)->where('is_delete', 1)->first();
+        if (!is_null($user)) {
+            $user = AppUser::where('phone', substr($request->user_name, -9))->where('status', 1)->where('is_delete', 1)->first();
         }
 
-        if($user)
-        {
+        if ($user) {
             $otp = rand(100000, 999999);
 
-            $to =  substr( $user->phone, -9);
+            $to = substr($user->phone, -9);
 
             $message = "Your phone verification code is $otp for $setting->app_name.";
             if (true) {
@@ -4432,53 +4421,55 @@ class FrontendController extends Controller
                 });
                 $user->otp = $otp;
                 $user->update();
-            }    
+            }
         }
 
         return response()->json("OTP sent ");
     }
-    public function loginVerifyOtp ( Request $request ) 
-   {
 
-     $request->validate([
+    public function loginVerifyOtp(Request $request)
+    {
+
+        $request->validate([
             'id' => 'required',
             'otp' => 'required',
         ]);
-        $user = AppUser::where('id',$request->id)->first();
-       
+        $user = AppUser::where('id', $request->id)->first();
+
         if ($user->otp == $request->otp) {
             //$user->otp = null;
             $user->device_token = $request->device_token ?? null;
             $user->update();
-            $user = AppUser::where('id',$request->id)->first();
+            $user = AppUser::where('id', $request->id)->first();
             Auth::guard('appuser')->login($user);
-            Session::put("user_id",$request->id);
-            
+            Session::put("user_id", $request->id);
+
             return response()->json(['msg' => 'OTP verify successfully', 'data' => $user, 'success' => true], 200);
         } else {
             return response()->json(['msg' => 'Wrong OTP. Please try again.', 'success' => false]);
         }
-   }
-    public function subscribe (Request $request)
-   {
-        $user = AppUser::where('email',$request->email)->first();
-                   /* $dataemail['name'] = $user->name;
-                    $dataemail['email'] = $user->email;
-                    $dataemail['otp'] = $otp;
+    }
 
-                    $data = array('name' => "TicketBy", 'email' => 'hivasavada@gmail.com', "otp" => $otp);
-                    Mail::send(['html' => 'frontend.email.otp'], $dataemail, function ($message) use ($dataemail) {
-                        $message->to($dataemail['email'])->subject('OTP Verification');
-                        $message->from('ticketbyksa@gmail.com', 'TicketBy');
-                    });*/
+    public function subscribe(Request $request)
+    {
+        $user = AppUser::where('email', $request->email)->first();
+        /* $dataemail['name'] = $user->name;
+         $dataemail['email'] = $user->email;
+         $dataemail['otp'] = $otp;
+
+         $data = array('name' => "TicketBy", 'email' => 'hivasavada@gmail.com', "otp" => $otp);
+         Mail::send(['html' => 'frontend.email.otp'], $dataemail, function ($message) use ($dataemail) {
+             $message->to($dataemail['email'])->subject('OTP Verification');
+             $message->from('ticketbyksa@gmail.com', 'TicketBy');
+         });*/
         return response()->json(['msg' => 'Subscribe', 'success' => true]);
-   }
+    }
 
-   public function excelExport ()
+    public function excelExport()
     {
         return Excel::download(new UsersExport, 'users.xlsx');
 
     }
 
-    
+
 }

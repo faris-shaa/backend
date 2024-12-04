@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'organization_name',
+        "external_id",
         'first_name',
         'last_name',
         'email',
@@ -35,8 +38,24 @@ class User extends Authenticatable
         'country',
         'language',
         'is_verify',
-        'is_delete'
+        'is_delete',
     ];
+
+    /**
+     * The "booting" function of model
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (Schema::hasColumn("user", "external_id")) {
+                $model->external_id = Str::uuid();
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for arrays.

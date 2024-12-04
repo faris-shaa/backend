@@ -267,6 +267,16 @@
         let upcomingLimit = 3;
         let previousLimit = 3;
 
+        const updateLimitBasedOnScreenSize = async () => {
+            if (window.innerWidth <= 768) { // 1024px is the breakpoint for 'lg' in Tailwind CSS
+                upcomingLimit = 2;
+                previousLimit = 2;
+            } else {
+                upcomingLimit = 3;
+                previousLimit = 3;
+            }
+        }
+
         const fetchOrganizerUpcomingEvent = async () => {
             var ovals = {};
             let page = $("#load_more_upcoming").data('page');
@@ -293,8 +303,20 @@
             await fetchOrganizerPreviousEvent();
         }
 
+        const screenHasBeenResized = async () => {
+            await updateLimitBasedOnScreenSize()
+            $("#load_more_upcoming").data('page', 1);
+            $("#load_more_previous").data('page', 1);
+            $(".upcomingEventsCon").html("")
+            $(".previousEventsCon").html("")
+            await fetchOrganizerUpcomingEvent();
+            await fetchOrganizerPreviousEvent();
+        }
+
+        window.addEventListener('resize', screenHasBeenResized);
 
         $(document).ready(async () => {
+            await updateLimitBasedOnScreenSize();
             await fetchOrganizerUpcomingEvent();
             await fetchOrganizerPreviousEvent();
         });

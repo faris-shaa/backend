@@ -13,10 +13,12 @@ class AddForeignKeyToOrderTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
-            $table->foreign('coupon_id')->references('id')->on('coupon')->onDelete('cascade');
-        });
+        if (!Schema::hasColumn("orders", "coupon_id")) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->foreign('coupon_id')->references('id')->on('coupon')->onDelete('cascade');
+            });
+        }
+
     }
 
     /**
