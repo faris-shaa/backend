@@ -30,7 +30,7 @@ class AjaxController extends Controller
     {
         $this->ajaxCall("$('.spinner_upcoming_events').show()");
         $organizerId = $oval["user_id"];
-        $limit = $oval["limit"] ?? 6;
+        $limit = $oval["limit"] ?? 3;
 
         $baseQuery = Event::query()
             ->upcoming()
@@ -65,7 +65,7 @@ class AjaxController extends Controller
     {
         $this->ajaxCall("$('.spinner_previous_events').show()");
         $organizerId = $oval["user_id"];
-        $limit = $oval["limit"] ?? 6;
+        $limit = $oval["limit"] ?? 3;
 
         $baseQuery = Event::query()
             ->previous()
