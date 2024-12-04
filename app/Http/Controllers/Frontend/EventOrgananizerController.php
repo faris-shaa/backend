@@ -18,22 +18,23 @@ use Illuminate\Http\Request;
  */
 class EventOrgananizerController extends Controller
 {
-    public function __invoke($externalId, $name)
+    public function __invoke($uuid, $name)
     {
         /** @var User $organizer */
-        $organizer = User::where("external_id", $externalId)->first();
+        $organizer = User::where("external_id", $uuid)->first();
 
         if (!$organizer) {
             abort(404);
         }
 
         $this->setSeos($organizer);
-        $recentGalleries = $organizer->events()
-//            ->previous()
-            ->whereNotNull("gallery")
-            ->inRandomOrder()
-            ->limit(10)
-            ->get(["gallery", "name as eventName", "id"]);
+        $recentGalleries =
+            $organizer->events()
+//                ->previous()
+                ->whereNotNull("gallery")
+                ->inRandomOrder()
+                ->limit(10)
+                ->get(["gallery", "name as eventName", "id"]);
 
         return view("front.organizer_details", compact("organizer", "recentGalleries"));
     }
