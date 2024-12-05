@@ -30,6 +30,7 @@ use App\Models\Notification;
 use App\Models\NotificationTemplate;
 use App\Models\OrderChild;
 use App\Models\Settlement;
+use App\Models\OrganizerDetails;
 use Illuminate\Support\Facades\Rave;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -95,6 +96,22 @@ class UserController extends Controller
         $data['org_id'] = $request->organization;
         $data['language'] = Setting::first()->language;
         $user = User::create($data);
+
+        if( isset($request->arabic_name)  &&  !is_null($request->arabic_name) )
+        {
+            $organizer_details = new OrganizerDetails();
+            $organizer_details->user_id = $user->id;
+            $organizer_details->arabic_name = $request->arabic_name;
+            $organizer_details->facebook = $request->facebook;
+            $organizer_details->twitter = $request->twitter;
+            $organizer_details->instagram = $request->instagram;
+            $organizer_details->short_description_english = $request->short_description_english;
+            $organizer_details->short_description_arabic = $request->short_description_arabic;
+            $organizer_details->long_description_english = $request->long_description_english;
+            $organizer_details->long_description_arabic = $request->long_description_arabic;
+            $organizer_details->save();
+
+        }
         $user->assignRole($request->input('roles', []));
         $roles = Role::where('id', $request->roles[0])->first()->name;
         if ($roles == "Organizer") {
@@ -107,18 +124,21 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        
         return view('admin.user.show', compact('user'));
     }
 
     public function edit(User $user)
     {
+
+        $details = OrganizerDetails::where('user_id',$user->id)->first();
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $roles = Role::all();
         if ($user->hasRole('admin')) {
             return redirect()->route('users.index')->withStatus(__('You can not edit admin.'));
         }
         $orgs = User::role('Organizer')->orderBy('id', 'DESC')->get();
-        return view('admin.user.edit', compact('roles', 'user', 'orgs'));
+        return view('admin.user.edit', compact('roles', 'user', 'orgs','details'));
     }
 
     public function update(Request $request, User $user)
@@ -129,6 +149,26 @@ class UserController extends Controller
             'phone' => 'bail|required',
             'email' => 'bail|required|unique:users,email,' . $user->id . ',id',
         ]);
+
+        if( isset($request->arabic_name)  &&  !is_null($request->arabic_name) )
+        {
+            $organizer_details =  OrganizerDetails::where('user_id',$user->id)->first() ;
+            if(!$organizer_details)
+            {
+                $organizer_details = new OrganizerDetails();
+            }
+            $organizer_details->user_id = $user->id;
+            $organizer_details->arabic_name = $request->arabic_name;
+            $organizer_details->facebook = $request->facebook;
+            $organizer_details->twitter = $request->twitter;
+            $organizer_details->instagram = $request->instagram;
+            $organizer_details->short_description_english = $request->short_description_english;
+            $organizer_details->short_description_arabic = $request->short_description_arabic;
+            $organizer_details->long_description_english = $request->long_description_english;
+            $organizer_details->long_description_arabic = $request->long_description_arabic;
+            $organizer_details->save();
+
+        }
         $data['first_name'] = $request->first_name;
         $data['last_name'] = $request->last_name;
         $data['email'] = $request->email;
@@ -137,6 +177,8 @@ class UserController extends Controller
         $user->update($data);
         $user->syncRoles($request->input('roles', []));
 
+
+        
         return redirect()->route('users.index')->withStatus(__('User has updated successfully.'));
     }
 

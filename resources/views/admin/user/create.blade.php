@@ -1,6 +1,7 @@
 @extends('master')
 
 @section('content')
+<script src="{{url('/admin/js/admin-user.js')}}"></script>
 <section class="section">
     @include('admin.layout.breadcrumbs', [
         'title' => __('Add User'),
@@ -65,7 +66,7 @@
                         <div class="form-group">
                             <label>{{__('Type')}}</label>
 
-                            <select name="roles[]" class="form-control select2" id="role">
+                            <select name="roles[]" class="form-control select2" id="role" onchange="getSelectedRoles()">
                                 @foreach ($roles as $per)
                                     <option value="{{$per['id']}}"{{ (collect(old('roles'))->contains($per->id)) ? 'selected':'' }}>{{$per['name']}}</option>
                                 @endforeach
@@ -73,6 +74,104 @@
                             @error('roles')
                             <div class="invalid-feedback" style="display: inline-block;">{{$message}}</div>
                            @endif
+
+                        </div>
+
+                        <div class="row  ">
+                         <div class="col-lg-6 display-none  organizer-class ">
+                            <div class="form-group">
+                                    <label>{{__('Arabic Name')}}</label>
+                                    <input type="text" name="arabic_name" placeholder="{{__('Arabic Name')}}" value="{{old('arabic_name')}}" class="form-control @error('arabic_name')? is-invalid @enderror">
+                                    @error('arabic_name')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
+                        </div>
+
+                         <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                    <label>{{__('Facebook')}}</label>
+                                    <input type="text" name="facebook" placeholder="{{__('Facebook')}}" value="{{old('facebook')}}" class="form-control @error('facebook')? is-invalid @enderror">
+                                    @error('facebook')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class ">
+                            <div class="form-group">
+                                    <label>{{__('Twitter')}}</label>
+                                    <input type="text" name="twitter" placeholder="{{__('Twitter')}}" value="{{old('twitter')}}" class="form-control @error('twitter')? is-invalid @enderror">
+                                    @error('twitter')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class ">
+                            <div class="form-group">
+                                    <label>{{__('Instagram')}}</label>
+                                    <input type="text" name="instagram" placeholder="{{__('Instagram')}}" value="{{old('instagram')}}" class="form-control @error('instagram')? is-invalid @enderror">
+                                    @error('instagram')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                    <label>{{ __('Short Description In English') }}</label>
+                                    <textarea name="short_description_english" Placeholder="Description"
+                                        class="textarea_editor @error('short_description_english')? is-invalid @enderror">
+                                        {{ old('short_description_english') }}
+                                    </textarea>
+                                    @error('short_description_english')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                   <label>{{ __('Short Description In Arabic') }}</label>
+                                    <textarea name="short_description_arabic" Placeholder="Description"
+                                        class="textarea_editor @error('short_description_arabic')? is-invalid @enderror">
+                                        {{ old('short_description_arabic') }}
+                                    </textarea>
+                                    @error('short_description_arabic')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+                     
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                   <label>{{ __('Long Description In English') }}</label>
+                                    <textarea name="long_description_english" Placeholder="Description"
+                                        class="textarea_editor @error('long_description_english')? is-invalid @enderror">
+                                        {{ old('long_description_english') }}
+                                    </textarea>
+                                    @error('long_description_english')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                   <label>{{ __('Long Description In Arabic') }}</label>
+                                    <textarea name="long_description_arabic" Placeholder="Description"
+                                        class="textarea_editor @error('long_description_arabic')? is-invalid @enderror">
+                                        {{ old('long_description_arabic') }}
+                                    </textarea>
+                                    @error('long_description_arabic')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+
 
                         </div>
 
@@ -97,4 +196,8 @@
           </div>
         </div>
     </section>
+
+    <script>
+        function 
+    </script>
 @endsection

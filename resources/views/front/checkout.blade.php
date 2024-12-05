@@ -12,6 +12,7 @@
         src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"
         ></script>
 <style>
+
 apple-pay-button {
   --apple-pay-button-width: 150px;
   --apple-pay-button-height: 30px;
@@ -66,7 +67,14 @@ else
 
 
 @endforeach
-
+ <script>
+        window.tamaraWidgetConfig = {
+            lang: "en",
+            country: "SA",
+            publicKey: "fd13ad11-d99c-4080-9c90-7c3d22dd47e8"
+        }
+      </script>
+      <script defer type="text/javascript" src="https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js"></script>
 
 <div class="container mt-12 md:mt-16 ">
     <div class="grid grid-cols-12 xl:gap-14">
@@ -359,10 +367,13 @@ else
             <!-- Tamara  -->
             <div class="@if(auth()->guard('appuser')->user()->email != "hitarth.rc@gmail.com") hidden @endif mb-4">
                 <!-- <div class=" hidden mb-4"> -->
+                    
+            <!-- <tamara-widget type="tamara-summary" inline-type='4' inline-variant='text'></tamara-widget> -->
                 <div
                     class="bg-gray_f  w-full rounded-2xl border border-primary_color_o10_1 p-24-16 flex justify-between items-center payments ">
                     <div class="flex gap-1">
-                        <img src="{{asset('frontAssets/images/Tamara.svg')}}" alt="">
+                       
+                        <tamara-widget type="tamara-summary" inline-type='4' amount='350' inline-variant='text'></tamara-widget>
                         <h5 class="h6">{{ __('4 interest - free payments') }}</h5>
                     </div>
                     <div>
@@ -371,9 +382,12 @@ else
                             class="h-5 w-5  border border-gray-light  hover:border-gray-light focus:outline-none mt-15" selected="selected">
                     </div>
                 </div>
+                
                 <div class="tamara   hidden bg-gray_f  w-full rounded-2xl border border-primary_color_8 p-24-16 mt-2">
-                    <h1>test</h1>
+                  
                 </div>
+                
+                
             </div>
             <!-- Tamara  -->
             @endif
@@ -798,4 +812,7 @@ else
                     document.getElementById('applePayContainer').style.display = 'none';
                 }
             </script>
+
+
+
 @endsection

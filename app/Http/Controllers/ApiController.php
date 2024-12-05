@@ -945,7 +945,16 @@ class ApiController extends Controller
               Log::info($request->all());
       foreach ($request->order as $key => $order_request) {
             $order_request = (object) $order_request; 
-            
+
+            $ticekt = Ticket::find($order_request->ticket_id);
+            $event = Event::find($order_request->event_id);
+             $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                if ($sold_ticket_count + $order_request->quantity >= $ticekt->quantity   && $event->is_repeat == 0) {
+                    $ticekt->update(['status' => 0]);
+                    return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+                }
+               
              if(!isset($order_request->event_id) || !isset($order_request->ticket_id) ||  !isset($order_request->quantity) ||  !isset($order_request->coupon_discount) ||  !isset($order_request->payment) ||  !isset($order_request->tax)
                 ||  !isset($order_request->payment_type))
                 {
@@ -1250,6 +1259,15 @@ class ApiController extends Controller
         {
             $data['order_id'] =  '#' . rand(9999, 100000);    
         }
+
+        $ticekt = Ticket::find($request->ticket_id);
+        $event = Event::find( $ticekt->event_id);
+         $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+            $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+            if ($sold_ticket_count + $order_request->quantity >= $ticekt->quantity   && $event->is_repeat == 0) {
+                $ticekt->update(['status' => 0]);
+                return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+            }
         $data['ticket_id'] = $request->ticket_id;    
         $data['event_id'] = $event->id;
         $data['customer_id'] = $user->id;
