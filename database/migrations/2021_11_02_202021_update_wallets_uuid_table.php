@@ -17,26 +17,25 @@ class UpdateWalletsUuidTable extends Migration
             return;
         }
 
-        if (!Schema::hasTable($this->table())) {
-            // upgrade from 6.x
-            Schema::table($this->table(), function (Blueprint $table) {
-                $table->uuid('uuid')
-                    ->after('slug')
-                    ->nullable()
-                    ->unique();
-            });
+        // upgrade from 6.x
+        Schema::table($this->table(), function (Blueprint $table) {
+            $table->uuid('uuid')
+                ->after('slug')
+                ->nullable()
+                ->unique()
+            ;
+        });
 
-            Wallet::query()->chunk(10000, static function (Collection $wallets) {
-                $wallets->each(function (Wallet $wallet) {
-                    $wallet->uuid = app(UuidFactoryServiceInterface::class)->uuid4();
-                    $wallet->save();
-                });
+        Wallet::query()->chunk(10000, static function (Collection $wallets) {
+            $wallets->each(function (Wallet $wallet) {
+                $wallet->uuid = app(UuidFactoryServiceInterface::class)->uuid4();
+                $wallet->save();
             });
+        });
 
-            Schema::table($this->table(), static function (Blueprint $table) {
-                $table->uuid('uuid')->change();
-            });
-        }
+        Schema::table($this->table(), static function (Blueprint $table) {
+            $table->uuid('uuid')->change();
+        });
     }
 
     public function down(): void

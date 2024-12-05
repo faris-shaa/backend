@@ -12,31 +12,28 @@ class CreateWalletsTable extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable($this->table())) {
-            Schema::create($this->table(), function (Blueprint $table) {
-                $table->bigIncrements('id');
-                $table->morphs('holder');
-                $table->string('name');
-                $table->string('slug')->index();
-                $table->uuid('uuid')->unique();
-                $table->string('description')->nullable();
-                $table->json('meta')->nullable();
-                $table->decimal('balance', 64, 0)->default(0);
-                $table->unsignedSmallInteger('decimal_places')->default(2);
-                $table->timestamps();
+        Schema::create($this->table(), function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->morphs('holder');
+            $table->string('name');
+            $table->string('slug')->index();
+            $table->uuid('uuid')->unique();
+            $table->string('description')->nullable();
+            $table->json('meta')->nullable();
+            $table->decimal('balance', 64, 0)->default(0);
+            $table->unsignedSmallInteger('decimal_places')->default(2);
+            $table->timestamps();
 
-                $table->unique(['holder_type', 'holder_id', 'slug']);
-            });
-        }
+            $table->unique(['holder_type', 'holder_id', 'slug']);
+        });
 
-        if (!Schema::hasTable($this->transactionTable())) {
-            Schema::table($this->transactionTable(), function (Blueprint $table) {
-                $table->foreign('wallet_id')
-                    ->references('id')
-                    ->on($this->table())
-                    ->onDelete('cascade');
-            });
-        }
+        Schema::table($this->transactionTable(), function (Blueprint $table) {
+            $table->foreign('wallet_id')
+                ->references('id')
+                ->on($this->table())
+                ->onDelete('cascade')
+            ;
+        });
     }
 
     public function down(): void
