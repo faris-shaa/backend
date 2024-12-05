@@ -4496,7 +4496,7 @@ class FrontendController extends Controller
 // Create a stream response as a file download
         return response()->streamDownload(
             fn() => print($pdf), // add the content to the stream
-            "invoice.pdf", // the name of the file/stream
+            "ticket.pdf", // the name of the file/stream
             $headers
         );
     }

@@ -101,8 +101,7 @@
         .content .event-image img,
         .content .qr-code img {
             width: 100%;
-            height: auto; /* Maintain aspect ratio */
-            max-height: 200px;
+            height: 300px;
             border-radius: 10px;
         }
 
@@ -150,7 +149,7 @@
         }
 
         .terms-condition div {
-            display: table-cell;
+            display: table-row;
         }
 
         .terms-condition h3 {
@@ -162,20 +161,23 @@
 
         .terms-condition ul {
             padding-left: 20px;
+            display: table;
         }
 
         .terms-condition ul li {
+            display: table-row;
             margin-bottom: 5px;
             font-size: 10px;
             color: #555;
+            word-wrap: break-word; /* Break words only when necessary */
+            white-space: normal; /* Allow proper wrapping */
+            line-height: 1.6; /* Increase line spacing for better readability */
         }
-
+        .terms-condition ul li span {
+            display: table-cell;
+        }
         [dir="rtl"] {
             text-align: right;
-        }
-
-        [dir="rtl"] ul {
-            padding-right: 20px;
         }
 
         [dir="rtl"] ul li {
@@ -185,12 +187,11 @@
         [dir="rtl"] ul {
             direction: rtl; /* Set the direction to right-to-left */
             text-align: right; /* Align the text to the right */
-            list-style-position: inside; /* Moves bullets inside the text block */
         }
 
         [dir="rtl"] ul li {
-            text-align: right; /* Ensures the text is aligned to the right */
-            direction: rtl; /* Ensures proper text flow for Arabic */
+            text-align: right !important; /* Ensures the text is aligned to the right */
+            direction: rtl !important; /* Ensures proper text flow for Arabic */
         }
 
 
@@ -296,39 +297,33 @@
             <div>
                 <h3>Terms and Conditions</h3>
                 <ul>
-                    <li>Agree to adhere to Public Decency Regulations</li>
-                    <li>Agree to adhere to venue health and safety rules and regulations</li>
-                    <li>Ticket holders may be subject to search and seizure of dangerous
-                        or banned objects
+                    <li><span>&#8226;</span><span>Agree to adhere to Public Decency Regulations</span></li>
+                    <li><span>&#8226;</span><span>Agree to adhere to venue health and safety rules and regulations</span></li>
+                    <li><span>&#8226;</span><span>Ticket holders may be subject to search and seizure of dangerous
+                        or banned objects</span>
                     </li>
-                    <li>The event organizer or security detail holds the right to confiscate
-                        items deemed dangerous or harmful to the event
+                    <li><span>&#8226;</span><span>The event organizer or security detail holds the right to confiscate
+                        items deemed dangerous or harmful to the event</span>
                     </li>
-                    <li>Ticket holders may be photographed and recorded</li>
-                    <li>
-                        The event organizer is not responsible for physical injuries,
-                        illnesses, or death, or loss or damage of property
+                    <li><span>&#8226;</span><span>Ticket holders may be photographed and recorded</span></li>
+                    <li><span>&#8226;</span><span>The event organizer is not responsible for physical injuries,
+                        illnesses, or death, or loss or damage of property</span>
                     </li>
-                    <li>
-                        The event organizer maintains the right to deny event entry or
-                        extract persons deemed in violation of the terms and conditions
+                    <li><span>&#8226;</span><span>The event organizer maintains the right to deny event entry or
+                        extract persons deemed in violation of the terms and conditions</span>
                     </li>
                 </ul>
             </div>
             <div dir="rtl">
                 <h3>الشروط والاحكام</h3>
-                <ul class="rtl-list">
-                    <li>الالتزام بالأنظمة العامة للآداب</li>
-                    <li>الالتزام بقواعد الصحة والسلامة في المكان</li>
-                    <li>قد يتم تفتيش حاملي التذاكر ومصادرة الأشياء الخطرة أو المحظورة</li>
-                    <li>يحق لمنظم الحدث أو الأمن مصادرة الأشياء التي يعتبرونها خطرة أو ضارة بالحدث</li>
-                    <li>قد يتم تصوير حاملي التذاكر وتسجيلهم</li>
-                    <li>لا يتحمل منظم الحدث المسؤولية عن الإصابات الجسدية أو الأمراض أو الوفاة
-                        أو فقدان أو تلف الممتلكات
-                    </li>
-                    <li>يحافظ منظم الحدث على الحق في رفض دخول الحدث أو إخراج الأشخاص الذين
-                        يعتبرون مخالفين للشروط والأحكام
-                    </li>
+                <ul>
+                    <li><span>الالتزام بالأنظمة العامة للآداب</span><span>&#8226;</span></li>
+                    <li><span>الالتزام بقواعد الصحة والسلامة في المكان</span><span>&#8226;</span></li>
+                    <li><span>قد يتم تفتيش حاملي التذاكرومصادرةالأشياءالخطرةأوالمحظورة</span><span>&#8226;</span></li>
+                    <li><span>يحق لمنظم الحدث أوالأمن مصادرة الأشياءالتي يعتبرونها خطرةأوضارة بالحدث</span><span>&#8226;</span></li>
+                    <li><span>قد يتم تصوير حاملي التذاكروتسجيلهم</span><span>&#8226;</span></li>
+                    <li><span>لا يتحمل منظم الحدث المسؤولية عن الإصابات الجسديةأوالأمراض أوالوفاةأو فقدان أو تلف الممتلكات</span><span>&#8226;</span></li>
+                    <li><span>يحافظ منظم الحدث على الحق في رفض دخول الحدث أو إخراج الأشخاص الذين يعتبرون مخالفين للشروط والأحكام</span><span>&#8226;</span></li>
                 </ul>
             </div>
         </div>
