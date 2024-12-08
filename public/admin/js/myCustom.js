@@ -3,50 +3,47 @@ var base_url = $('#base_url').val();
 var cur = $('#currency').val();
 var pay_fd;
 
-var language =  document.getElementById('lang').value;
-var  translations = [];
-var translate_month = [] ;
-if(language == "عربي")
-{
+var language = document.getElementById('lang').value;
+var translations = [];
+var translate_month = [];
+if (language == "عربي") {
     translations.Print = "طباعة";
     translations.Excel = "إكسل";
     translations.CSV = "ملف ";
-    translations.PDF = "ملف ";    
-    translations.NOEVENTSFOUND = "لم يتم العثور على أحداث ";    
-    translate_month.January = "يناير  "; 
-    translate_month.February = "فبراير  "; 
-    translate_month.March = "مارس  "; 
-    translate_month.April = "أبريل  "; 
-    translate_month.May = "مايو  "; 
-    translate_month.June = "يونيو  "; 
-    translate_month.July = "يوليو  "; 
-    translate_month.August = "أغسطس  "; 
-    translate_month.September = "سبتمبر  "; 
-    translate_month.October  = "أكتوبر  "; 
-    translate_month.November  = "نوفمبر  "; 
-    translate_month.December  = "ديسمبر  "; 
+    translations.PDF = "ملف ";
+    translations.NOEVENTSFOUND = "لم يتم العثور على أحداث ";
+    translate_month.January = "يناير  ";
+    translate_month.February = "فبراير  ";
+    translate_month.March = "مارس  ";
+    translate_month.April = "أبريل  ";
+    translate_month.May = "مايو  ";
+    translate_month.June = "يونيو  ";
+    translate_month.July = "يوليو  ";
+    translate_month.August = "أغسطس  ";
+    translate_month.September = "سبتمبر  ";
+    translate_month.October = "أكتوبر  ";
+    translate_month.November = "نوفمبر  ";
+    translate_month.December = "ديسمبر  ";
 }
-if(language == "English")
-{
+if (language == "English") {
     translations.Print = "Print";
     translations.Excel = "Excel";
     translations.CSV = "CSV";
-    translations.PDF = "PDF ";    
-    translations.NOEVENTSFOUND = "No Events Found ";    
-    translate_month.January = "January "; 
-    translate_month.February = "February "; 
-    translate_month.March = "March "; 
-    translate_month.April = "April "; 
-    translate_month.May = "May "; 
-    translate_month.June = "June "; 
-    translate_month.July = "July "; 
-    translate_month.August = "August "; 
-    translate_month.September = "September "; 
-    translate_month.October  = "October "; 
-    translate_month.November  = "November "; 
-    translate_month.December  = "December "; 
+    translations.PDF = "PDF ";
+    translations.NOEVENTSFOUND = "No Events Found ";
+    translate_month.January = "January ";
+    translate_month.February = "February ";
+    translate_month.March = "March ";
+    translate_month.April = "April ";
+    translate_month.May = "May ";
+    translate_month.June = "June ";
+    translate_month.July = "July ";
+    translate_month.August = "August ";
+    translate_month.September = "September ";
+    translate_month.October = "October ";
+    translate_month.November = "November ";
+    translate_month.December = "December ";
 }
-
 
 
 $(".lds-ripple").fadeOut(1500, function () {
@@ -116,13 +113,12 @@ $(document).ready(function () {
         $('.org_total').text(total);
     });
 
-    let url ="";
-    if(language == "عربي")
-    {
-         url ="//cdn.datatables.net/plug-ins/2.0.8/i18n/ar.json";
+    let url = "";
+    if (language == "عربي") {
+        url = "//cdn.datatables.net/plug-ins/2.0.8/i18n/ar.json";
     }
 
-    
+
     /*$('#report_table').DataTable({
         dom: 'Bfrtip',
         dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
@@ -180,58 +176,111 @@ $(document).ready(function () {
         },
     });*/
     $('#report_table').DataTable({
-    dom: 'Bfrtip',
-    dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+        dom: 'Bfrtip',
+        dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
     <'row'<'col-sm-12'tr>>
     <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 'lp>>`,
-    language: {
-        url: url,
-        paginate: {
-            previous: "<i class='fas fa-angle-left'>",
-            next: "<i class='fas fa-angle-right'>"
-        }
-    },
-    buttons: [{
-        text: '<i class="fas fa-print"></i> ' + translations.Print,
-        extend: 'print',
-        exportOptions: {
-            columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+        language: {
+            url: url,
+            paginate: {
+                previous: "<i class='fas fa-angle-left'>",
+                next: "<i class='fas fa-angle-right'>"
+            }
         },
-    },
-    {
-        text: '<i class="far fa-file-excel"></i> ' + translations.Excel,
-        extend: 'excelHtml5',
-        title: new Date().toLocaleString('en-ca'),
-        exportOptions: {
-            columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+        buttons: [{
+            text: '<i class="fas fa-print"></i> ' + translations.Print,
+            extend: 'print',
+            exportOptions: {
+                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            },
         },
-    },
-    {
-        text: '<i class="fas fa-file-csv"></i> ' + translations.CSV,
-        extend: 'csvHtml5',
-        title: new Date().toLocaleString('en-ca'),
-        exportOptions: {
-            columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            {
+                text: '<i class="far fa-file-excel"></i> ' + translations.Excel,
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
+            },
+            {
+                text: '<i class="fas fa-file-csv"></i> ' + translations.CSV,
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
+            },
+            {
+                text: '<i class="far fa-file-pdf"></i> ' + translations.PDF,
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
+            }],
+        columnDefs: [{
+            targets: 0, // Target the first column
+            orderable: false, // Make it non-orderable
+            render: function (data, type, row, meta) {
+                return meta.row + 1; // Return the row number
+            }
+        }],
+        // Remove the select option since we're no longer using checkboxes
+        select: false,
+    });
+    $('#order_table').DataTable({
+        dom: 'Bfrtip',
+        dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+    <'row'<'col-sm-12'tr>>
+    <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 'lp>>`,
+        language: {
+            url: url,
+            paginate: {
+                previous: "<i class='fas fa-angle-left'>",
+                next: "<i class='fas fa-angle-right'>"
+            }
         },
-    },
-    {
-        text: '<i class="far fa-file-pdf"></i> ' + translations.PDF,
-        extend: 'pdfHtml5',
-        title: new Date().toLocaleString('en-ca'),
-        exportOptions: {
-            columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+        buttons: [{
+            text: '<i class="fas fa-print"></i> ' + translations.Print,
+            extend: 'print',
+            exportOptions: {
+                columns: ':not(:nth-child(12),:last-child)',
+            },
         },
-    }],
-    columnDefs: [{
-        targets: 0, // Target the first column
-        orderable: false, // Make it non-orderable
-        render: function(data, type, row, meta) {
-            return meta.row + 1; // Return the row number
-        }
-    }],
-    // Remove the select option since we're no longer using checkboxes
-    select: false, 
-});
+            {
+                text: '<i class="far fa-file-excel"></i> ' + translations.Excel,
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(12),:last-child)',
+                },
+            },
+            {
+                text: '<i class="fas fa-file-csv"></i> ' + translations.CSV,
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
+            },
+            {
+                text: '<i class="far fa-file-pdf"></i> ' + translations.PDF,
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
+            }],
+        columnDefs: [{
+            targets: 0, // Target the first column
+            orderable: false, // Make it non-orderable
+            render: function (data, type, row, meta) {
+                return meta.row + 1; // Return the row number
+            }
+        }],
+        // Remove the select option since we're no longer using checkboxes
+        select: false,
+    });
 
 
     $('#feedback_table').DataTable({
@@ -254,31 +303,31 @@ $(document).ready(function () {
                 columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
             },
         },
-        {
-            text: '<i class="far fa-file-excel"></i> Excel',
-            extend: 'excelHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            {
+                text: '<i class="far fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
             },
-        },
-        {
-            text: '<i class="fas fa-file-csv"></i> CSV',
-            extend: 'csvHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            {
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
             },
-        },
-        {
-            text: '<i class="far fa-file-pdf"></i> PDF',
-            extend: 'pdfHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
-                columns: [0, 1, 2]
-            },
-        }
+            {
+                text: '<i class="far fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                    columns: [0, 1, 2]
+                },
+            }
         ],
         columnDefs: [{
             orderable: true,
@@ -310,31 +359,31 @@ $(document).ready(function () {
                 columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
             },
         },
-        {
-            text: '<i class="far fa-file-excel"></i> Excel',
-            extend: 'excelHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            {
+                text: '<i class="far fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
             },
-        },
-        {
-            text: '<i class="fas fa-file-csv"></i> CSV',
-            extend: 'csvHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            {
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                },
             },
-        },
-        {
-            text: '<i class="far fa-file-pdf"></i> PDF',
-            extend: 'pdfHtml5',
-            title: new Date().toLocaleString('en-ca'),
-            exportOptions: {
-                columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
-                columns: [0, 1, 2, 3]
-            },
-        }
+            {
+                text: '<i class="far fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+                exportOptions: {
+                    columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+                    columns: [0, 1, 2, 3]
+                },
+            }
         ],
         columnDefs: [{
             orderable: true,
@@ -480,50 +529,50 @@ $(document).ready(function () {
     //     }
     // });
     $('#revenue_table').DataTable({
-    dom: 'Bfrtip',
-    dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
+        dom: 'Bfrtip',
+        dom: `<'row mb-2'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>
     <'row'<'col-sm-12'tr>>
     <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 'lp>>`,
 
-    language: {
-        paginate: {
-            previous: "<i class='fas fa-angle-left'>",
-            next: "<i class='fas fa-angle-right'>"
-        }
-    },
-    buttons: [{
-        text: '<i class="fas fa-print"></i> Print',
-        extend: 'print',
-    },
-    {
-        text: '<i class="far fa-file-excel"></i> Excel',
-        extend: 'excelHtml5',
-        title: new Date().toLocaleString('en-ca'),
-    },
-    {
-        text: '<i class="fas fa-file-csv"></i> CSV',
-        extend: 'csvHtml5',
-        title: new Date().toLocaleString('en-ca'),
-    },
-    {
-        text: '<i class="far fa-file-pdf"></i> PDF',
-        extend: 'pdfHtml5',
-        title: new Date().toLocaleString('en-ca'),
-    }],
-    columnDefs: [
-        {
-            targets: 0, // Target the first column
-            orderable: false, // Make it non-orderable
-            render: function(data, type, row, meta) {
-                return meta.row + 1; // Return the row number
+        language: {
+            paginate: {
+                previous: "<i class='fas fa-angle-left'>",
+                next: "<i class='fas fa-angle-right'>"
             }
+        },
+        buttons: [{
+            text: '<i class="fas fa-print"></i> Print',
+            extend: 'print',
+        },
+            {
+                text: '<i class="far fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="far fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            }],
+        columnDefs: [
+            {
+                targets: 0, // Target the first column
+                orderable: false, // Make it non-orderable
+                render: function (data, type, row, meta) {
+                    return meta.row + 1; // Return the row number
+                }
+            }
+        ],
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api();
+            // Your existing footer calculations here...
         }
-    ],
-    footerCallback: function (row, data, start, end, display) {
-        var api = this.api();
-        // Your existing footer calculations here...
-    }
-});
+    });
 
     $('#settlement_report').DataTable({
         dom: 'Bfrtip',
@@ -541,21 +590,21 @@ $(document).ready(function () {
             text: '<i class="fas fa-print"></i> Print',
             extend: 'print',
         },
-        {
-            text: '<i class="far fa-file-excel"></i> Excel',
-            extend: 'excelHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        },
-        {
-            text: '<i class="fas fa-file-csv"></i> CSV',
-            extend: 'csvHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        },
-        {
-            text: '<i class="far fa-file-pdf"></i> PDF',
-            extend: 'pdfHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        }
+            {
+                text: '<i class="far fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="far fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            }
         ],
         columnDefs: [{
             orderable: true,
@@ -589,7 +638,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(3, { page: 'current' }).every(function () {
+            api.columns(3, {page: 'current'}).every(function () {
                 com = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -607,7 +656,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(4, { page: 'current' }).every(function () {
+            api.columns(4, {page: 'current'}).every(function () {
                 paid = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -625,7 +674,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(5, { page: 'current' }).every(function () {
+            api.columns(5, {page: 'current'}).every(function () {
                 remain = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -649,8 +698,7 @@ $(document).ready(function () {
                 next: "<i class='fas fa-angle-right'>"
             }
         },
-        buttons: [
-        ],
+        buttons: [],
         columnDefs: [{
             orderable: true,
             className: 'select-checkbox',
@@ -683,7 +731,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(3, { page: 'current' }).every(function () {
+            api.columns(3, {page: 'current'}).every(function () {
                 com = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -701,7 +749,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(4, { page: 'current' }).every(function () {
+            api.columns(4, {page: 'current'}).every(function () {
                 paid = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -719,7 +767,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(5, { page: 'current' }).every(function () {
+            api.columns(5, {page: 'current'}).every(function () {
                 remain = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -731,7 +779,7 @@ $(document).ready(function () {
 
         }
     });
-   
+
     $('#org-for-event').change(function () {
         $.ajax({
             type: "GET",
@@ -775,21 +823,21 @@ $(document).ready(function () {
             text: '<i class="fas fa-print"></i> Print',
             extend: 'print',
         },
-        {
-            text: '<i class="far fa-file-excel"></i> Excel',
-            extend: 'excelHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        },
-        {
-            text: '<i class="fas fa-file-csv"></i> CSV',
-            extend: 'csvHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        },
-        {
-            text: '<i class="far fa-file-pdf"></i> PDF',
-            extend: 'pdfHtml5',
-            title: new Date().toLocaleString('en-ca'),
-        }
+            {
+                text: '<i class="far fa-file-excel"></i> Excel',
+                extend: 'excelHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                extend: 'csvHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            },
+            {
+                text: '<i class="far fa-file-pdf"></i> PDF',
+                extend: 'pdfHtml5',
+                title: new Date().toLocaleString('en-ca'),
+            }
         ],
         columnDefs: [{
             orderable: true,
@@ -823,7 +871,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(7, { page: 'current' }).every(function () {
+            api.columns(7, {page: 'current'}).every(function () {
                 payment = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -841,7 +889,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(8, { page: 'current' }).every(function () {
+            api.columns(8, {page: 'current'}).every(function () {
                 tax = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -860,7 +908,7 @@ $(document).ready(function () {
                         return x + y;
                     }, 0);
             });
-            api.columns(9, { page: 'current' }).every(function () {
+            api.columns(9, {page: 'current'}).every(function () {
                 com = this.data()
                     .reduce(function (a, b) {
                         var x = intVal(a) || 0;
@@ -926,16 +974,15 @@ $(document).ready(function () {
         mode: 'range',
         dateFormat: "Y-m-d",
     });
-   
+
     if ($('#eventDate').val()) {
         var date_language = 'en';
-        if(language == "عربي")
-            {
-                date_language = 'ar';
-            }
+        if (language == "عربي") {
+            date_language = 'ar';
+        }
         $('#home_calender').flatpickr({
-            
-           locale: date_language ,
+
+            locale: date_language,
             inline: true,
             defaultDate: JSON.parse($('#eventDate').val()),
             dateFormat: "Y-m-d",
@@ -953,19 +1000,17 @@ $(document).ready(function () {
                         year: instance.currentYear,
                     },
                     success: function (result) {
-                        let selected_month = moment(month, 'MM').format('MMMM') ; 
-                        console.log(selected_month , translate_month[selected_month] );
-                        if(language == "عربي")
-                        {
+                        let selected_month = moment(month, 'MM').format('MMMM');
+                        console.log(selected_month, translate_month[selected_month]);
+                        if (language == "عربي") {
                             $('.calender-event h5').html(translate_month[selected_month] + ' الأحداث');
-                        }
-                        else{
+                        } else {
                             $('.calender-event h5').html(translate_month[selected_month] + ' Events');
                         }
-                        
+
                         $('.home-upcoming-event').html('');
                         if (result.data.length == 0) {
-                            $('.home-upcoming-event').html('<div class="row"> <div class="col-12 text-center"> <div class="empty-data"><div class="card-icon shadow-primary"><i class="fas fa-search"></i> </div> <h6 class="mt-3">'+translations.NOEVENTSFOUND+'</h6> </div></div></div>');
+                            $('.home-upcoming-event').html('<div class="row"> <div class="col-12 text-center"> <div class="empty-data"><div class="card-icon shadow-primary"><i class="fas fa-search"></i> </div> <h6 class="mt-3">' + translations.NOEVENTSFOUND + '</h6> </div></div></div>');
                         } else {
                             result.data.forEach(element => {
                                 $('.home-upcoming-event').append('<div class="row mb-4"><div class="col-3"><div class="date-left"><h3 class="mb-0">' + element.date + '</h3><p class="mb-0">' + element.day + '</p></div></div><div class="col-9 event-right"><p class="mb-0 name">' + element.name + '</p><p class="mb-0">Ticket Sold <span>' + element.sold_ticket + '/' + element.tickets + '</span></p><div class="progress progress-sm mb-3" ><div class="progress-bar" id="progress-' + element.id + '" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div> </div></div></div>');
@@ -982,7 +1027,6 @@ $(document).ready(function () {
             }
         });
     }
-
 
 
     $('#start_date,#end_date').flatpickr({
@@ -1184,11 +1228,13 @@ function payLocally() {
     pay_fd.append('payment_status', 1);
     payToOrg();
 }
+
 function payBank() {
     pay_fd.append('payment_type', "BANK");
     pay_fd.append('payment_status', 1);
     payToOrg();
 }
+
 function payToOrg() {
     $.ajax({
         headers: {
@@ -1223,13 +1269,14 @@ function changeOrderStatus(id) {
     $.ajax({
         url: 'order/changestatus',
         method: 'post',
-        data: { id: id, order_status: order_status, _token: $('meta[name="csrf-token"]').attr('content') },
+        data: {id: id, order_status: order_status, _token: $('meta[name="csrf-token"]').attr('content')},
         success: function (res) {
             if (order_status == 'Complete' || order_status == 'Cancel') {
                 $(con).prop("disabled", true);
             }
         },
-        error: function (error) { }
+        error: function (error) {
+        }
     });
 }
 
@@ -1263,7 +1310,7 @@ $('#TestMail').on('click', function (event) {
     $('.emailstatus').html('<div class=" mt-3"><h6>Sending...</h6></div>');
     $.ajax({
         type: "GET",
-        data: { mail_to: mail_to },
+        data: {mail_to: mail_to},
         url: base_url + '/check-email',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1325,30 +1372,31 @@ function checkboxChanged(checkbox) {
 function stopwork(params) {
     alert("Sorry, but you're not authorized to perform this action on the demo version.");
 }
-$('#payButton').on('click',function(){
+
+$('#payButton').on('click', function () {
     var orgId = $(this).data('id');
     var total = $(this).data('total');
     var key = null;
     $.ajax({
         type: "post",
         headers: {
-        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         url: "org-key",
         data: {
-            "id":orgId
+            "id": orgId
         },
         dataType: "json",
         success: function (response) {
-            key  = response.key;
-            if (response.key == null){
-                $('#stripebtn').attr('disabled',true);
-            }else{
-                $('#stripebtn').attr('disabled',false);
+            key = response.key;
+            if (response.key == null) {
+                $('#stripebtn').attr('disabled', true);
+            } else {
+                $('#stripebtn').attr('disabled', false);
             }
         }
     });
-    $('#stripebtn').on('click',function(e){
+    $('#stripebtn').on('click', function (e) {
         var stripe = Stripe(key);
         var origin = window.location.origin;
         var url = origin + "/organization/stripe/create-session";
@@ -1359,14 +1407,14 @@ $('#payButton').on('click',function(){
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             data: {
-                id:orgId,
-                total:total,
+                id: orgId,
+                total: total,
             },
             dataType: "json",
             success: function (session) {
                 stripe.redirectToCheckout({
-                        sessionId: session.id,
-                    })
+                    sessionId: session.id,
+                })
                     .then(function (result) {
                         if (result.error) {
                             alert(result.error.message);
@@ -1379,8 +1427,8 @@ $('#payButton').on('click',function(){
         });
     });
 });
-function checkDateValidation()
-{
+
+function checkDateValidation() {
     var ticketId = $('#ticketId').val();
     $.ajax({
         type: "post",
@@ -1389,13 +1437,13 @@ function checkDateValidation()
         },
         url: "get-tickets-details",
         data: {
-            id : ticketId
+            id: ticketId
         },
         dataType: "JSON",
         success: function (response) {
             if (response.allday == 0) {
                 $('.ticketdiv').removeClass('d-none');
-            }else{
+            } else {
                 $('.ticketdiv').addClass('d-none');
             }
         }
