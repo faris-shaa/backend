@@ -7,6 +7,7 @@
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/admin/js/myCustom.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/admin/js/myCustom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/admin/order/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/admin/order/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +267,7 @@
       <workItem from="1733309208171" duration="7809000" />
       <workItem from="1733332782307" duration="13418000" />
       <workItem from="1733422008506" duration="964000" />
-      <workItem from="1733651428064" duration="1218000" />
+      <workItem from="1733651428064" duration="1554000" />
     </task>
     <servers />
   </component>

@@ -79,7 +79,7 @@ $currency = \App\Models\Setting::first()->currency;
                   </div>
 
                   <div class="table-responsive">
-                     <table class="table" id="report_table" style="width: 100%;">
+                     <table class="table" id="order_table" style="width: 100%;">
                         <thead>
                            <tr>
                               <th></th>
