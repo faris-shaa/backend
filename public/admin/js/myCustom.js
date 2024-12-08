@@ -203,7 +203,7 @@ $(document).ready(function () {
         extend: 'excelHtml5',
         title: new Date().toLocaleString('en-ca'),
         exportOptions: {
-            columns: ':not(:nth-child(10),:nth-child(12),:last-child)',
+            columns: ':not(:nth-child(12),:last-child)',
         },
     },
     {
