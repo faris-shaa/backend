@@ -1162,15 +1162,18 @@ class FrontendController extends Controller
             $queryParams = request()->query();
             $queryParams['google_login'] = '0';
 
-            Session::put('google_var', $queryParams);
-            /*$queryParams = Session::get("google_var");
-            dd($queryParams);
-            unset($queryParams['google_login']);
-            
-            Session::put("google_var",$queryParams);*/
-            Session::put('event_id', $id);
+//            Session::put('google_var', $queryParams);
+//            /*$queryParams = Session::get("google_var");
+//            dd($queryParams);
+//            unset($queryParams['google_login']);
+//
+//            Session::put("google_var",$queryParams);*/
+//            Session::put('event_id', $id);
 
-            return redirect('auth/google');
+            $state = [];
+            $state["intended_url"] = $request->url() . "?" . http_build_query($queryParams ?? []);
+            $state = json_encode($state);
+            return redirect("auth/google?state=$state");
         }
         $user_id_session = Session::get("user_id");
 
@@ -1709,13 +1712,13 @@ class FrontendController extends Controller
 
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
 
-                $event = Event::find( $ticekt->event_id);
-                 $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-                    if ($sold_ticket_count + $ticket_array['quantity']  >= $ticekt->quantity   && $event->is_repeat == 0) {
-                        $ticekt->update(['status' => 0]);
-                        return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
-                    }
+                $event = Event::find($ticekt->event_id);
+                $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                if ($sold_ticket_count + $ticket_array['quantity'] >= $ticekt->quantity && $event->is_repeat == 0) {
+                    $ticekt->update(['status' => 0]);
+                    return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+                }
 
                 for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
                     $count_quantity = $count_quantity + 1;
@@ -4088,15 +4091,20 @@ class FrontendController extends Controller
 
     public function redirectToGoogle()
     {
-
-        $query = http_build_query([
+        $queryParam = [
             'client_id' => env('GOOGLE_CLIENT_ID'),
             'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
             'response_type' => 'code',
             'scope' => 'email profile openid',
             'access_type' => 'offline',
             'prompt' => 'select_account',
-        ]);
+        ];
+
+        if (\request("state")) {
+            $queryParam['state'] = \request("state");
+        }
+
+        $query = http_build_query($queryParam);
         $url = 'https://accounts.google.com/o/oauth2/auth?' . $query;
 
 
