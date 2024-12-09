@@ -2,6 +2,8 @@
 @section('title', __('Event Details'))
 @php
    $gmapkey = \App\Models\Setting::find(1)->map_key;
+   $length_description = strlen($event['description']);
+
 @endphp
 @section('content')
    <style type="text/css">
@@ -259,16 +261,16 @@
          </div>
       </div> -->
       </div>
-      <div class="bg-light bg-opacity-5 rounded-2xl border border-primary_color_o10_1  p-2  md:p-32-24 mt-4 lg:mt-8">
-         <h3 class="text-primary_color_6 font-medium text-h4 lg:text-h3">{{ __('About Event') }}</h3>
-         <p class="h5 lg:h4 mt-4 paragraph-3 max-h-96 overflow-x-auto ">
-            {!! $lang == 'ar' ? $event['description_arabic'] : $event['description']  !!}
-         </p>
-         <span class="flex items-center gap-2 mt-3 py-1 cursor-pointer">
-         <span class="h7 lg:h4 showMore"><span class="more">{{__(key: 'Show more ...')}}</span> <span
-                    class="less hidden"> {{__(key: 'Show less ...')}}</span></span>
+       <div class="bg-light bg-opacity-5 rounded-2xl border border-primary_color_a11  p-3  md:p-32-24 mt-2 lg:mt-8">
+      <h3 class="text-primary_color_6 font-medium text-h6 md:text-h3">{{ __('About Event') }}</h3>
+      <p class="text-h13 font-normal md:text-h4 mt-1 md:mt-2 paragraph-3 max-h-96 overflow-x-auto ">
+        {!! $lang == 'ar' ? $event['description_arabic'] : $event['description']  !!}
+      </p>
+      <span id="showMore" class=" flex items-center gap-2 mt-1 py-1 cursor-pointer hidden">
+         <span class="text-h6 lg:text-h4 showMore "><span class="more">{{__(key: 'Show more ...')}}</span> <span class="less hidden"> {{__(key: 'Show less ...')}}</span></span>
       </span>
-      </div>
+   </div>
+      <!-- -->
       <div class="bg-light bg-opacity-5 rounded-2xl border border-primary_color_o10_1  p-2  md:p-32-24 mt-4 lg:mt-8">
          <div data-accordion="terms_conditions" class="accordion flex items-center   justify-between cursor-pointer">
             <h3 class="text-primary_color_6 font-medium text-h4 lg:text-h3">{{__( 'Terms and conditions')}}</h3>
@@ -563,7 +565,10 @@
 
 
 
+<script>
 
+   var length_description = '{{  $length_description }}';
+</script>
    @if (!Auth::guard('appuser')->check())
       <script>
          var isAuthenticated = false;
@@ -1126,14 +1131,23 @@
          });
       }
 
-
-      $(document).ready(function () {
+      $(document).ready(function() {
+      if (length_description > 200) {
+         $('#showMore').removeClass("hidden")
+      }
+      $('.showMore').click(function() {
+         $('p').toggleClass('paragraph-3');
+         $('.showMore .more').toggleClass('hidden')
+         $('.showMore .less').toggleClass('hidden')
+      });
+   });
+      /*$(document).ready(function () {
          $('.showMore').click(function () {
             $('p').toggleClass('paragraph-3');
             $('.showMore .more').toggleClass('hidden')
             $('.showMore .less').toggleClass('hidden')
          });
-      });
+      });*/
       $('.accordion').on('click', function () {
          toggleAccordion($(this).data('accordion'));
       });

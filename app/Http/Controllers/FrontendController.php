@@ -4483,20 +4483,9 @@ class FrontendController extends Controller
     public function pdfTest()
     {
 
-        $html = view('ticket-pdf')->toArabicHTML();
+        $html = view('ticket-pdf');//->toArabicHTML();
 
-        $pdf = FacadePdf::loadHTML($html)
-            ->setPaper('a4', 'portrait') // Explicitly set paper size
-            ->setOptions([
-                'margin-top' => "auto",
-                'margin-right' => 20,
-                'margin-bottom' => "auto",
-                'margin-left' => 20,
-                'page-height' => 297, // A4 height in mm
-                'page-width' => 210,  // A4 width in mm
-                "temp_dir" => public_path("tmp")
-            ])
-            ->output();
+        $pdf = FacadePdf::loadHTML($html)->output();
 
         $headers = array(
             "Content-type" => "application/pdf",
@@ -4505,8 +4494,16 @@ class FrontendController extends Controller
 // Create a stream response as a file download
         return response()->streamDownload(
             fn() => print($pdf), // add the content to the stream
-            "ticket.pdf", // the name of the file/stream
+            "invoice.pdf", // the name of the file/stream
             $headers
         );
+
+
+        // Load the Blade view and pass data to it
+        $pdf = FacadePdf::loadView('ticket-pdf');
+
+        // Download the generated PDF
+        return $pdf->download('myfile.pdf');
+
     }
 }

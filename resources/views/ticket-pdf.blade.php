@@ -7,69 +7,117 @@
     <style>
         * {
             font-family: DejaVu Sans !important;
-            margin: auto 0;
-            padding: 0;
         }
 
         body {
-            font-size: 13px;
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            margin: 0;
-            margin-top: 50px;
-            padding: 0;
-            width: 100%;
-            background-color: white;
-            page-break-inside: avoid;
+            font-size: 16px;
+            font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;
+            padding: 10px;
+            margin: 10px;
+
+            color: #777;
         }
 
-        .ticket-wrapper {
-            display: table; /* Use display: table on the wrapper */
+
+        body {
+            color: #777;
+            text-align: right;
+        }
+
+        body h1 {
+
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+            color: #000;
+        }
+
+        body h3 {
+
+            margin-top: 10px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        body a {
+            color: #06f;
+        }
+
+        @page {
+            size: a4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /*.invoice-box table {*/
+        /*    direction: ltr;*/
+        /*    width: 100%;*/
+        /*    text-align: right;*/
+        /*    border: 1px solid;*/
+        /*    font-family: 'DejaVu Sans', 'Roboto', 'Montserrat', 'Open Sans', sans-serif;*/
+        /*}*/
+
+
+        /*.row {*/
+        /*    display: block;*/
+        /*    padding-left: 24;*/
+        /*    padding-right: 24;*/
+        /*    page-break-before: avoid;*/
+        /*    page-break-after: avoid;*/
+        /*}*/
+
+        /*.column {*/
+        /*    display: block;*/
+        /*    page-break-before: avoid;*/
+        /*    page-break-after: avoid;*/
+        /*}*/
+
+        body {
+            font-family: 'Amiri', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             width: 100%;
-            height: 100%;
-            text-align: center; /* Optional: Center horizontally */
-            vertical-align: middle; /* Optional: Center vertically */
         }
 
         .ticket {
-            max-width: 90%; /* Ensures the ticket doesn't exceed the page width */
-            margin: auto; /* Center horizontally and vertically */
+            width: 800px;
+            max-width: 100%;
+            margin: auto;
             padding: 20px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            text-align: left; /* Ensure left-aligned text for content */
-        }
-
-        .ticket-header {
-            width: 100%;
-            margin: 0 auto; /* Centers the header within the ticket */
-            margin-bottom: 20px;
-            display: table;
-        }
-
-        .ticket-header img {
-            display: table-cell;
-            width: 100px;
-            vertical-align: middle;
-        }
-
-        .ticket-header .ticket-number {
-            display: table-cell;
-            text-align: right;
-            font-size: 13px;
-            vertical-align: middle;
+            background-color: #fff;
+            box-shadow: none; /* PDF does not support shadows */
         }
 
         .ticket-body {
-            width: 100%; /* Subtract padding from the total width */
-            margin: 0 auto; /* Centers the body within the ticket */
-            background: #f1eff3;
-            border-radius: 10px;
+            page-break-inside: avoid; /* Prevents splitting the ticket across pages */
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .ticket-container {
-            padding: 20px;
+        .ticket-header img {
+            height: 50px;
+        }
+
+        .ticket-header .ticket-number {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .ticket-header .ticket-number span, .ticket-header .ticket-number strong {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+
+        .ticket-body {
+            background-color: #f1eff3;
+            padding: 30px;
+            border-radius: 20px;
         }
 
         .ticket-title {
@@ -78,254 +126,222 @@
         }
 
         .ticket-title h1 {
-            font-size: 18px;
+            font-size: 24px;
+            margin: 0;
             color: #333;
         }
 
         .content {
-            width: 100%;
-            display: table; /* Ensures equal heights for child elements */
-            margin: 0 auto 20px auto; /* Centers the content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .content .event-image,
-        .content .qr-code {
-            display: table-cell;
-            width: 50%; /* Divide evenly */
-            padding: 10px;
-            text-align: center; /* Center content within the cell */
-            vertical-align: middle;
+        .event-image, .qr-code {
+            width: 45%; /* Both containers have the same width */
+            aspect-ratio: 1; /* Ensures both containers are square */
+            position: relative;
             border-radius: 10px;
+            background-color: #fff;
+            overflow: hidden; /* Prevents overflow of image */
         }
 
-        .content .event-image img,
-        .content .qr-code img {
+        .event-image img, .qr-code img {
             width: 100%;
-            height: 300px;
+            height: 100%;
+            object-fit: cover; /* Ensures images fill the container without distortion */
             border-radius: 10px;
         }
 
         .details-section {
             margin-top: 20px;
-            width: 100%;
-            margin: 0 auto; /* Centers the section */
+            font-size: 14px;
+            color: #555;
         }
 
         .details-section .section-title {
-            font-size: 15px;
+            font-size: 25px;
+            font-weight: bold;
             color: #6a1b9a;
             margin-bottom: 10px;
-            text-align: start; /* Center the title */
         }
 
-        .details-table {
-            width: 100%; /* Full width for the table */
-            margin: 0 auto; /* Centers the table within its container */
-            border-spacing: 10px;
-            border-collapse: separate;
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Four columns of equal width */
+            gap: 10px;
         }
 
-        .details-table td {
+        .details-grid div {
             background: white;
-            border: 1px solid #e5e5e5;
+            border: solid #e5e5e5 1px;
             padding: 10px;
-            text-align: left;
-            font-size: 10px;
-            color: black;
             border-radius: 10px;
-        }
-
-        .details-table td span {
-            font-weight: bold;
-            color: #555;
+            text-align: start;
+            font-size: 14px;
+            color: black;
         }
 
         .terms-condition {
-            display: table;
-            width: 100%;
-            margin: 0 auto; /* Centers the terms section */
+            display: grid;
             margin-top: 20px;
-            page-break-inside: avoid;
+            page-break-inside: avoid; /* Avoid splitting terms and conditions */
+            grid-template-columns: repeat(2, 1fr); /* Four columns of equal width */
+            gap: 10px;
         }
 
         .terms-condition div {
-            display: table-row;
-        }
-
-        .terms-condition h3 {
+            background: white;
+            border: solid #e5e5e5 1px;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: start;
             font-size: 14px;
-            color: #333;
-            margin-bottom: 10px;
-            text-align: start; /* Center the heading */
+            color: black;
         }
 
-        .terms-condition ul {
-            padding-left: 20px;
-            display: table;
-        }
-
-        .terms-condition ul li {
-            display: table-row;
-            margin-bottom: 5px;
-            font-size: 10px;
-            color: #555;
-            word-wrap: break-word; /* Break words only when necessary */
-            white-space: normal; /* Allow proper wrapping */
-            line-height: 1.6; /* Increase line spacing for better readability */
-        }
-        .terms-condition ul li span {
-            display: table-cell;
-        }
-        [dir="rtl"] {
-            text-align: right;
-        }
-
-        [dir="rtl"] ul li {
-            text-align: right;
-        }
-
-        [dir="rtl"] ul {
-            direction: rtl; /* Set the direction to right-to-left */
-            text-align: right; /* Align the text to the right */
-        }
-
-        [dir="rtl"] ul li {
-            text-align: right !important; /* Ensures the text is aligned to the right */
-            direction: rtl !important; /* Ensures proper text flow for Arabic */
-        }
-
-
-        @page {
-            size: A4; /* Adjust to Letter or other dimensions if needed */
-            margin: 0px;
-        }
     </style>
 </head>
 <body>
-<div class="ticket-wrapper">
-    <div class="ticket">
-        <div class="ticket-header">
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents( public_path("images/admin-logo-welcome.png") ))}}"
-                 alt="Logo">
-            <div class="ticket-number">
-                <span>Ticket Number</span>
-                <strong>231557</strong>
+<div class="ticket">
+    <div class="ticket-header">
+        <img src="{{ asset("images/admin-logo-welcome.png") }}" alt="Logo">
+        <div class="ticket-number">
+            <span>Ticket Number</span>
+            <strong>231557</strong>
+        </div>
+    </div>
+    <div class="ticket-body">
+        <div class="ticket-title">
+            <h1>Electronic Ticket</h1>
+        </div>
+        <div class="content">
+            <div class="event-image">
+                <img src="https://ticketby.co/images/upload/6718a1305bb7c.jpeg" alt="Event Image">
+            </div>
+            <div class="qr-code">
+                <img src="https://eta.st/assets/img/rsp6/initial-barcode.png" alt="QR Code">
             </div>
         </div>
-        <div class="ticket-body">
-            <div class="ticket-container">
-                <div class="ticket-title">
-                    <h1>Electronic Ticket</h1>
-                </div>
-                <div class="content">
-                    <div class="event-image">
-                        <img
-                                src="data:image/png;base64,{{ base64_encode(file_get_contents( "https://ticketby.co/images/upload/image_1733129778.png" ))}}"
-                                alt="Event Image">
-                    </div>
-                    <div class="qr-code">
-                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents( "https://eta.st/assets/img/rsp6/initial-barcode.png" ))}}"
-                             alt="QR Code">
-                    </div>
-                </div>
+    </div>
 
-            </div>
-        </div>
-
-        <div class="details-section">
-            <div class="section-title">Afro House Night</div>
-            <table class="details-table">
-                <tr>
-                    <td>
-                        <span>Category</span> | <span dir="rtl">القسم</span>
-                        <br><strong>C</strong>
-                    </td>
-                    <td>
-                        <span>Show Start</span> | <span dir="rtl">بداية العرض</span>
-                        <br><strong>20:30 Mon, 29 Apr 24</strong>
-                    </td>
-                    <td>
-                        <span>Gate Close</span> | <span dir="rtl">اغلاق البوابات</span>
-                        <br><strong>23:00</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span>Entrance</span> | <span dir="rtl">بوابة الدخول</span>
-                        <br><strong>C</strong>
-                    </td>
-                    <td>
-                        <span>Row</span> | <span dir="rtl">الصف</span>
-                        <br><strong>FF18</strong>
-                    </td>
-                    <td>
-                        <span>Seat</span> | <span dir="rtl">المقعد</span>
-                        <br><strong>23</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span>Location</span> | <span dir="rtl">الموقع</span>
-                        <br><strong>King Fahd</strong>
-                    </td>
-                    <td>
-                        <span>Price</span> | <span dir="rtl">السعر</span>
-                        <br><strong>100.00SAR incl. of 15%VAT</strong>
-                    </td>
-                    <td>
-                        <span>Age Limit</span> | <span dir="rtl">العمر المحدد</span>
-                        <br><strong>15+</strong>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span>Name</span> | <span dir="rtl">الاسم</span>
-                        <br><strong>Selim Zahran</strong>
-                    </td>
-                    <td>
-                        <span>Type</span> | <span dir="rtl">نوع التذكرة</span>
-                        <br><strong>C</strong>
-                    </td>
-                    <td>
-                        <span>Ticket</span> | <span dir="rtl">رقم التذكرة</span>
-                        <br><strong>231557765323456</strong>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="terms-condition">
+    <div class="details-section">
+        <div class="section-title">Afro House Night</div>
+        <div class="details-grid">
             <div>
-                <h3>Terms and Conditions</h3>
-                <ul>
-                    <li><span>&#8226;</span><span>Agree to adhere to Public Decency Regulations</span></li>
-                    <li><span>&#8226;</span><span>Agree to adhere to venue health and safety rules and regulations</span></li>
-                    <li><span>&#8226;</span><span>Ticket holders may be subject to search and seizure of dangerous
-                        or banned objects</span>
-                    </li>
-                    <li><span>&#8226;</span><span>The event organizer or security detail holds the right to confiscate
-                        items deemed dangerous or harmful to the event</span>
-                    </li>
-                    <li><span>&#8226;</span><span>Ticket holders may be photographed and recorded</span></li>
-                    <li><span>&#8226;</span><span>The event organizer is not responsible for physical injuries,
-                        illnesses, or death, or loss or damage of property</span>
-                    </li>
-                    <li><span>&#8226;</span><span>The event organizer maintains the right to deny event entry or
-                        extract persons deemed in violation of the terms and conditions</span>
-                    </li>
-                </ul>
+                <span>Category</span>
+                |
+                <span dir="rtl">القسم</span>
+                <br><strong>C</strong>
             </div>
-            <div dir="rtl">
-                <h3>الشروط والاحكام</h3>
-                <ul>
-                    <li><span>الالتزام بالأنظمة العامة للآداب</span><span>&#8226;</span></li>
-                    <li><span>الالتزام بقواعد الصحة والسلامة في المكان</span><span>&#8226;</span></li>
-                    <li><span>قد يتم تفتيش حاملي التذاكرومصادرةالأشياءالخطرةأوالمحظورة</span><span>&#8226;</span></li>
-                    <li><span>يحق لمنظم الحدث أوالأمن مصادرة الأشياءالتي يعتبرونها خطرةأوضارة بالحدث</span><span>&#8226;</span></li>
-                    <li><span>قد يتم تصوير حاملي التذاكروتسجيلهم</span><span>&#8226;</span></li>
-                    <li><span>لا يتحمل منظم الحدث المسؤولية عن الإصابات الجسديةأوالأمراض أوالوفاةأو فقدان أو تلف الممتلكات</span><span>&#8226;</span></li>
-                    <li><span>يحافظ منظم الحدث على الحق في رفض دخول الحدث أو إخراج الأشخاص الذين يعتبرون مخالفين للشروط والأحكام</span><span>&#8226;</span></li>
-                </ul>
+            <div>
+                <span>Show Start</span>
+                |
+                <span dir="rtl">بداية العرض</span>
+                <br><strong>20:30 Mon, 29 Apr 24</strong>
             </div>
+            <div>
+                <span>Gate Close</span>
+                |
+                <span dir="rtl">اغلاق البوابات</span>
+                <br><strong>23:00</strong>
+            </div>
+            <div>
+                <span>Entrance</span>
+                |
+                <span dir="rtl">بوابة الدخول</span>
+                <br><strong>C</strong>
+            </div>
+            <div>
+                <span>Row</span>
+                |
+                <span dir="rtl">الصف</span>
+                <br><strong>FF18</strong>
+            </div>
+            <div>
+                <span>Seat</span>
+                |
+                <span dir="rtl">المقعد</span>
+                <br><strong>23</strong>
+            </div>
+            <div>
+                <span>Location</span>
+                |
+                <span dir="rtl">الموقع</span>
+                <br><strong>King Fahd</strong>
+            </div>
+            <div>
+                <span>Price</span>
+                |
+                <span dir="rtl">السعر</span>
+                <br><strong>100.00SAR incl. of 15%VAT</strong>
+            </div>
+            <div>
+                <span>Age Limit</span>
+                |
+                <span dir="rtl">العمر المحدد</span>
+                <br><strong>15+</strong>
+            </div>
+            <div>
+                <span>Name</span>
+                |
+                <span dir="rtl">الاسم</span>
+                <br><strong>Selim Zahran</strong>
+            </div>
+            <div>
+                <span>Type</span>
+                |
+                <span dir="rtl">نوع التذكرة</span>
+                <br><strong>C</strong>
+            </div>
+            <div>
+                <span>Ticket</span>
+                |
+                <span dir="rtl">رقم التذكرة</span>
+                <br><strong>231557765323456</strong>
+            </div>
+        </div>
+    </div>
+    <div class="terms-condition">
+        <div>
+            <h3>Terms and Conditions</h3>
+            <ul>
+                <li>Agree to adhere to Public Decency Regulations</li>
+                <li>Agree to adhere to venue health and safety rules and regulations</li>
+                <li>Ticket holders may be subject to search and seizure of dangerous
+                    or banned objects
+                </li>
+                <li>The event organizer or security detail holds the right to confiscate
+                    items deemed dangerous or harmful to the event
+                </li>
+                <li>Ticket holders may be photographed and recorded</li>
+                <li>
+                    The event organizer is not responsible for physical injuries,
+                    illnesses, or death, or loss or damage of property
+                </li>
+                <li>
+                    The event organizer maintains the right to deny event entry or
+                    extract persons deemed in violation of the terms and conditions
+                </li>
+            </ul>
+        </div>
+        <div dir="rtl">
+            <h3>الشروط والاحكام</h3>
+            <ul>
+                <li>الالتزام بالأنظمة العامة للآداب</li>
+                <li>الالتزام بقواعد الصحة والسلامة في المكان</li>
+                <li>قد يتم تفتيش حاملي التذاكر ومصادرة الأشياء الخطرة أو المحظورة</li>
+                <li>يحق لمنظم الحدث أو الأمن مصادرة الأشياء التي يعتبرونها خطرة أو ضارة بالحدث</li>
+                <li>قد يتم تصوير حاملي التذاكر وتسجيلهم</li>
+                <li>لا يتحمل منظم الحدث المسؤولية عن الإصابات الجسدية أو الأمراض أو الوفاة
+                    أو فقدان أو تلف الممتلكات
+                </li>
+                <li>يحافظ منظم الحدث على الحق في رفض دخول الحدث أو إخراج الأشخاص الذين
+                    يعتبرون مخالفين للشروط والأحكام
+                </li>
+            </ul>
         </div>
     </div>
 </div>

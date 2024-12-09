@@ -108,7 +108,7 @@
                                                         @endif
                                                     </td>
                                                 @endif
-                                                @if(Auth::user()->email == "info@wasltec.com" )
+                                                @if(Auth::user()->email == "info@wasltec.com" ||  Auth::user()->email == "Randaaboukersh2024@gmail.com" )
                                                 <td class="dropdown-parent">
                                                 <div class="dropdown"><a href="#" data-toggle="dropdown"
                                                         class="nav-link dropdown-toggle nav-link-lg nav-link-user">

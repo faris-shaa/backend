@@ -1238,6 +1238,8 @@ class ApiController extends Controller
         $order->order_status = $request->order_status == "Completed" ?  "Complete"  : $request->order_status;
         $order->save();
 
+
+        $this->sendOrderMail($request->id);
         return response()->json(['success' => true, 'msg' => null , 'data' => $order], 200);
     }
 
@@ -1338,6 +1340,16 @@ class ApiController extends Controller
        
 
         $order = Order::create($data);
+
+        if(isset($order_request->phone))
+        {
+            $pos = new PosOrder();
+            $pos->order_id  = $data->id; 
+            $pos->phone  = $order_request->phone; 
+            $pos->customername  = $order_request->customername; 
+            $pos->customeremail  = $order_request->customeremail; 
+            $pos->save();
+        }   
         $module = Module::where('module', 'Seatmap')->first();
         if ($module->is_enable == 1 && $module->is_install == 1) {
             $seats = explode(',', $data['selectedSeatsId']);
@@ -2361,7 +2373,7 @@ class ApiController extends Controller
 
     public function bannerDetails ( Request $request )
     {
-        $banner = Banner::get();
+        $banner = Banner::where('status',1)->get();
         $banner_array = array();
         foreach($banner  as  $banner_data)
         {
