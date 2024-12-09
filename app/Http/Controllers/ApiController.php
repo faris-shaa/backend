@@ -1260,14 +1260,26 @@ class ApiController extends Controller
             $data['order_id'] =  '#' . rand(9999, 100000);    
         }
 
-        $ticekt = Ticket::find($request->ticket_id);
+          
+        if(!isset($request->ticket_id))
+        {
+            foreach ($request->tickets as $key_tickets => $value_tickets) {
+                $ticekt = Ticket::find($value_tickets['ticket_id'] );  
+                break; 
+                        
+            }      
+        }
+        else
+        {
+             $ticekt = Ticket::find($request->ticket_id);
+        }
         $event = Event::find( $ticekt->event_id);
-         $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-            $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-            if ($sold_ticket_count + $order_request->quantity >= $ticekt->quantity   && $event->is_repeat == 0) {
-                $ticekt->update(['status' => 0]);
-                return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
-            }
+         // $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+         //    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+         //    if ($sold_ticket_count + $->quantity >= $ticekt->quantity   && $event->is_repeat == 0) {
+         //        $ticekt->update(['status' => 0]);
+         //        return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+         //    }
         $data['ticket_id'] = $request->ticket_id;    
         $data['event_id'] = $event->id;
         $data['customer_id'] = $user->id;

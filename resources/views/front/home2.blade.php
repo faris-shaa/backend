@@ -535,7 +535,7 @@ $error = $response->json();
                             <div class="h-32 md:h-48 sm-event">
                                  
                                  <img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">
-                                 ${item.totalTickets <= item.soldTickets ? `<div class="sold-out">Sold Out</div>` :  ``} 
+                                 ${item.totalTickets <= item.soldTickets &&  item.is_repeat != 1  ? `<div class="sold-out">Sold Out</div>` :  ``} 
                               </div>
                                 <div class="relative flex gap-1 md:gap-4 p-1 md:p-4 flex-wrap md:flex-nowrap flex-col lg:flex-row min-height-80">
                                     <div class="text-center flex  items-baseline gap-1 md:gap-0 md:flex-col">

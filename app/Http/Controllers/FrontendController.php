@@ -1157,7 +1157,7 @@ class FrontendController extends Controller
     public function checkout(Request $request, $id)
     {
 
-        if (isset($request->google_login) && $request->google_login == 1) {
+        if (isset($request->google_login) && $request->google_login == 1 && !isset(Auth::guard('appuser')->user()->id)) {
             $request->google_login = 0;
             $queryParams = request()->query();
             $queryParams['google_login'] = '0';
@@ -1708,6 +1708,15 @@ class FrontendController extends Controller
             foreach ($tickets as $key => $ticket_array) {
 
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
+
+                $event = Event::find( $ticekt->event_id);
+                 $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                    if ($sold_ticket_count + $ticket_array['quantity']  >= $ticekt->quantity   && $event->is_repeat == 0) {
+                        $ticekt->update(['status' => 0]);
+                        return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+                    }
+
                 for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
                     $count_quantity = $count_quantity + 1;
                     $child['ticket_number'] = uniqid();
