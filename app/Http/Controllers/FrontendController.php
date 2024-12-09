@@ -1171,7 +1171,7 @@ class FrontendController extends Controller
 //            Session::put('event_id', $id);
 
             $state = [];
-            $state["intended_url"] = $request->url() . "?" . http_build_query($queryParams ?? []);
+            $state["intended_url"] = $request->path() . "?" . http_build_query($queryParams ?? []);
             $state = urlencode(json_encode($state));
 
             return redirect("auth/google?state=$state");
