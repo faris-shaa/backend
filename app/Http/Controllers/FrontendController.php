@@ -1172,7 +1172,8 @@ class FrontendController extends Controller
 
             $state = [];
             $state["intended_url"] = $request->url() . "?" . http_build_query($queryParams ?? []);
-            $state = json_encode($state);
+            $state = urlencode(json_encode($state));
+
             return redirect("auth/google?state=$state");
         }
         $user_id_session = Session::get("user_id");
@@ -1212,7 +1213,7 @@ class FrontendController extends Controller
             }
         }*/
 
-        // for new design 
+        // for new design
         if ($request->ids) {
 
             $ticketIdsString = $request->ids;
@@ -4111,9 +4112,16 @@ class FrontendController extends Controller
         return redirect('https://accounts.google.com/o/oauth2/auth?' . $query);
     }
 
+
     public function handleGoogleCallback(Request $request)
     {
+        $intendedUrl = null;
 
+
+        if ($request->state) {
+            $state = json_decode($request->state, true);
+            $intendedUrl = $state["intended_url"] ?? null;
+        }
 
         try {
             $http = new ClientGuzzel([
@@ -4158,7 +4166,11 @@ class FrontendController extends Controller
             unset($queryParams['google_login']);
 
 
-            return redirect()->intended('/checkout/' . $event_id . '?' . http_build_query($queryParams));
+            if ($intendedUrl) {
+                return \redirect($intendedUrl);
+            }
+
+            return \redirect("/");
         } catch (Exception $e) {
             return redirect('auth/google');
         }
