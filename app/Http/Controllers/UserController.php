@@ -105,6 +105,9 @@ class UserController extends Controller
             $organizer_details->facebook = $request->facebook;
             $organizer_details->twitter = $request->twitter;
             $organizer_details->instagram = $request->instagram;
+            $organizer_details->whatsapp = $request->whatsapp;
+            $organizer_details->terms_english = $request->terms_english;
+            $organizer_details->terms_arabic = $request->terms_arabic;
             $organizer_details->short_description_english = $request->short_description_english;
             $organizer_details->short_description_arabic = $request->short_description_arabic;
             $organizer_details->long_description_english = $request->long_description_english;
@@ -162,6 +165,9 @@ class UserController extends Controller
             $organizer_details->facebook = $request->facebook;
             $organizer_details->twitter = $request->twitter;
             $organizer_details->instagram = $request->instagram;
+            $organizer_details->whatsapp = $request->whatsapp;
+            $organizer_details->terms_english = $request->terms_english;
+            $organizer_details->terms_arabic = $request->terms_arabic;
             $organizer_details->short_description_english = $request->short_description_english;
             $organizer_details->short_description_arabic = $request->short_description_arabic;
             $organizer_details->long_description_english = $request->long_description_english;

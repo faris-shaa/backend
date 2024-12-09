@@ -118,6 +118,47 @@
                             </div>
                         </div>
 
+                        <div class="col-lg-6  display-none  organizer-class ">
+                            <div class="form-group">
+                                    <label>{{__('Whatsapp')}}</label>
+                                    <input type="text" name="whatsapp" placeholder="{{__('Whatsapp')}}" value="{{old('whatsapp')}}" class="form-control @error('whatsapp')? is-invalid @enderror">
+                                    @error('whatsapp')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
+                        </div>
+                        <div class="col-lg-6  display-none  organizer-class">
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                    <label>{{ __('Terms In English') }}</label>
+                                    <textarea name="terms_english" Placeholder="Terms and Condition"
+                                        class="textarea_editor @error('terms_english')? is-invalid @enderror">
+                                        {{ old('terms_english') }}
+                                    </textarea>
+                                    @error('terms_english')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6  display-none  organizer-class">
+                            <div class="form-group">
+                                    <label>{{ __('Terms In Arabic') }}</label>
+                                    <textarea name="terms_arabic" Placeholder="Terms and Condition"
+                                        class="textarea_editor @error('terms_arabic')? is-invalid @enderror">
+                                        {{ old('terms_arabic') }}
+                                    </textarea>
+                                    @error('terms_arabic')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                            </div>
+                        </div>
+
+                      
+
+
                         <div class="col-lg-6  display-none  organizer-class">
                             <div class="form-group">
                                     <label>{{ __('Short Description In English') }}</label>

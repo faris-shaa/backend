@@ -289,7 +289,7 @@ else
             </div>
             <!-- stc  -->
             <!-- Tabby  -->
-            <!-- <div class="mb-4">
+            <div class="mb-4">
                 <div
                     class="bg-gray_f  w-full rounded-2xl border border-primary_color_o10_1 p-24-16 flex justify-between items-center payments ">
                     <div class="flex gap-4 items-center">
@@ -362,7 +362,7 @@ else
                         new TabbyPromo({});
                     </script>
                 </div>
-            </div> -->
+            </div>
             <!-- Tabby  -->
             <!-- Tamara  -->
             <div class="@if(auth()->guard('appuser')->user()->email != "hitarth.rc@gmail.com") hidden @endif mb-4">
