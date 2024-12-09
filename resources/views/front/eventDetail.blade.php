@@ -18,11 +18,75 @@
       .md\:mb-3 {
          margin-bottom: 0.75rem;
       }
+      
+
+      @media (min-width: 768px) {
+         .lg-hide
+      {
+         display: none;
+      }
+      }
+
+      @media (max-width: 768px) {
+          .sm-hide {
+             display: none;
+          }
+          .bg-primary_color_19 {
+                background-color: #A986BF29;
+            }
+         .p-1 {
+             padding: .5rem;
+         }
+         .rounded-lg {
+             border-radius: 0.5rem;
+         }
+         .me-1 {
+             margin-inline-end: .5rem;
+         }
+         .text-h7 {
+           
+             line-height: var(--line-height-h7);
+         }
+         .mb-15
+         {
+            margin-bottom: 15px;
+         }
+         .sm-show
+         {
+            display: inline-block;
+         }
+         .rounded {
+             border-radius: 0.25rem;
+         }
+         .px-1 {
+             padding-left: .5rem;
+             padding-right: .5rem;
+         }
+         .py-2px {
+              padding-top: 2px;
+              padding-bottom: 2px;
+          }
+      }
 
    </style>
 
    <div class="container mt-12 md:mt-16 ">
+      <div class="col-span-12  md:col-span-4 bg-primary_color_19 md:bg-primary_color_2 md:border-1 md:border-primary_color_8  md:rounded-xl rounded-lg  p-1 md:p-2 order-1 md:order-2 mb-15 lg-hide">
+         <div class="flex flex-row md:flex-col items-center  md:justify-center h-full  ">
+            <h5 class="text-gray_9 md:text-gray_6 me-1 md:me-0 text-h7 md:text-h5 font-medium"> <span class="hidden md:inline">{{__('Tickets')}}</span> {{__(key: ' starting at')}}</h5>
+            <span class="md:text-h4 text-h7 f-bri text-light md:text-dark font-bold currency_dir md:mt-m4"> <span>{{$minPrice}}</span> <span>{{ __(key: $currency) }}</span> </span>
+            <a href="#tickets_section" class="md:mt-4 rounded md:rounded-full bg-primary_color_8 px-1 py-2px md:p-12-24 flex items-center gap-2 cursor-pointer btn-hover-primary ms-auto md:ms-0 md:text-h5 text-h7">
+               <span class="z-20">{{ __('Get Tickets') }}</span>
+               <svg class="hidden md:block @if($lang == 'ar') rotate-180 @endif" width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                     d="M9.90625 1.24609L16.0938 7.15234C16.2695 7.32812 16.375 7.53906 16.375 7.78516C16.375 7.99609 16.2695 8.20703 16.0938 8.38281L9.90625 14.2891C9.58984 14.6055 9.02734 14.6055 8.71094 14.2539C8.39453 13.9375 8.39453 13.375 8.74609 13.0586L13.4219 8.62891H1.46875C0.976562 8.62891 0.625 8.24219 0.625 7.78516C0.625 7.29297 0.976562 6.94141 1.46875 6.94141H13.4219L8.74609 2.47656C8.39453 2.16016 8.39453 1.59766 8.71094 1.28125C9.02734 0.929688 9.55469 0.929688 9.90625 1.24609Z"
+                     fill="#A986BF" />
+               </svg>
+            </a>
+         </div>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+
          <div class="col-span-12 md:col-span-8  ">
             <h2 class="font-medium text-h3 lg:text-h2">
                {{ $lang == 'ar' ? $event['name_arabic'] :$event['name'] }}
@@ -91,7 +155,8 @@
 
            <!--  -->
          </div>
-         <div class="col-span-12  md:col-span-4 bg-light rounded-xl  p-2">
+
+         <div class="col-span-12  md:col-span-4 bg-light rounded-xl  p-2 sm-hide">
             <div class="flex flex-col items-center justify-center h-full   ">
                <h5 class="text-gray_6"> {{__(key: 'Tickets starting at')}}</h5>
                <span class="h4 text-dark font-medium">{{ __(key: $currency) }} {{$minPrice}}</span>
