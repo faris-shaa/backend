@@ -335,11 +335,23 @@
         let ticketSlot = $('#ticketSlot');
 
         if (tickets.length === 0 && ticketSlot.length === 0) {
-            window.location.href = "auth/google";
+            window.location.href = "/auth/google";
         } else {
-            $('.google_login').val(1);
-            tickets.submit();
-            ticketSlot.submit();
+            var hasProductSelected = false;
+            $('input[name^="quantities"]').each(function () {
+                if ($(this).val() > 0) {
+                    hasProductSelected = true;
+                    return false;
+                }
+            });
+
+            if (!hasProductSelected) {
+                window.location.href = "/auth/google";
+            } else {
+                $('.google_login').val(1);
+                tickets.submit();
+                ticketSlot.submit();
+            }
         }
     });
 
@@ -478,6 +490,7 @@
                 url: "{{ url('user/register') }}",
                 type: "POST",
                 data: formData,
+                withCredentials: true,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -492,7 +505,15 @@
                         setTimeout(function () {
                             $('#register_popup').addClass('hidden');
                         }, 1000);
-                        if ($('#tickets').length == 1 || $('#ticketSlot').length == 1) {
+                        var hasProductSelected = false;
+                        $('input[name^="quantities"]').each(function () {
+                            if ($(this).val() > 0) {
+                                hasProductSelected = true;
+                                return false;
+                            }
+                        });
+
+                        if (hasProductSelected) {
                             $('#tickets').submit();
                             $('#ticketSlot').submit();
                         } else {

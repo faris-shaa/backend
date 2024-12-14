@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/front/auth.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/auth.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/front/layout/header.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/layout/header.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +231,7 @@
     "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
     "WebServerToolWindowPanel.toolwindow.show.size": "false",
     "git-widget-placeholder": "login__in__home__page__stc__pay",
-    "last_opened_file_path": "D:/Work/TenDEGREES/tickets/backend",
+    "last_opened_file_path": "D:/Work/Herd/tharaco/app/Providers/RouteServiceProvider.php",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -272,7 +277,8 @@
       <workItem from="1733332782307" duration="13418000" />
       <workItem from="1733422008506" duration="964000" />
       <workItem from="1733651428064" duration="1554000" />
-      <workItem from="1733909553834" duration="677000" />
+      <workItem from="1733909553834" duration="1563000" />
+      <workItem from="1734181640542" duration="6498000" />
     </task>
     <servers />
   </component>
