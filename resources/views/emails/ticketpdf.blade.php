@@ -22,7 +22,7 @@
 <p>Date of event is {{$order->event_book_date}} and time is {{$time_slot->start_time}} to {{$time_slot->end_time}} </p>
 @endif
 
-<p>To explore upcoming events and manage your bookings with ease, we invite you to download our app here: <a href="https://play.google.com/store/apps/details?id=com.ticketby.app&hl=en_IN"> Click here </a>.</p>
+<p>To explore upcoming events and manage your bookings with ease, we invite you to download our app here: <a href="https://onelink.to/b7sbbe"> Click here </a>.</p>
 
 
 <p>We hope you enjoy the event and have a wonderful experience. If you have any questions, feel free to contact us.</p>
@@ -38,12 +38,6 @@ MOBILE NUMBER : +966556046094</p>
 
   
 
-    <p style="font-size:0.9em;">Regards,<br />TicketBy</p>
-    <hr style="border:none;border-top:1px solid #eee" />
-    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-      <p>TicketBy</p>
-      <!-- <p>1600 Amphitheatre Parkway</p>
-      <p>California</p> -->
-    </div>
+   
   </div>
 </div>

@@ -1341,13 +1341,13 @@ class ApiController extends Controller
 
         $order = Order::create($data);
 
-        if(isset($order_request->phone))
+        if(isset($request->phone))
         {
             $pos = new PosOrder();
-            $pos->order_id  = $data->id; 
-            $pos->phone  = $order_request->phone; 
-            $pos->customername  = $order_request->customername; 
-            $pos->customeremail  = $order_request->customeremail; 
+            $pos->order_id  = $order->id; 
+            $pos->phone  = $request->phone; 
+            $pos->customername  = $request->customername; 
+            $pos->customeremail  = $request->customeremail; 
             $pos->save();
         }   
         $module = Module::where('module', 'Seatmap')->first();
@@ -1455,7 +1455,7 @@ class ApiController extends Controller
                     ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
             }
             $customPaper = array(0, 0, 720, 1440);
-            $pdf = FacadePdf::loadView('ticketmail', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+            $pdf = FacadePdf::loadView('ticketmail', compact('order','pos_order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
             $data["email"] = $pos_order->customeremail;
             $data["title"] = "Ticket PDF";
             $data["body"] = "";
@@ -1473,7 +1473,7 @@ class ApiController extends Controller
 
             //sms
 
-            $to = substr($pos_order->phone, -4);  // str_replace('+', '', $org_user->phone);
+            $to = substr($pos_order->phone, -9);  // str_replace('+', '', $org_user->phone);
             $message = "Thank you for booking a ticket for  ".$event->name." . Check your ticket here https://ticketby.co/order-invoice-print/".$order->id;
 
          

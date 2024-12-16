@@ -86,9 +86,16 @@
 
                                         <address>
                                             <strong>{{ __('Attendee') }}:</strong><br>
+                                            @if(isset($pos_order) && !is_null($pos_order->customername))
+                                            {{ $pos_order->customername }}<br>
+                                            {{ $pos_order->phone }}<br>
+                                            {{ $pos_order->customeremail  }}<br>
+                                            @else
                                             {{ $order->customer->name . ' ' . $order->customer->last_name }}<br>
                                             {{ $order->customer->phone }}<br>
                                             {{ $order->customer->email }}<br>
+                                            @endif
+                                            
                                         </address>
 
 

@@ -423,10 +423,12 @@
       </div>
 
       @if (count(value:$event['paid_ticket']) != 0)
+      
          <form id="tickets" class="mb-32" method="GET" action="{{ url('/checkout/' . $event->id) }}">
             <div class="container ">
                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
                   @foreach ($event->paid_ticket as $item)
+                  
                      @if($item->available_qty > 0 )
                         <input type="hidden" name="" id="available" value="{{$item->available_qty}}">
                         <input type="hidden" value="{{ $item->available_qty }}" name="tpo" id="tpo">
@@ -551,6 +553,7 @@
             </div>
          </form>
       @else
+      
          <div class="container mb-32">
             <div class="bg-primary_color_12  rounded-2xl border   border-primary_color_o25_8  p-2  md:p-32-24 text-center ">
                <h3 class="font-bold text-h5 lg:text-h3"> {{ __('No tickets available.') }} </h3>

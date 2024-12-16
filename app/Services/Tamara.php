@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use Illuminate\Support\Facades\Http;
 
 class Tamara
@@ -24,12 +25,13 @@ curl_setopt($ch, CURLOPT_URL, 'https://api-sandbox.tamara.co/checkout');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 //dd($data['payment']);
+$order_id = "#49943";
 $data = [
     "total_amount" => ["amount" => $data['payment'] , "currency" => "SAR"],
     "shipping_amount" => ["amount" => 0, "currency" => "SAR"],
     "tax_amount" => ["amount" => 0, "currency" => "SAR"],
-    "order_reference_id" => "abd12331-a123-1234-4567-fbde34ae",
-    "order_number" => "A123125",
+    "order_reference_id" => "2272",
+    "order_number" => $order_id,
     "discount" => ["name" => "Voucher A", "amount" => ["amount" => 0, "currency" => "SAR"]],
     "items" => [
         [
@@ -130,7 +132,7 @@ $response = curl_exec($ch);
 
 $responseData = json_decode($response, true);
 
-
+$update_order_id = Order::where('order_id',$order_id)->update(['tamara_order_id'=>$responseData['order_id']]) ;
 return $responseData['checkout_url'];
 
 

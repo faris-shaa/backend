@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\AppUser;
 use App\Models\Currency;
 use App\Models\Ticket;
+use App\Models\PosOrder;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ResetPassword;
@@ -162,7 +163,20 @@ class ScannerApiController extends Controller
         $orderChild = OrderChild::whereIn('order_id', $order)->orderBy('id', 'DESC')->get();
         foreach ($orderChild as $value) {
             $o = Order::find($value->order_id);
-            $value->name = AppUser::find($value->customer_id)->name . ' ' . AppUser::find($value->customer_id)->last_name;
+            $pos_order = PosOrder::where('order_id',$value->order_id)->first();
+            if(isset($pos_order->customername))
+            {
+                $value->name = $pos_order->customername;
+                $value->email = $pos_order->customeremail;
+                $value->phone = $pos_order->phone;
+            }
+            else{
+                $app_user = AppUser::find($value->customer_id); 
+                $value->name = $app_user->name . ' ' . $app_user->last_name;
+                $value->email = $app_user->email;
+                $value->phone = $app_user->phone;
+            }
+            
             $value->address = AppUser::find($value->customer_id)->address;
             $value->start_time = Event::find($o->event_id)->start_time->format('d M Y') . ', ' . Event::find($o->event_id)->start_time->format('h:i a');
             $value->end_time = Event::find($o->event_id)->end_time->format('d M Y') . ', ' . Event::find($o->event_id)->end_time->format('h:i a');
@@ -206,6 +220,7 @@ class ScannerApiController extends Controller
             }
         }
         $order = Order::find($child->order_id);
+        
         $currency = Setting::find(1)->synbol;
         $data = [
             'payment_type' => $order->payment_type,
@@ -253,6 +268,20 @@ class ScannerApiController extends Controller
         }
         if($child->checkin == NULL) {
             $data['remaining_check_ins'] = 'Unlimited';
+        }
+        $pos_order = PosOrder::where('order_id',$child->order_id)->first();
+        if($pos_order)
+        {
+            $data['customer_details']['customer_name'] = $pos_order->customername;
+            $data['customer_details']['customer_email'] = $pos_order->customeremail;
+            $data['customer_details']['customer_phone'] = $pos_order->phone;
+        }
+        else
+        {
+            $customer = AppUser::find($order->customer_id);
+            $data['customer_details']['customer_name'] = $customer->name." ".$customer->last_name;
+            $data['customer_details']['customer_email'] = $customer->email;
+            $data['customer_details']['customer_phone'] = $customer->phone;
         }
         return response()->json(['msg' => 'Ticket scanned successfully.', 'data' => $data, 'success' => true], 200);
     }

@@ -32,7 +32,8 @@ class Order extends Model
         'book_seats',
         'event_book_date',
         'time_slot_id',
-        'web'
+        'web',
+        'tamara_order_id'
     ];
 
     protected $table = 'orders';

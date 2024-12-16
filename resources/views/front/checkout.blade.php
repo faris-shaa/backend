@@ -365,10 +365,12 @@ else
             </div>
             <!-- Tabby  -->
             <!-- Tamara  -->
-            <div class="@if(auth()->guard('appuser')->user()->email != "hitarth.rc@gmail.com") hidden @endif mb-4">
-                <!-- <div class=" hidden mb-4"> -->
-                    
             <!-- <tamara-widget type="tamara-summary" inline-type='4' inline-variant='text'></tamara-widget> -->
+            <!-- <div class=" hidden mb-4"> -->
+            <div class="@if(auth()->guard('appuser')->user()->email != "hitarth.rc@gmail.com") hidden @endif mb-4">
+                
+                    
+            
                 <div
                     class="bg-gray_f  w-full rounded-2xl border border-primary_color_o10_1 p-24-16 flex justify-between items-center payments ">
                     <div class="flex gap-1">
@@ -388,7 +390,7 @@ else
                 </div>
                 
                 
-            </div>
+            </div> 
             <!-- Tamara  -->
             @endif
         </div>
@@ -650,7 +652,7 @@ else
             const applePayButton = document.getElementById('applePayButton'); 
 
 
-            if (window.ApplePaySession && ApplePaySession.canMakePayments()) { 
+            if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
                 // Event listener for the Apple Pay button
 
         //         const button = document.createElement('apple-pay-button');

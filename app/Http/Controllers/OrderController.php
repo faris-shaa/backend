@@ -12,6 +12,7 @@ use App\Models\Ticket;
 use App\Models\Setting;
 use App\Models\OrderTax;
 use App\Models\OrderChild;
+use App\Models\PosOrder;
 use App\Models\User;
 use App\Models\Settlement;
 use App\Models\EventReport;
@@ -341,11 +342,12 @@ class OrderController extends Controller
         $order->tax_data = OrderTax::where('order_id', $order->id)->get();
         $order->ticket_data = OrderChild::where('order_id', $order->id)->get();
         $order->maintax = array();
+        $pos_order = PosOrder::where('order_id',$order->id)->first();
         foreach ($order->tax_data as $item) {
             $tax = Tax::find($item->tax_id)->get();
             $order->maintax = $tax;
         }
-        return view('admin.order.invoicePrint', compact('order'));
+        return view('admin.order.invoicePrint', compact('order','pos_order'));
     }
 
     public function sendMail($id)

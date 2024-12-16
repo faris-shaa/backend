@@ -11,24 +11,24 @@ class UsersExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
-        $org_id = array('108','144');
-        $orders = Order::whereIn('organization_id', $org_id)->where('order_status', "Complete")->where('payment_status',1)->pluck('customer_id')->toArray();
+        // $org_id = array('108','144');
+        // $orders = Order::whereIn('organization_id', $org_id)->where('order_status', "Complete")->where('payment_status',1)->pluck('customer_id')->toArray();
 
-        $orders = array_unique($orders);
+        // $orders = array_unique($orders);
 
-         $data = [];
-         $users = AppUser::whereIn('id',$orders)->get();
-         foreach ($users as $user) {
+        //  $data = [];
+        //  $users = AppUser::whereIn('id',$orders)->get();
+        //  foreach ($users as $user) {
             
-            $data[] = [
-                'name' => $user->name ." " .$user->last_name, // Assuming there's a relation to get user name
-                'email' => $user->email, // Assuming there's a relation to get user email
-                'phone' => substr( $user->phone, -9),
+        //     $data[] = [
+        //         'name' => $user->name ." " .$user->last_name, // Assuming there's a relation to get user name
+        //         'email' => $user->email, // Assuming there's a relation to get user email
+        //         'phone' => substr( $user->phone, -9),
                 
-            ];
-        }
+        //     ];
+        // }
         
-        /*$orders = Order::where('event_id', 179)->where('order_status', "Complete")->where('payment_status',1)->get();
+        $orders = Order::where('event_id', 202)->where('order_status', "Complete")->where('payment_status',1)->get();
         
         $data = []; // Initialize an empty array to hold the rows
         
@@ -54,7 +54,7 @@ class UsersExport implements FromCollection, WithHeadings
                 'mode' => $order->payment_type,
                 'order status' => $order_status
             ];
-        }*/
+        }
         
         return collect($data); // Return the data as a collection
     }

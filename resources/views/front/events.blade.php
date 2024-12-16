@@ -210,15 +210,7 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
                 <a href="/event/${item.id}/${item.slug}" class="swiper-slide">
                             <div class="ticket-wahlist h-full bg-light hover:bg-primary_color_o25_9 bg-opacity-5 rounded-2xl border border-primary_color_o10_1 hover:border-gray_9 overflow-hidden">
                             <div class="h-32 md:h-48">
-                                 ${item.gallery && item.gallery.length > 0 ? 
-                                    `<div class="swiper-devent2">
-                                          <div class="swiper-wrapper">
-                                            ${gallery}
-                                          </div>
-                                    </div>` 
-                                    : 
-                                    `<img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">`
-                                 }
+                                <img class="w-full h-full object-cover" src="${item.imagePath}${item.image}" alt="${item.name}">
                               </div>
                                 <div class="relative flex gap-1 md:gap-4 p-1 md:p-4 flex-wrap md:flex-nowrap flex-col lg:flex-row">
                                     <div class="text-center flex  items-baseline gap-1 md:gap-0 md:flex-col">
@@ -231,9 +223,6 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
                                         <h5 class="text-h6 md:text-h5 font-medium  mb-1 md:mb-2">
                                     ${ lang == 'ar' ? item.name_arabic : item.name }
                                         </h5>
-                                        <p class="pline2 f-bri text-gray_6 text-h6">
-                                        ${ lang == 'ar' ? item.short_description : item.short_description }
-                                        </p>
                                     </div>
                                     <div class="wahlist  lg:hidden" id="${item.id}">
                                     <svg width="25" height="22" viewBox="0 0 25 22" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1310,7 +1310,7 @@ class FrontendController extends Controller
             $data->ticket_amount = $ticket_amount;
 
             $data->tax_total = $tax_total;
-            if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191) {
+            if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191 || $id == 199 || $id == 198 || $id = 202 || $id = 201 ) {
 
                 $data->total_amount = $ticket_amount;
 
@@ -1420,7 +1420,7 @@ class FrontendController extends Controller
         }
 
 
-        if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191) {
+        if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191 || $id == 199 || $id == 198 || $id = 202 || $id = 201 ) {
 
             $data->tax_total = 0;
             $data->totalAmountTax = null;
@@ -3946,6 +3946,61 @@ class FrontendController extends Controller
         $orderId = Session::get('order_id');
         $order = Order::findOrFail($orderId);
 
+       // if ($order->payment_type == "TAMARA" && isset($order->tamara_order_id)) {
+        if ($order->payment_type == "TAMARA" ) {
+            $order = Order::findOrFail(2272);
+            $data_array = array();
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, 'https://api-sandbox.tamara.co/orders/'.$order->tamara_order_id.'/authorise');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data_array));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Accept: application/json',
+                'Content-Type: application/json',
+                'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50SWQiOiI3ZjJjOTYwOS1kOTIwLTRkMzItOGQ1Zi1mM2YwYTFkZjg5MjgiLCJ0eXBlIjoibWVyY2hhbnQiLCJzYWx0IjoiZTI4NjFlY2YxYjk2ZGNjZGJlOTIzYzVkMTNkZmI5M2YiLCJyb2xlcyI6WyJST0xFX01FUkNIQU5UIl0sImlhdCI6MTczMTA1MDQwMSwiaXNzIjoiVGFtYXJhIn0.V7R3nuJXM_insVHnfpCnKHRWon4o-mNwpFWV7kMPmiDm5awK-MTkbaNYpuQAU2wnDLLwAUaIG0UEQQMbbj3Mzz7jMd1CF68jpIM8-c_yWi55VvYVTNV0m06G9cEUISdRCy9O-Y5EsKAHCrWGh7HFf-G-VijCwxPNlz8Dq5AgNhkulQHh6L0s_zmKvsxxZXeGQgtiMa2KLkph24FUms-tU5AeVfQ7nEcdi1PglnF3APqlZSrzhmEdGl2eMNgibGKIcHddLI8EPa1lM5xihx7wTi4jAnGrobLKiftx2_sd6HhYxUcmi2VRtQegjmVcFvYELeUx5jaH0ygip0jY7M0pDA',
+            ]);
+
+            $response = curl_exec($ch);
+
+            $responseData = json_decode($response, true);
+          
+            if( $responseData['status'] == "authorised")
+            {
+                $data_array = [
+                    "order_id" => $order->tamara_order_id,
+                    "total_amount" => ["amount" => $order['payment'] , "currency" => "SAR"]
+                ];
+                $ch = curl_init();
+
+                curl_setopt($ch, CURLOPT_URL, 'https://api-sandbox.tamara.co/payments/capture');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data_array));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Accept: application/json',
+                    'Content-Type: application/json',
+                    'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50SWQiOiI3ZjJjOTYwOS1kOTIwLTRkMzItOGQ1Zi1mM2YwYTFkZjg5MjgiLCJ0eXBlIjoibWVyY2hhbnQiLCJzYWx0IjoiZTI4NjFlY2YxYjk2ZGNjZGJlOTIzYzVkMTNkZmI5M2YiLCJyb2xlcyI6WyJST0xFX01FUkNIQU5UIl0sImlhdCI6MTczMTA1MDQwMSwiaXNzIjoiVGFtYXJhIn0.V7R3nuJXM_insVHnfpCnKHRWon4o-mNwpFWV7kMPmiDm5awK-MTkbaNYpuQAU2wnDLLwAUaIG0UEQQMbbj3Mzz7jMd1CF68jpIM8-c_yWi55VvYVTNV0m06G9cEUISdRCy9O-Y5EsKAHCrWGh7HFf-G-VijCwxPNlz8Dq5AgNhkulQHh6L0s_zmKvsxxZXeGQgtiMa2KLkph24FUms-tU5AeVfQ7nEcdi1PglnF3APqlZSrzhmEdGl2eMNgibGKIcHddLI8EPa1lM5xihx7wTi4jAnGrobLKiftx2_sd6HhYxUcmi2VRtQegjmVcFvYELeUx5jaH0ygip0jY7M0pDA',
+                ]);
+
+                $response = curl_exec($ch);
+
+                $responseData = json_decode($response, true);
+                
+                if($responseData['status'] == "fully_captured" || $responseData['status'] == "partially_captured")
+                {
+                    $this->sendOrderMailPdf($orderId);
+                    return view('frontend/thankyou');
+                }
+                else{
+                    return redirect('/failed');
+                }
+            }
+            else{
+                return redirect('/failed');
+            }
+        }
         if ($order->payment_type == "EDAFPAY") {
             $hash = $this->transcationCheckEdfapay();
 
@@ -4112,7 +4167,6 @@ class FrontendController extends Controller
         return redirect('https://accounts.google.com/o/oauth2/auth?' . $query);
     }
 
-
     public function handleGoogleCallback(Request $request)
     {
         $intendedUrl = null;
@@ -4228,7 +4282,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "1855";
+        $order_id = "2584";
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');
         dd($data);*/
@@ -4243,12 +4297,12 @@ class FrontendController extends Controller
     {
 
         $order_data['order_id'] = '#' . rand(9999, 100000);
-        $order_data['event_id'] = 183;
+        $order_data['event_id'] = 199;
         $order_data['customer_id'] = 61;
-        $order_data['organization_id'] = 144;
+        $order_data['organization_id'] = 153;
         $order_data['order_status'] = 'Pending';
-        $order_data['ticket_id'] = 230; // 90 f 91 m
-        $order_data['quantity'] = 15; // 90 f 91 m
+        $order_data['ticket_id'] = 257; // 90 f 91 m
+        $order_data['quantity'] = 10; // 90 f 91 m
         $order_data['tax'] = 0;
         $order_data['payment'] = 0;
         $order_data['payment_type'] = "manaul";
@@ -4257,9 +4311,9 @@ class FrontendController extends Controller
 
         $order = Order::create($order_data);
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $child['ticket_number'] = uniqid();
-            $child['ticket_id'] = 230;
+            $child['ticket_id'] = 257;
             $child['order_id'] = $order->id;
             $child['customer_id'] = 61;
             $child['checkin'] = null;

@@ -111,8 +111,14 @@
                                     <address>
                                         <strong>{{ __('Attendee') }}:</strong><br>
                                         <div style="color: #6c757d">
+                                            @if(isset($pos_order) && isset($pos_order->customeremail))
+                                            {{ $pos_order->customername }}<br>
+                                            {{ $pos_order->customeremail }}<br>
+                                            @else
                                             {{ $order->customer->name . ' ' . $order->customer->last_name }}<br>
                                             {{ $order->customer->email }}<br>
+                                            @endif
+                                            
                                         </div>
                                     </address>
                                 </div>
