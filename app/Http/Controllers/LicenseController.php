@@ -24,6 +24,7 @@ use function GuzzleHttp\Promise\all;
 class LicenseController extends Controller
 {
     use AuthenticatesUsers;
+
     public function saveEnvData(Request $request)
     {
         $data['DB_HOST'] = $request->db_host;
@@ -65,11 +66,11 @@ class LicenseController extends Controller
         $data = $request->all();
         try {
             $user = User::create($data);
-            $user->password =  Hash::make($request->password);
+            $user->password = Hash::make($request->password);
             $user->assignRole('admin');
             $user->update();
             Setting::find(1)->update(['license_status' => 1, 'license_key' => $request->license_code, 'license_name' => $request->client_name]);
-            return response()->json(['data' => url('login'), 'success' => true], 200);
+            return response()->json(['data' => url('admin/login'), 'success' => true], 200);
         } catch (Exception $e) {
             return response()->json(['data' => $e->getMessage(), 'success' => false], 200);
         }
@@ -84,7 +85,7 @@ class LicenseController extends Controller
     {
         // check post request or get request
         if ($request->isMethod('get')) {
-            return redirect('/login');
+            return view('auth.login');;
         }
         $request->validate([
             'email' => 'bail|required|email',
@@ -125,6 +126,7 @@ class LicenseController extends Controller
             return Redirect::back()->with('error_msg', 'Invalid Username or Password');
         }
     }
+
     public function adminLogout(Request $request)
     {
         if (Auth::check()) {
@@ -132,11 +134,13 @@ class LicenseController extends Controller
             return redirect('/login');
         }
     }
+
     public function licenseSetting()
     {
         $setting = Setting::find(1);
         return view('admin.license', compact('setting'));
     }
+
     public function saveLicenseSetting(Request $request)
     {
 
@@ -146,7 +150,7 @@ class LicenseController extends Controller
         ]);
 
         $api = new LicenseBoxExternalAPI();
-        $result =  $api->activate_license($request->license_key, $request->license_name);
+        $result = $api->activate_license($request->license_key, $request->license_name);
         if ($result['status'] === true) {
             Setting::find(1)->update(['license_status' => 1, 'license_key' => $request->license_key, 'license_name' => $request->license_name]);
             return redirect('admin/home');
@@ -155,6 +159,7 @@ class LicenseController extends Controller
             return redirect()->back()->withStatus(__($result['message']));
         }
     }
+
     public function setLanguage($user)
     {
         $name = $user->language;
@@ -167,23 +172,25 @@ class LicenseController extends Controller
         session()->put('direction', $direction);
         return true;
     }
+
     public function loginAsOrganizer($id)
     {
         $user = User::find($id);
         if (!$user) {
-            return redirect()->back();  
+            return redirect()->back();
         }
         Auth::logout();
         Auth::login($user);
         return redirect('organization/home');
     }
+
     public function loginAsAppuser($id)
     {
         $user = AppUser::find($id);
         if (!$user) {
-            return redirect()->back();  
+            return redirect()->back();
         }
-        
+
         Auth::guard('appuser')->login($user);
         return redirect('/');
     }
