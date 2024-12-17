@@ -100,4 +100,8 @@ class User extends Authenticatable
         return $this->hasMany(Event::class);
     }
 
+    public function organizerDetails()
+    {
+        return $this->hasOne(OrganizerDetails::class, "user_id");
+    }
 }

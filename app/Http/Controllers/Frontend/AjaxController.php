@@ -33,9 +33,8 @@ class AjaxController extends Controller
         $limit = $oval["limit"] ?? 3;
 
         $baseQuery = Event::query()
-//            ->upcoming()
-//            ->where("user_id", $organizerId)
-        ;
+            ->upcoming()
+            ->where("user_id", $organizerId);
 
         $events = $baseQuery
             ->paginate($limit);
@@ -69,9 +68,8 @@ class AjaxController extends Controller
         $limit = $oval["limit"] ?? 3;
 
         $baseQuery = Event::query()
-//            ->previous()
-//            ->where("user_id", $organizerId)
-        ;
+            ->previous()
+            ->where("user_id", $organizerId);
 
         $events = $baseQuery->paginate($limit);
 

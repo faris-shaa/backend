@@ -21,21 +21,21 @@ class EventOrgananizerController extends Controller
     public function __invoke($uuid, $name)
     {
         /** @var User $organizer */
-        $organizer = User::where("external_id", $uuid)->first();
+        $organizer = User::where("external_id", $uuid)
+            ->with("organizerDetails")
+            ->first();
 
         if (!$organizer) {
             abort(404);
         }
 
         $this->setSeos($organizer);
-        $recentGalleries =
-//            $organizer->events()
-//                ->previous()
-            Event::query()
-                ->whereNotNull("gallery")
-                ->inRandomOrder()
-                ->limit(10)
-                ->get(["gallery", "name as eventName", "id"]);
+        $recentGalleries = $organizer->events()
+            ->previous()
+            ->whereNotNull("gallery")
+            ->inRandomOrder()
+            ->limit(10)
+            ->get(["gallery", "name as eventName", "id"]);
 
         return view("front.organizer_details", compact("organizer", "recentGalleries"));
     }

@@ -154,6 +154,14 @@
                   @endforeach
                @endif
             </div>
+            <div class="mt-4 flex gap-2 flex-wrap">
+               <a href="{{ route("events.organizer", [$event["organization"]["external_id"], \Illuminate\Support\Str::slug($event["organization"]["organization_name"])]) }}">
+                  <small>
+                     <stron>{{ __("By") }}</stron>
+                     {{ ((app()->getLocale() == "عربي" and optional($event["organization"]->organizerDetails)->arabic_name) ? optional($event["organization"]->organizerDetails)->arabic_name :  $event["organization"]["organization_name"]) }}
+                  </small>
+               </a>
+            </div>
 
            <!--  -->
          </div>
