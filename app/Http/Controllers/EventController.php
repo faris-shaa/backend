@@ -189,6 +189,11 @@ class EventController extends Controller
         {
             $data['end_time'] = Carbon::parse ($data['start_time'])->addDays(30); 
         }
+
+        if($data['user_id'] == 153 || $data['user_id'] == 141 )
+        {
+            $data['is_tax'] = 0; 
+        }
         $event = Event::create($data);
         
         if(!is_null($request->emails) && count($request->emails) > 0){

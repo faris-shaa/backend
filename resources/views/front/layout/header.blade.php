@@ -375,8 +375,10 @@ $lang = session('direction') == 'rtl' ? 'ar' : 'en';
 
         <div class="flex  flex-row items-center gap-3 mt-4">
             @if (!Auth::guard('appuser')->check())
-            <a href="{{ url('user/login') }}" class="rounded-full bg-primary_color_8 p-6-8  min-w-6 text-center  h-8 text-nowrap">{{ __('Sign In') }}
-            </a>
+{{--            <a href="{{ url('user/login') }}" class="rounded-full bg-primary_color_8 p-6-8  min-w-6 text-center  h-8 text-nowrap">{{ __('Sign In') }}--}}
+{{--            </a>--}}
+                <button data-form-user="login-model" class="rounded-full auth_popup  bg-primary_color_8 p-6-8  min-w-6 text-center  h-8 text-nowrap">{{__( 'sign in')}}</button>
+
             @endif
 
             @if (Session::has('local'))

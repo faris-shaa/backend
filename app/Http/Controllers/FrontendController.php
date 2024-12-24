@@ -76,6 +76,7 @@ use Vonage\SMS\Message\SMS;
 use Vonage\SMS\Message\SMSCollection;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
@@ -1310,8 +1311,8 @@ class FrontendController extends Controller
             $data->ticket_amount = $ticket_amount;
 
             $data->tax_total = $tax_total;
-            if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191 || $id == 199 || $id == 198 || $id = 202 || $id = 201 ) {
-
+            if(isset($event->is_tax) && $event->is_tax == 0 )
+            {
                 $data->total_amount = $ticket_amount;
 
             } else {
@@ -1419,18 +1420,29 @@ class FrontendController extends Controller
 
         }
 
-
-        if ($id == 121 || $id == 193 || $id == 187 || $id == 192 || $id == 191 || $id == 199 || $id == 198 || $id = 202 || $id = 201 ) {
-
+        
+        if ($event->id == 121 ) {
+            
             $data->tax_total = 0;
             $data->totalAmountTax = null;
             $data->totalPersTax = null;
             $data->tax = array();
 
         } else {
+            
             $data->tax_total = round($data->tax_total, 2);
+            
             $data->totalAmountTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'price']])->sum('price');
             $data->totalPersTax = Tax::where([['allow_all_bill', 1], ['status', 1], ['amount_type', 'percentage']])->sum('price');
+        }
+        
+        // remove tax if couplet organizer
+        if(isset($event->is_tax) && $event->is_tax == 0 )
+        {
+            $data->tax_total = 0;
+            $data->totalAmountTax = null;
+            $data->totalPersTax = null;
+            $data->tax = array();   
         }
 
 
@@ -2881,7 +2893,12 @@ class FrontendController extends Controller
 
     public function blogs()
     {
-
+//         $users = User::all();
+//         foreach($users as $user)
+//         {
+//             User::where('id',$user->id)->update(['external_id'=>Str::uuid()]);
+//         }
+// dd("kk");
         /*$phone = "+966509108875";
         $to = str_replace('+', '', $phone);
 
@@ -4282,7 +4299,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "2584";
+        $order_id = "2656";
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');
         dd($data);*/
@@ -4297,12 +4314,12 @@ class FrontendController extends Controller
     {
 
         $order_data['order_id'] = '#' . rand(9999, 100000);
-        $order_data['event_id'] = 199;
+        $order_data['event_id'] = 202;
         $order_data['customer_id'] = 61;
         $order_data['organization_id'] = 153;
         $order_data['order_status'] = 'Pending';
-        $order_data['ticket_id'] = 257; // 90 f 91 m
-        $order_data['quantity'] = 10; // 90 f 91 m
+        $order_data['ticket_id'] = 262; // 90 f 91 m
+        $order_data['quantity'] = 1; // 90 f 91 m
         $order_data['tax'] = 0;
         $order_data['payment'] = 0;
         $order_data['payment_type'] = "manaul";
@@ -4313,7 +4330,7 @@ class FrontendController extends Controller
 
         for ($i = 0; $i < 10; $i++) {
             $child['ticket_number'] = uniqid();
-            $child['ticket_id'] = 257;
+            $child['ticket_id'] = 262;
             $child['order_id'] = $order->id;
             $child['customer_id'] = 61;
             $child['checkin'] = null;

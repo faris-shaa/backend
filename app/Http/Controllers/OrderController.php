@@ -1490,7 +1490,7 @@ class OrderController extends Controller
         }
         if(is_null($user))
         {
-            return response()->json("invalid user_name");
+            return response()->json("email or phone number not registered");
         }
         
          if($user)

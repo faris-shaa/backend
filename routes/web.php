@@ -42,15 +42,16 @@ use App\Http\Controllers\ApplePayController;
 |
 */
 
-Auth::routes();
-Auth::routes(['verify' => true]);
+//Auth::routes();
+//Auth::routes(['verify' => true]);
 
-Route::get('/login', function () {
+Route::get('/admin/login', function () {
     if (Auth::check()) {
         return redirect('/admin/home');
     }
     return view('auth.login');
-})->name('login');
+})->name('admin.login');
+
 
 Route::get('/apple-pay', function () {
     return view('apple');
