@@ -6,23 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1df11d70-ec7e-4307-9ff5-ada955bce990" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/AjaxController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/AjaxController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Frontend/EventOrgananizerController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/eventDetail.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/organizer_details.blade.php" afterDir="false" />
-=======
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LicenseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LicenseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
->>>>>>> fe95ea61a3f196b4510b8dd7951a8f707eb93918
-=======
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
->>>>>>> 008a33c09c061b6932ca429bc978127c9a50c938
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,8 +225,8 @@
     &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;login__in__home__page__stc__pay&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Work/Herd/tharaco/app/Providers/RouteServiceProvider.php&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Work/TenDEGREES/tickets/backend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -288,12 +272,9 @@
       <workItem from="1733332782307" duration="13418000" />
       <workItem from="1733422008506" duration="964000" />
       <workItem from="1733651428064" duration="1554000" />
-<<<<<<< HEAD
-      <workItem from="1733909553834" duration="1563000" />
-      <workItem from="1734181640542" duration="6498000" />
-=======
-      <workItem from="1734737493993" duration="530000" />
->>>>>>> 008a33c09c061b6932ca429bc978127c9a50c938
+      <workItem from="1734737493993" duration="601000" />
+      <workItem from="1734789465348" duration="4000" />
+      <workItem from="1735045119177" duration="1540000" />
     </task>
     <servers />
   </component>

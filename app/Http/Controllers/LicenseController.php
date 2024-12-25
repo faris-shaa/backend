@@ -130,8 +130,18 @@ class LicenseController extends Controller
     public function adminLogout(Request $request)
     {
         if (Auth::check()) {
+           $redirectTo = "/organizers/login";
+            if ((get_class(Auth::user()) == User::class)) {
+                if (Auth::user()->hasRole('Organizer')) {
+                    $redirectTo = "/organizers/login";
+                } else {
+                    $redirectTo = "/admin/login";
+
+                }
+            }
+
             Auth::logout();
-            return redirect('/login');
+            return redirect($redirectTo);
         }
     }
 
