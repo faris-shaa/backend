@@ -58,7 +58,7 @@ $data = [
         "cancel" => env('APP_URL')."failed",
         "failure" =>env('APP_URL')."failed",
         "success" => env('APP_URL')."thankyou",
-        "notification" => "https://example-notification.com/payments/tamaranotifications"
+        "notification" => "https://ticketby.co/tamara-notification"
     ],
     "payment_type" => "PAY_BY_INSTALMENTS",
     "instalments" => 3,

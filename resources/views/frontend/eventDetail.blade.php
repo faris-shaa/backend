@@ -1,4 +1,4 @@
-z@extends('frontend.master', ['activePage' => 'event'])
+@extends('frontend.master', ['activePage' => 'event'])
 @section('title', __('Event Details'))
 @php
 $gmapkey = \App\Models\Setting::find(1)->map_key;
@@ -23,7 +23,7 @@ $gmapkey = \App\Models\Setting::find(1)->map_key;
 
 .img-popup img {
   max-width: 900px;
-  width: 100%;
+  width: 100%
   opacity: 0;
   transform: translateY(-100px);
   -webkit-transform: translateY(-100px);
@@ -118,6 +118,7 @@ $gmapkey = \App\Models\Setting::find(1)->map_key;
 
 }
 </style>
+
 <link rel="stylesheet" type="text/css" href="{{asset('/frontend/css/table.css')}}">
 <div class="pb-20 bg-scroll min-h-screen" style="background:linear-gradient(to top, #eae9e9, white)">
    {{-- scroll --}}

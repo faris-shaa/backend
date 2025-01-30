@@ -126,7 +126,7 @@
                                     <label>{{ __('Terms In English') }}</label>
                                     <textarea name="terms_english" Placeholder="Terms and Condition"
                                         class="textarea_editor @error('terms_english')? is-invalid @enderror">
-                                        {{ old('terms_english') }}
+                                        @if(isset($details->terms_english))  {{ $details->terms_english }} @endif
                                     </textarea>
                                     @error('terms_english')
                                         <div class="invalid-feedback block">{{ $message }}</div>
@@ -139,7 +139,7 @@
                                     <label>{{ __('Terms In Arabic') }}</label>
                                     <textarea name="terms_arabic" Placeholder="Terms and Condition"
                                         class="textarea_editor @error('terms_arabic')? is-invalid @enderror">
-                                        {{ old('terms_arabic') }}
+                                        @if(isset($details->terms_arabic))  {{ $details->terms_arabic }} @endif
                                     </textarea>
                                     @error('terms_arabic')
                                         <div class="invalid-feedback block">{{ $message }}</div>

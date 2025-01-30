@@ -19,6 +19,7 @@ class OrderChild extends Model
         'time_slot_id',
         'checkin',
         'paid',
+        'price'
     ];
 
     protected $table = 'order_child';

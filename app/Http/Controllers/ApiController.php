@@ -417,7 +417,7 @@ class ApiController extends Controller
         ]);
         $timezone = Setting::findOrFail(1)->timezone;
         $date = Carbon::now($timezone);
-        $data = Event::where([['status', 1], ['is_deleted', 0], ['category_id', $request->category_id], ['start_time', '>=', $date->format('Y-m-d H:i:s')]]);
+        $data = Event::where([['status', 1], ['is_deleted', 0], ['category_id', $request->category_id], ['start_time', '>=', $date->format('Y-m-d H:i:s')]])->where('is_private',0);
         if ($request->free_event == 1) {
             $ar_event = array();
             $ar = Event::where([['status', 1], ['is_deleted', 0], ['start_time', '>=', $date->format('Y-m-d H:i:s')]])->get();
@@ -950,7 +950,7 @@ class ApiController extends Controller
             $event = Event::find($order_request->event_id);
              $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
                 $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-                if ($sold_ticket_count + $order_request->quantity >= $ticekt->quantity   && $event->is_repeat == 0) {
+                if ((($sold_ticket_count + $order_request->quantity) > $ticekt->quantity)   && $event->is_repeat == 0) {
                     $ticekt->update(['status' => 0]);
                     return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
                 }
@@ -1035,18 +1035,19 @@ class ApiController extends Controller
                     }
                 }
                 //save pos data 
-                if(isset($order_request->phone))
+                if(isset($order_request->customeremail) ||  isset($order_request->phone) )
                 {
                     $pos = new PosOrder();
                     $pos->order_id  = $data->id; 
-                    $pos->phone  = $order_request->phone; 
-                    $pos->customername  = $order_request->customername; 
-                    $pos->customeremail  = $order_request->customeremail; 
+                    $pos->phone  = $order_request->phone ? $order_request->phone : ""; 
+                    $pos->customername  = $order_request->customername ? $order_request->customername : " "; 
+                    $pos->customeremail  = $order_request->customeremail ? $order_request->customeremail : " "; 
                     $pos->save();
                 }   
                   
                 //
                 $ticket = Ticket::find($order_request->ticket_id);
+                $event = Event::find($order_request->event_id);
                 for ($i = 1; $i <= $order_request->quantity; $i++) {
                     $child['ticket_number'] = uniqid();
                     $child['ticket_id'] = $order_request->ticket_id;
@@ -1054,6 +1055,15 @@ class ApiController extends Controller
                     $child['customer_id'] = Auth::User()->id;
                     $child['checkin'] = $ticket->maximum_checkins ?? null;
                     $child['paid'] = $order_request->payment_type == 'LOCAL' ? 0 : 1 ;
+                    if ( $event->user_id == 199 && $event->set_different_price == 1 && count($tickets) > 1) 
+                    {
+                        
+                        $child['price'] = $ticket->price;
+                        
+                    }
+                    else{
+                        $child['price'] = $ticket->price;
+                    }
                     OrderChild::create($child);
                 }
 
@@ -1337,11 +1347,50 @@ class ApiController extends Controller
                         
             }
         }
+
+        //validation starts
+        $ticketIds = $quantities = array();  
+        foreach ($request->tickets as $key_tickets => $value_tickets) {
+           
+                $ticketIds[] = $value_tickets['ticket_id'] ; 
+                $quantities[] = $value_tickets['quantity'] ; 
+                        
+        }
+         $tickets = array_map(function ($ticketId, $quantity) {
+                return [
+                    'ticket_id' => (int) $ticketId,  // Casting to int if necessary
+                    'quantity' => (int) $quantity,  // Casting to int if necessary
+                ];
+            }, $ticketIds, $quantities);
+        $count_quantity = 0 ;
+        foreach ($tickets as $key => $ticket_array) {
+            $ticekt = Ticket::find($ticket_array['ticket_id']);
+            
+            
+            // Check Ticket validation 
+            $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
+            $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->count();
+            
+            if(($count_sold_out_ticekt + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0)
+            {
+                return response()->json(['success' => false, 'msg' => "Tickets Sold out", 'data' => null], 200);
+            }
+            if(isset($request->phone) || isset($request->customeremail))
+            {
+                
+                if(($count_sold_out_ticekt + $ticket_array['quantity']) > $ticekt->quantity )
+                {
+                    return response()->json(['success' => false, 'msg' => "Tickets Sold out", 'data' => null], 200);
+                }
+            }
+        }    
+
+        //validation ends
        
 
         $order = Order::create($data);
 
-        if(isset($request->phone))
+        if(isset($request->phone) || isset($request->customeremail))
         {
             $pos = new PosOrder();
             $pos->order_id  = $order->id; 
@@ -1349,6 +1398,7 @@ class ApiController extends Controller
             $pos->customername  = $request->customername; 
             $pos->customeremail  = $request->customeremail; 
             $pos->save();
+            Log::info("pos---- ".$order->id."-----". $request->customeremail);
         }   
         $module = Module::where('module', 'Seatmap')->first();
         if ($module->is_enable == 1 && $module->is_install == 1) {
@@ -1380,8 +1430,17 @@ class ApiController extends Controller
         
          $count_quantity = 0 ;
             foreach ($tickets as $key => $ticket_array) {
-                
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
+                
+                
+                // Check Ticket validation 
+                // $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
+                // $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->count();
+                // if($count_sold_out_ticekt + $ticket_array['quantity'] >= $ticekt->quantity && $event->is_repeat == 0)
+                // {
+                //     return response()->json(['success' => false, 'msg' => "Tickets Sold out", 'data' => null], 200);
+                // }
+                
                 for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
                     $count_quantity = $count_quantity +1 ; 
                     $child['ticket_number'] = uniqid();
@@ -1390,15 +1449,39 @@ class ApiController extends Controller
                     $child['customer_id'] = $request->user_id;
                     $child['checkin'] = $ticket->maximum_checkins ?? null;
                     $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
-                    
-                    
+                    if ( $event->user_id == 199 && $event->set_different_price == 1 && count($tickets) > 1) 
+                    {
+                        
+                        //    $child['price'] = 20;
+                        $child['price'] = $ticekt->price;
+                        
+                    }
+                    else{
+                        $child['price'] = $ticekt->price;
+                    }
+                    if(isset($ticket_array['slot_event_date']) && !is_null($ticket_array['slot_event_date']))
+                    {
+
+                        $data['time_slot_id'] = $ticket_array['time_slot_id'];
+                        $data['event_book_date'] = $ticket_array['slot_event_date'];    
+                    }
                     OrderChild::create($child);
-                 
                 }
-                $sold_ticket_count =  Order::where([['order_status', 'Complete']])->where('order_status',"Complete")->where('payment_status',1)->where('ticket_id',$ticekt->id)->count();
-                if($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0)
+                
+                // make ticket inactive
+                $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
+                $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->count();
+                if($count_sold_out_ticekt >= $ticekt->quantity && $event->is_repeat == 0)
                 {
-                      $ticekt->update(['status'=>0 ]);
+                      $ticekt->update(['status'=> 0 ]);
+                }
+                if(isset($request->phone) || isset($request->customeremail))
+                {
+                     
+                    if($count_sold_out_ticekt >= $ticekt->quantity )
+                    {
+                        $ticekt->update(['status'=> 0 ]);
+                    }
                 }
 
             }
@@ -1455,7 +1538,8 @@ class ApiController extends Controller
                     ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
             }
             $customPaper = array(0, 0, 720, 1440);
-            $pdf = FacadePdf::loadView('ticketmail', compact('order','pos_order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+           // $pdf = FacadePdf::loadView('ticketmail', compact('order','pos_order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+           $pdf  = null ; 
             $data["email"] = $pos_order->customeremail;
             $data["title"] = "Ticket PDF";
             $data["body"] = "";
@@ -1464,12 +1548,14 @@ class ApiController extends Controller
             $dataemail['event'] = $event;
             $dataemail['user'] = $pos_order ;
             $dataemail['email'] = $pos_order->customeremail ;
-            $tempp = $pdf->output();
 
-            Mail::send(['html' => 'emails.ticketpdf'], $dataemail, function ($message) use ($tempp ,$dataemail) {
-                    $message->to($dataemail['email'])->subject('Ticket Booked');
-                    $message->from('ticketbyksa@gmail.com', 'TicketBy')->attachData($tempp, "ticket.pdf");
-                });
+            
+            // $tempp = $pdf->output();
+
+            // Mail::send(['html' => 'emails.ticketpdf'], $dataemail, function ($message) use ($tempp ,$dataemail) {
+            //         $message->to($dataemail['email'])->subject('Ticket Booked');
+            //         $message->from('ticketbyksa@gmail.com', 'TicketBy')->attachData($tempp, "ticket.pdf");
+            //     });
 
             //sms
 
@@ -1892,9 +1978,11 @@ class ApiController extends Controller
     public function userOrder()
     {
 
-        $data['upcoming'] = Order::with(['event', 'ticket'])->where([['customer_id', Auth::user()->id], ['order_status', 'Complete']])->orderBy('id', 'DESC')->get();
+        $upcoming_event_id = Event::whereDate('start_time','>=',Carbon::now())->pluck('id')->toArray();
+        $data['upcoming'] = Order::whereIn('event_id',$upcoming_event_id)->with(['event', 'ticket'])->where([['customer_id', Auth::user()->id], ['payment_status', '1'],['order_status', 'Complete']])->orderBy('id', 'DESC')->get();
         $data['past'] = Order::with(['event', 'ticket'])
-            ->where([['customer_id', Auth::user()->id], ['order_status', 'Complete']])
+            ->whereNotIn('event_id',$upcoming_event_id)
+            ->where([['customer_id', Auth::user()->id], ['order_status', 'Complete'], ['payment_status', '1']])
             ->orWhere([['customer_id', Auth::user()->id], ['order_status', 'Cancel']])
             ->orderBy('id', 'DESC')->get();
 
@@ -1997,7 +2085,7 @@ class ApiController extends Controller
         // if search name ends 
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $data = Event::where([['status', 1], ['is_deleted', 0], ['start_time', '>=', $date->format('Y-m-d')]]);
+        $data = Event::where([['status', 1], ['is_deleted', 0], ['start_time', '>=', $date->format('Y-m-d')]])->where('is_private',0);
         if ($request->lat != null && $request->lang != null) {
             $lat = $request->lat;
             $lang = $request->lang;
@@ -2083,7 +2171,7 @@ class ApiController extends Controller
         // if search name ends 
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
-        $data = Event::where([['status', 1], ['is_deleted', 0], ['end_time', '>', $date->format('Y-m-d H:i:s')]]);
+        $data = Event::where([['status', 1], ['is_deleted', 0], ['end_time', '>', $date->format('Y-m-d H:i:s')]])->where('is_private',0);
 
         if ($request->lat != null && $request->lang != null) {
            
@@ -2137,7 +2225,7 @@ class ApiController extends Controller
         {
             $data = $data->orderBy('lowest_price',$request->sort);
         }
-        $data = $data->orderBy('orderby',"desc")->get();
+        $data = $data->orderBy('orderby',"desc")->where('is_private',0)->get();
         foreach ($data as $value) {
             $value->description =  str_replace("&nbsp;", " ", strip_tags($value->description));
             $value->time = $value->start_time->format('d F Y h:i a');
@@ -2635,7 +2723,7 @@ class ApiController extends Controller
 
    public function posEvent ( Request $request )
    {
-    $events = Event::where('user_id',$request->organizer_id)->whereDate('start_time',">=",Carbon::now())->orderBy('start_time','ASC')->get();
+    $events = Event::where('user_id',$request->organizer_id)->where('show_pos',1)->whereDate('start_time',">=",Carbon::now())->orderBy('start_time','ASC')->where('is_deleted',0)->get();
 
     return response()->json(['msg' => 'Event listing', 'data' => $events, 'success' => true], 200);
 

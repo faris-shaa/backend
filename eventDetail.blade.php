@@ -125,18 +125,12 @@
                                     fill="#A986BF"/>
                         </svg>
                         <span class="h5 ">
-                  @if($event['is_repeat']== 1 ) 
-                  <input type="hidden" id="event-start-date" value="{{ Carbon\Carbon::parse($event['start_time'])->format('Y, m, d') }}">
-                  <input type="hidden" id="event-end-date" value="{{ Carbon\Carbon::parse($event['end_time'])->format('Y, m, d') }}">
+                  @if($event['is_repeat']== 1 )
                                 @if (session('direction') == 'rtl')
                                     {{ Carbon\Carbon::now()->locale('ar')->translatedFormat('d M Y') }}
                                     {{ Carbon\Carbon::parse($event['start_time'])->locale('ar')->translatedFormat('h:i A') }}
                                 @else
-                                    @if($event['id']!=121)
-                                    {{ Carbon\Carbon::parse($event['start_time'])->format('d M Y') }}
-                                    {{__('till')}}
-                                    {{ Carbon\Carbon::parse($event['end_time'])->format('d M Y') }}
-                                    @endif
+                                    Daily Event
                                 @endif
                             @else
                                 {{ Carbon\Carbon::parse( $event['start_time'])->format('d') }}
@@ -177,11 +171,9 @@
             <div class="mt-4 flex gap-2 flex-wrap">
                <a href="{{ route("events.organizer", [$event["organization"]["external_id"], \Illuminate\Support\Str::slug($event["organization"]["organization_name"])]) }}">
                   <small>
-                     <strong>{{ __("By") }}</strong>
-
+                     <stron>{{ __("By") }}</stron>
                      {{ ((app()->getLocale() == "عربي" and optional($event["organization"]->organizerDetails)->arabic_name) ? optional($event["organization"]->organizerDetails)->arabic_name :  $event["organization"]["organization_name"]) }}
                   </small>
-                  
                </a>
             </div>
 
@@ -296,9 +288,8 @@
         <div class="bg-light bg-opacity-5 rounded-2xl border border-primary_color_a11  p-3  md:p-32-24 mt-2 lg:mt-8">
             <h3 class="text-primary_color_6 font-medium text-h6 md:text-h3">{{ __('About Event') }}</h3>
             <p class="text-h13 font-normal md:text-h4 mt-1 md:mt-2 paragraph-3 max-h-96 overflow-x-auto ">
-                {!! $lang == 'ar' ? $event['description_arabic'] : $event['description']  !!}
+            {!! nl2br($lang == 'ar' ? $event['description_arabic'] : $event['description']) !!}
 
-                
             </p>
             <span id="showMore" class=" flex items-center gap-2 mt-1 py-1 cursor-pointer hidden">
          <span class="text-h6 lg:text-h4 showMore "><span class="more">{{__(key: 'Show more ...')}}</span> <span
@@ -316,13 +307,11 @@
                 </svg>
             </div>
             <div id="terms_conditions" class="hidden h4 mt-4">
-                @if(isset($event["organization"]->organizerDetails->terms_english) && $lang != 'ar')
+                @if(isset($event["organization"]->organizerDetails->terms_english))
                 {!!$event["organization"]->organizerDetails->terms_english !!}
+                @else
+                <p>{{__(key: 'Content for Terms and conditions.')}}</p>
                 @endif
-                @if(isset($event["organization"]->organizerDetails->terms_arabic) && $lang == 'ar')
-                {!!$event["organization"]->organizerDetails->terms_arabic !!}
-                @endif
-                
                 
             </div>
         </div>
@@ -345,7 +334,7 @@
                          data-end_time="{{$ticket['end_time']}}"
                          class=" slotEvent cursor-pointer bg-primary_color_12  hover:bg-primary_color_8   hover:border-primary_color_6  hover:bg-opacity-25 rounded-2xl border border-primary_color_o25_8 py-1 lg:py-4  px-3  text-center inner-hover transition">
                         <h3 class="font-bold text-h5 lg:text-h3">{{$ticket['name']}} </h3>
-                        <div class="text-gray_9 h6 my-4 flex flex-col">{{$ticket['description']}} </div>
+                  
                         <div class="f-bri h5 font-bold mt-3">{{ __(key: $currency) }} {{$ticket['price']}}</div>
                     </div>
                 @endforeach
@@ -355,15 +344,15 @@
             <div class="mb-10 lg:mb-16  hidden justify-between flex-wrap " id="slot-slider">
                 <div>
                     <h2 class="font-medium h3 lg:text-h2"> {{__(key: 'Select your desirable tickets')}}</h2>
-                    <p class="text-gray_9 text-h4">{{__( 'Choose your date.')}}</p>
+                    <p class="text-gray_9 text-h4">{{__( 'Choose your ticket and quantity.')}}</p>
                 </div>
                 <div class="flex gap-1 mt-3 md:mt-0">
-                    <!-- <button class=" bg-gray_f   h-12 p-1 px-4 rounded-5xl text-h6"
-                            id="tomorrow-slot">{{__('Tomorrow')}}</button> -->
+                    <button class=" bg-gray_f   h-12 p-1 px-4 rounded-5xl text-h6"
+                            id="tomorrow-slot">{{__('Tomorrow')}}</button>
                     <div id="datepicker-cont"
                          class="datepicker-container event-date relative  bg-gray_f   h-12 p-1 px-4 rounded-5xl   gap-1 flex items-center cursor-pointer w-40 ">
                         <input type="text" name="" placeholder="{{__( 'Custom date')}}" id="datepicker"
-                               class="slotEventCustome text-h6 datepicker cursor-pointer placeholder-white w-full  f-bri bg-transparent outline-0  "  min="2025-01-30" max="2025-01-26">
+                               class="slotEventCustome text-h6 datepicker cursor-pointer placeholder-white w-full  f-bri bg-transparent outline-0  ">
                         <svg id="slot-arrow" width="14" height="8" viewBox="0 0 14 8" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                             <path d="M6.37109 6.87891L1.12109 1.62891C0.765625 1.30078 0.765625 0.726562 1.12109 0.398438C1.44922 0.0429688 2.02344 0.0429688 2.35156 0.398438L7 5.01953L11.6211 0.398438C11.9492 0.0429688 12.5234 0.0429688 12.8516 0.398438C13.207 0.726562 13.207 1.30078 12.8516 1.62891L7.60156 6.87891C7.27344 7.23438 6.69922 7.23438 6.37109 6.87891Z"
@@ -464,7 +453,7 @@
         <div class="container mt-20 md:mt-32" id="tickets_section">
             <div class="mb-10 md:mb-16">
                 <h2 class="font-medium h3 lg:text-h2">{{__( 'Tickets options')}}</h2>
-                <p class="h5 lg:h4  mt-1 lg:mt-1 text-gray_9">{{__( 'Choose your date.')}}</p>
+                <p class="h5 lg:h4  mt-1 lg:mt-1 text-gray_9">{{__( 'Choose your ticket and quantity.')}}</p>
             </div>
         </div>
 
@@ -502,7 +491,7 @@
                                             </svg>
                                         </button>
                                         <div class="count" class="f-bri h3 opacity-25">0</div>
-                                        <button type="button" class="increment increment-{{$item->id}}"
+                                        <button type="button" class="increment "
                                                 data-ticketAvailabl="{{$item->available_qty}}"
                                                 data-ticket-price="{{ $item->price }}" data-ticket-id="{{ $item->id }}">
                                             <svg width="33" height="32" viewBox="0 0 33 32" fill="none"
@@ -519,7 +508,7 @@
 
                                     </div>
                                     <div style="margin-top: 20px; color:red;"
-                                         class="font-poppins font-medium text-base leading-7 text-danger quantityMsg quantityMsg-{{$item->id}}"
+                                         class="font-poppins font-medium text-base leading-7 text-danger"
                                          id="quantityMsg"></div>
                                 </div>
                             @endif
@@ -614,7 +603,7 @@
     @endif
 
 
-<input type="hidden" value="0" id="ticket_msg_count">
+
 
 
 
@@ -938,9 +927,6 @@
             });
         });
 
-        //
-        
-
         /* $("#verfication input").each(function(i, ele) {
             $(this).on("input", function() {
                let curent = $(this).attr('data-val');
@@ -972,8 +958,7 @@
                 slot_id = $(this).attr('id')
 
                 $('#slot-slider').removeClass("hidden").addClass("flex");
-               // slot_events(slot_id, [todayFormatted, tomorrowFormatted])
-               $('.slotEvent').removeClass('activeSlotEvent')
+                slot_events(slot_id, [todayFormatted, tomorrowFormatted])
                 $(this).addClass('activeSlotEvent')
             });
 
@@ -983,19 +968,7 @@
             });
 
             $(function () {
-                
-                // Fetch the value from the hidden input
-                const dateValue = $("#event-start-date").val();
-                const dateValueEnd = $("#event-end-date").val();
-console.log(dateValue,"dateValue")
-console.log(dateValueEnd,"dateValueEnd")
-
-                // Convert the value into an actual Date object
-                const minDate = new Date(dateValue); // This works only if the date is in 'YYYY, MM, DD' format
-                const maxDate = new Date(dateValueEnd);
                 $("#datepicker").datepicker({
-                    minDate: minDate, // Set min date to January 1, 2025
-                    maxDate: maxDate, // Set max date to December 31, 2025
                     beforeShow: function (input, inst) {
                         setTimeout(function () {
                             inst.dpDiv.appendTo('.datepicker-container');
@@ -1308,47 +1281,10 @@ console.log(dateValueEnd,"dateValueEnd")
                     $('#quantityMsg').show();
                     $('#quantityMsg').text('Max Limit Reached')
                     $('.increment').hide();
-
-                    
                 } else {
-                    // if ({{$event->id}} == 231 && count > 0) {
-                    //     let ticketId = $(this).data('ticket-id');
-                    //     $('.quantityMsg-'+ticketId).show();
-                    //     $('.quantityMsg-'+ticketId).text('Max Limit Reached')
-                    //     $('.increment-'+ticketId).hide();
-                    // }
-                    // else{
-                    //     $('.increment').show();
-                    //     $('#quantityMsg').hide();    
-                    // }
-                    var ticket_count = parseInt($("#ticket_msg_count").val());
-                    if ({{$event->user_id}} == 199 && {{$event->set_different_price}} == 1  && ticket_count > 0) {
-    let ticketId = $(this).data('ticket-id');
-    
-    // Show the "Max Limit Reached" message and hide the increment button for that ticket
-    $('.quantityMsg').show();
-    $('.quantityMsg').text('Max Limit Reached');
-    $('.increment').hide();
-    $("#ticket_msg_count").val(ticket_count + 1);
-    // Mark this ticket as "max limit reached" so it doesn't show increment again
-    $('.increment').data('hidden', true); // Store the state (hidden)
-} else {
-    $("#ticket_msg_count").val(ticket_count + 1);
-    // Show the increment buttons for other tickets, but check the hidden state
-    $('.increment').each(function() {
-        let ticketId = $(this).data('ticket-id');
-        
-        // Only show increment if it hasn't been marked as hidden
-        if (!$('.increment').data('hidden')) {
-            $(this).show();
-        }
-    });
-    $('.quantityMsg').hide();
-}
-                   
-                    
+                    $('.increment').show();
+                    $('#quantityMsg').hide();
                 }
-
                 if ($(this).attr('ticketAvailable')) {
                     console.log($(this).attr('ticketAvailable'));
                     if ($(this).attr('ticketAvailable') <= count + 1) {
@@ -1366,21 +1302,16 @@ console.log(dateValueEnd,"dateValueEnd")
                 if ({{$event->id}} == 121) {
                     ticketPrice = 200;
                 }
-                var ticket_count = parseInt($("#ticket_msg_count").val());
-                
-                // if ({{$event->user_id}} == 199 && {{$event->set_different_price}} == 1  && ticket_count > 1) {
-                //     ticketPrice = 20;
-                // }
 
                 handeltickets(ticketId, count + 1, ticketPrice)
             });
 
             $('.decrement').click(function () {
-                var ticket_count = parseInt($("#ticket_msg_count").val());
+
                 let countElement = $(this).siblings('.count');
                 $(this).siblings('.increment').removeClass("disable");
                 $(this).siblings('.increment').removeClass("opacity-25");
-                $("#ticket_msg_count").val(ticket_count - 1);
+
                 let count = parseInt(countElement.text());
                 if (count > 0) {
                     countElement.text(count - 1);
@@ -1395,7 +1326,6 @@ console.log(dateValueEnd,"dateValueEnd")
 
                 $('.increment').show();
                 $('#quantityMsg').hide();
-                $('.quantityMsg').hide();
 
                 $(".slot-event-quantities").val(`${count - 1}`);
 
@@ -1425,10 +1355,6 @@ console.log(dateValueEnd,"dateValueEnd")
                 $('#tickets-info').addClass('hidden');
                 $('#tickets-alert').removeClass('hidden');
             }
-            var ticket_count = parseInt($("#ticket_msg_count").val());
-            if ({{$event->user_id}} == 199 && {{$event->set_different_price}} == 1  && ticket_count > 1) {
-                ticketsPrice = 40;
-                }
             $('.tickets-price').text(ticketsPrice)
             $('.tickets-quantity').text(ticketsTotal)
         }

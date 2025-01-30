@@ -91,7 +91,7 @@ class OrderController extends Controller
             }
         }
 
-        $orders = $orders->get();
+        $orders = $orders->limit(100)->get();
         
         return view('admin.order.index', compact('orders','events_dropdown','selected_event_id','selected_event','selected_payment'));
     }
@@ -1655,5 +1655,56 @@ class OrderController extends Controller
         }
 
         return response()->json(['msg' => 'OTP sent', 'data' =>$user , 'success' => true], 200);
+    }
+    // Tamara refund api call 
+    public function tamaraRefund (Request $request)
+    {
+        $tamara_order_id = $request->order_id; 
+        //$order = Order::findOrFail(2272);'
+        //$tamara_order_id = $order->tamara_order_id;
+        $data_array = array();
+        $ch = curl_init();
+        $data_array['total_amount'] = array("amount"=> 2 , "currency" =>"SAR");
+        //$data_array['comment'] = "Refund for order ".$order->id; 
+        $data_array['comment'] = "Refund for order 2272"; 
+        curl_setopt($ch, CURLOPT_URL, 'https://api-sandbox.tamara.co/payments/simplified-refund/'.$tamara_order_id);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data_array));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Accept: application/json',
+            'Content-Type: application/json',
+            'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50SWQiOiI3ZjJjOTYwOS1kOTIwLTRkMzItOGQ1Zi1mM2YwYTFkZjg5MjgiLCJ0eXBlIjoibWVyY2hhbnQiLCJzYWx0IjoiZTI4NjFlY2YxYjk2ZGNjZGJlOTIzYzVkMTNkZmI5M2YiLCJyb2xlcyI6WyJST0xFX01FUkNIQU5UIl0sImlhdCI6MTczMTA1MDQwMSwiaXNzIjoiVGFtYXJhIn0.V7R3nuJXM_insVHnfpCnKHRWon4o-mNwpFWV7kMPmiDm5awK-MTkbaNYpuQAU2wnDLLwAUaIG0UEQQMbbj3Mzz7jMd1CF68jpIM8-c_yWi55VvYVTNV0m06G9cEUISdRCy9O-Y5EsKAHCrWGh7HFf-G-VijCwxPNlz8Dq5AgNhkulQHh6L0s_zmKvsxxZXeGQgtiMa2KLkph24FUms-tU5AeVfQ7nEcdi1PglnF3APqlZSrzhmEdGl2eMNgibGKIcHddLI8EPa1lM5xihx7wTi4jAnGrobLKiftx2_sd6HhYxUcmi2VRtQegjmVcFvYELeUx5jaH0ygip0jY7M0pDA',
+        ]);
+
+        $response = curl_exec($ch);
+
+        $responseData = json_decode($response, true);
+        return $responseData ; 
+    }
+
+    public function tamaraNotification ( Request $request )
+    {
+        Log::info("Tamara notification");
+        Log::info($request);
+        $order = Order::findOrFail(2272);
+        $data_array = array();
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api-sandbox.tamara.co/orders/'.$request->order_id.'/authorise');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data_array));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Accept: application/json',
+            'Content-Type: application/json',
+            'Authorization: Bearer '.$request->tamaraToken,
+        ]);
+
+        $response = curl_exec($ch);
+
+        $responseData = json_decode($response, true);
+        
+        return $responseData; 
     }
 }

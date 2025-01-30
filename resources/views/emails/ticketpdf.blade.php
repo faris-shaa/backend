@@ -18,7 +18,7 @@
 
 <p>Thank you for booking a ticket for {{$event->name }}  Your ticket is attached to this email, and you can use it for entry.</p>
 
-@if($event->is_repeat == 1)
+@if($event->is_repeat == 1 && isset($time_slot))
 <p>Date of event is {{$order->event_book_date}} and time is {{$time_slot->start_time}} to {{$time_slot->end_time}} </p>
 @endif
 

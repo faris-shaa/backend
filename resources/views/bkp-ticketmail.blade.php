@@ -38,49 +38,6 @@
             --light_primary_color: <?php echo $primary_color . '1a'; ?>;
             --middle_light_primary_color: <?php echo $primary_color . '85'; ?>;
         }
-        .event-image {
-            float: left;
-            width: 200px;
-            height: 200px;
-            margin-right: 20px;
-        }
-
-        .qr-code {
-            float: right;
-            margin-left: 20px;
-            text-align: right;
-        }
-
-        .media-body {
-            clear: both;
-        }
-        /* Footer Styles */
-        .footer {
-            text-align: center;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            margin-top: 30px;
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .footer a {
-            color: #6c757d;
-            text-decoration: none;
-        }
-        /* Terms Section */
-        .terms {
-            /* page-break-before: always;  */
-            margin-top: 30px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .terms p {
-            text-align: justify;
-            color: #6c757d;
-        }
     </style>
     <div class="main-wrapper">
         <div class="p-5">
@@ -91,33 +48,25 @@
                             <div class="col-lg-12">
                                 <div class="invoice-title">
 
-                                <img src="https://ticketby.co/images/upload/6667236ab15c6.png" style="width:200px;height:70px;">
+                                    <h3 style="color: #6c757d">{{ __('Order') }} {{ $order->order_id }}</h3>
                                 </div>
-                                
                                 <hr>
-                                <div class="invoice-title">
-
-                                    <h5 style="color: #6c757d">Order {{ $order->order_id }}</h5>
-                                </div>
                                 <div class="row">
                                     <div class="col-md-6 text-left">
                                         <address>
-                                            <strong style="color: #6c757d">Event:</strong>
+                                            <strong style="color: #6c757d">{{ __('Event') }}:</strong>
                                         </address>
-                                        <div>
-                                        </div>
-                                       
-                                        <!-- <div class="media">
+                                        <div class="media">
                                             <div class="row">
 
                                                 <div class="col-md-12">
 
                                                     <img alt="image" class="mr-3"
                                                         src="{{ public_path('images/upload/' . $order->event->image) }}"
-                                                        width="200" height="200">
-                                                    <div style="margin-left: 420px; top:50px">
+                                                        width="80" height="80">
+                                                    <div style="margin-left: 420px">
                                                         @foreach ($order->ticket_data as $item)
-                                                        <?php
+                                                            <?php
                                                             $qr = QrCode::format('png')
                                                                 ->size(150)
                                                                 ->generate($item->ticket_number);
@@ -128,25 +77,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> -->
-                                        <div class="event-details">
-                                            <div class="event-image">
-                                                <img alt="image" src="{{ public_path('images/upload/' . $order->event->image) }}" width="200" height="200">
-                                            </div>
-                                            <div class="qr-code">
-                                                @foreach ($order->ticket_data as $item)
-                                                    <?php
-                                                    $qr = QrCode::format('png')
-                                                        ->size(150)
-                                                        ->generate($item->ticket_number);
-                                                    ?>
-                                                    <img src="data:image/png;base64,{{ base64_encode($qr) }}" alt="QR Code" >
-                                                    <!-- <span style="margin-right:100px" >{{$item->ticket_number}}</span> -->
-                                                    <br>
-                                                @endforeach
-                                            </div>
                                         </div>
-                                        <div class="media-body" style="margin-top:40px; margin-bottom:40px;">
+                                        <div class="media-body">
                                             <div class="media-title mb-0">
                                                 {{ $order->event->name }}
                                             </div>
@@ -164,7 +96,7 @@
 
                                 <div class="col-md-6 text-md-right" style="margin-left: 12px">
                                     <address>
-                                        <strong>Organizer:</strong><br>
+                                        <strong>{{ __('Organizer') }}:</strong><br>
                                         <div style="color: #6c757d">
                                             {{ $order->organization->first_name . ' ' . $order->organization->last_name }}<br>
                                             {{ $order->organization->email }}<br>
@@ -179,7 +111,7 @@
                             <div class="row">
                                 <div class="col-md-6 text-md-right" style="margin-left: 12px">
                                     <address>
-                                        <strong>Location:</strong><br>
+                                        <strong>{{ __('Location') }}:</strong><br>
                                         <div style="color: #6c757d">
                                             <a href="https://maps.app.goo.gl/W48cJZeLe7rDBx5Q8?g_st=ic">https://maps.app.goo.gl/W48cJZeLe7rDBx5Q8?g_st=ic</a>
                                         </div>
@@ -192,14 +124,12 @@
                             <div class="row">
                                 <div class="col-md-6" style="margin-left: 12px">
                                     <address>
-                                        <strong>Attendee:</strong><br>
+                                        <strong>{{ __('Attendee') }}:</strong><br>
                                         <div style="color: #6c757d">
-                                        
                                             @if(isset($pos_order) && isset($pos_order->customeremail))
                                             {{ $pos_order->customername }}<br>
                                             {{ $pos_order->customeremail }}<br>
                                             @else
-                                            
                                             {{ $order->customer->name . ' ' . $order->customer->last_name }}<br>
                                             {{ $order->customer->email }}<br>
                                             @endif
@@ -221,20 +151,13 @@
 
                     <div class="row">
                         <div class="col-md-12 ">
-                            <div class="section-title">Order Summary</div>
+                            <div class="section-title">{{ __('Order Summary') }}</div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover table-md border-0">
                                     <th>#</th>
-                                    <th class="text-center ">Ticket Name</th>
-                                    <th class="text-center">Ticket Number</th>
-                                    @if($order->event->is_repeat && !isset($pos_order))
-                                    <th class="text-center">Event Date</th>
-                                    <th class="text-center">Session Time</th>
-                                    @endif
-                                    @if($order->event->user_id == 199 && $order->event->is_repeat == 0)
-                                    <th class="text-center">Description</th>
-                                    @endif
-                                    <th class="text-center">Price</th>
+                                    <th class="text-center ">{{ __('Ticket Name') }}</th>
+                                    <th class="text-center">{{ __('Ticket Number') }}</th>
+                                    <th class="text-center">{{ __('Price') }}</th>
                                      @php
                                     $subtotal = 0 ; 
                                     @endphp
@@ -243,46 +166,13 @@
                                    
                                     $ticket_name = App\Models\Ticket::where('id', $item->ticket_id)->first();
                                      $subtotal = $subtotal + $ticket_name->price ; 
-
-                                      if($order->event->is_repeat )
-                                      {
-                                        
-                                        $ticket_slot = App\Models\EventTime::where('id', $item->time_slot_id)->first();
-                                        if($ticket_slot)
-                                        {
-                                            $ticket_time = $ticket_slot->start_time;
-                                        }
-                                        else{
-                                            $ticket_time = null;
-                                        }
-                                      }
-                                      else{
-                                        $ticket_time = null ; 
-                                      }
-                                        
-                                            
-                                                
-                                            
-                                            
                                     @endphp 
-
-                                    
                                         <tr>
                                             <td><small>{{ $loop->iteration }}</small></td>
                                             <td class="text-center"><small>{{ $ticket_name->name }}</small></td>
-
                                             <td class="text-center"><small>{{ $item->ticket_number }}</small></td>
-                                            @if($order->event->is_repeat && $ticket_time != null )
-                                            <td class="text-center">{{  $item->event_book_date }}</th>
-                                            <td class="text-center"> {{Carbon\Carbon::parse($ticket_time)->format("g:i A")}}</th>
-                                            @endif
-                                            @if($order->event->user_id == 199 && $order->event->is_repeat == 0)
-                                            <td class="text-center">{{ $ticket_name->description }}</th>
-                                            @endif
                                             <td class="text-center ">
-                                              
-                                                <small> {{ $item->price }}</small>
-                                                
+                                                <small>{{  $ticket_name->price }} SAR</small>
                                             </td>
                                     @endforeach
                                 </table>
@@ -311,14 +201,14 @@
                                     style="margin-bottom: 1rem;color: #212529;border-collapse: collapse; margin-left:45%; margin-top:-105px">
                                     <tr>
                                         <td class="small">
-                                        Subtotal</td>
+                                            {{ __('Subtotal') }}</td>
                                         <td class="small  ">
                                             {{ ($order->payment + $order->coupon_discount - $order->tax) }} SAR
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="small ">
-                                        Coupon Discount</td>
+                                            {{ __('Coupon Discount') }}</td>
                                         <td class="small  ">
                                             (-)
                                             {{ $order->coupon_discount }} SAR
@@ -326,14 +216,14 @@
                                     </tr>
                                     <tr>
                                         <td class="small">
-                                        Tax</td>
+                                            {{ __('Tax') }}</td>
                                         <td class="small ">
                                             {{  $order->tax }} SAR
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="small">
-                                        Total</td>
+                                            {{ __('Total') }}</td>
                                         <td class="small ">
                                             {{  $order->payment }} SAR
                                         </td>
@@ -344,17 +234,6 @@
                     @endif
                 </div>
             </div>
-        </div>
-        <!-- Terms Section on a New Page -->
-        @if(isset($order->org_details->terms_english))
-        <div class="terms">
-            <p>{!! $order->org_details->terms_english !!}</p>
-        </div>
-        @endif
-        <!-- Footer with Phone Number and Email -->
-        <div class="footer">
-            <p>Phone: 556046094</p>
-            <p>Email: <a href="mailto:{{ $order->organization->email }}">info@ticketby.co</a></p>
         </div>
     </div>
 

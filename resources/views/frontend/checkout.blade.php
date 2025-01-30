@@ -151,7 +151,7 @@
                         <div
                            class="flex md:space-x-5  md:space-y-0 sm:flex-col sm:space-x-0 sm:space-y-5 xxsm:flex-col xxsm:space-x-0 xxsm:space-y-5 mb-5 payments">
 
-                           <div
+                           <!-- <div
                               class="border border-gray-light p-5 rounded-lg text-gray-100 w-full font-normal font-poppins text-base leading-6 flex border-primary d-block">
 
                               <div class="d-f">
@@ -170,7 +170,7 @@
                                  src="{{ url('frontend/images/tamara.jpg') }}"
                                  alt="" class="object-contain " style="height:30px; margin-top: 10px; margin-left: 5px;"></label>
                               </div>              -->
-                           </div>
+                           </div> -->
                            <?php $setting = App\Models\PaymentSetting::find(1); ?>
                            @if ($data->type == 'free')
                            <div

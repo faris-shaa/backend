@@ -95,6 +95,7 @@ class UserController extends Controller
         $data['password'] =  Hash::make($request->password);
         $data['org_id'] = $request->organization;
         $data['language'] = Setting::first()->language;
+        $data['external_id'] = time();
         $user = User::create($data);
 
         if( isset($request->arabic_name)  &&  !is_null($request->arabic_name) )

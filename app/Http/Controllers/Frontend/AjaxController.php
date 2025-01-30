@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 /**
  * Class AjaxController
  * @package App\Http\Controllers\Frontend
@@ -30,11 +30,20 @@ class AjaxController extends Controller
     {
         $this->ajaxCall("$('.spinner_upcoming_events').show()");
         $organizerId = $oval["user_id"];
-        $limit = $oval["limit"] ?? 3;
+        $limit = $oval["limit"] ?? 9;
 
         $baseQuery = Event::query()
             ->upcoming()
             ->where("user_id", $organizerId);
+        
+        if(isset($oval['start_date']))
+        {
+            $baseQuery = $baseQuery->whereDate('start_time', '<=', Carbon::parse($oval['start_date'])->format('Y-m-d'))
+                       ->whereDate('end_time', '>=', Carbon::parse($oval['start_date'])->format('Y-m-d'));
+
+        }
+
+        
 
         $events = $baseQuery
             ->paginate($limit);

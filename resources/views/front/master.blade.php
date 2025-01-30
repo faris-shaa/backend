@@ -9,7 +9,7 @@
 
 <head>
     <!-- Google Tag Manager -->
-    <script>
+    <!-- <script>
         (function (w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
@@ -24,7 +24,7 @@
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-5R6SN5SW');
-    </script>
+    </script> -->
     <!-- End Google Tag Manager -->
 
 
@@ -88,7 +88,7 @@
     <!-- <link href="{{ url('frontend/css/owl.carousel.min.css') }}" rel="stylesheet"> -->
     @stack("after-styles")
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+    <!-- <script type="text/javascript" src="https://js.stripe.com/v3/"></script> -->
     <!-- Template Main CSS File -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
             integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
@@ -200,7 +200,7 @@
     <script src="{{ asset('frontend/js/main.js') }}"></script>
     <script src="{{ asset('frontend/js/custom.js') }}"></script>
     <!-- <script src="{{ asset('js/custom.js') }}"></script> -->
-    <script src="./TW-ELEMENTS-PATH/dist/js/index.min.js"></script>
+    <!-- <script src="./TW-ELEMENTS-PATH/dist/js/index.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/datepicker.min.js"></script>
     <!-- <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script> -->
     <script src="https://checkout.flutterwave.com/v3.js"></script>

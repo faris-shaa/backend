@@ -13,6 +13,7 @@ use App\Models\AppUser;
 use App\Models\Banner;
 use App\Models\Coupon;
 use App\Models\EventEmail;
+use App\Models\EventTime;
 use Carbon\Carbon;
 use Throwable;
 use Illuminate\Support\Facades\Log;
@@ -408,5 +409,39 @@ class EventController extends Controller
     {
         Event::where('id',$request->id)->update(['orderby'=>$request->orderby]);
         return true;
+    }
+
+    public function duplicateEvent( Request $request)
+    {
+        // Get the record you want to duplicate
+        $event = Event::find($request->id); // You can replace $postId with the ID of the record you want to duplicate
+
+        // Create a new post instance with the same attributes, excluding the ID
+        $newEvent = $event->replicate();
+
+        // Optionally, modify attributes if you want
+        $newEvent->name = $newEvent->name . ' (Copy)';
+        $newEvent->save();
+
+        //tickets with time slots
+
+        $tickets = Ticket::where('event_id',$request->id)->get();
+        
+        foreach ($tickets as $key => $value) {
+            $ticket_new = $value->replicate();
+            $ticket_new->event_id = $newEvent->id ; 
+            $ticket_new->save();
+            $time_slots = EventTime::where('ticket_id',$value->id)->get();
+            if($time_slots)
+            {
+                foreach ($time_slots as $key_time => $value_time) {
+                    $time_slot_new = $value_time->replicate();
+                    $time_slot_new->ticket_id = $ticket_new->id ; 
+                    $time_slot_new->save();
+                }
+            }
+        }
+
+        return redirect()->route('events.index')->withStatus(__('Event has duplicated successfully.'));
     }
 }

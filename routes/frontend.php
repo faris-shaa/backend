@@ -17,6 +17,7 @@ use App\Http\Controllers\Frontend\EventOrgananizerController;
 use App\Http\Controllers\Frontend\AjaxController;
 
 Route::post('/ajax', [AjaxController::class, "index"]);
+Route::get('fifthSightEvents', [FrontendController::class, 'fifthSightEvents']);
 Route::get('auth/google', [FrontendController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [FrontendController::class, 'handleGoogleCallback']);
 Route::post('/applyCoupon', [FrontendController::class, 'applyCoupon']);
@@ -42,6 +43,9 @@ Route::get('/logic-testing', [FrontendController::class, 'logicTesting']);
 
 
 Route::get('/qr-generate', [FrontendController::class, 'qrcodeGenerator']);
+
+
+Route::any('/tamara-notification', [OrderController::class, 'tamaraNotification'])->name('tamaraNotification');
 
 Route::group(['middleware' => ['mode', 'XSS']], function () {
 

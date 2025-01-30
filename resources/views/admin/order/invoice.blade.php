@@ -58,9 +58,22 @@
 
                                     <address>
                                         <strong>{{ __('Attendee') }}:</strong><br>
-                                        {{ $order->customer->name . ' ' . $order->customer->last_name }}<br>
-                                        {{ $order->customer->phone }}<br>
-                                        {{ $order->customer->email }}<br>
+                                        @php
+                                        $pos_order =  App\Models\PosOrder::where('order_id', $order->id)->first();
+                                        @endphp 
+                                        @if($pos_order)
+                                        
+                                        
+                                        {{ $pos_order->customername }}<br>
+                                            {{ $pos_order->customeremail }}<br>
+                                            {{ $pos_order->phone }}<br>
+                                        
+                                        @else
+                                            {{ $order->customer->name . ' ' . $order->customer->last_name }}<br>
+                                            {{ $order->customer->phone }}<br>
+                                            {{ $order->customer->email }}<br>
+                                        @endif
+                                        
                                     </address>
 
 

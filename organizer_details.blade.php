@@ -67,21 +67,6 @@
     <div class="container mt-9 md:mt-40 xl:mt-m133 block " id="UpcomingEventsSection">
         <div class="flex justify-between flex-wrap gap-y-4">
             <h2 class="text-h5 lg:text-h2 text-primary_color_6 lg:text-white font-medium">{{__('Upcoming Events')}}</h2>
-            <div id="datepicker-cont"
-                         class="datepicker-container event-date relative  bg-gray_f   h-12 p-1 px-4 rounded-5xl   gap-1 flex items-center cursor-pointer w-40 ">
-                        <input type="text" name="" placeholder="{{__( 'Custom date')}}" id="datepicker"
-                               class="slotEventCustome text-h6 datepicker cursor-pointer placeholder-white w-full  f-bri bg-transparent outline-0  "  min="2025-01-30" max="2025-01-26">
-                        <svg id="slot-arrow" width="14" height="8" viewBox="0 0 14 8" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.37109 6.87891L1.12109 1.62891C0.765625 1.30078 0.765625 0.726562 1.12109 0.398438C1.44922 0.0429688 2.02344 0.0429688 2.35156 0.398438L7 5.01953L11.6211 0.398438C11.9492 0.0429688 12.5234 0.0429688 12.8516 0.398438C13.207 0.726562 13.207 1.30078 12.8516 1.62891L7.60156 6.87891C7.27344 7.23438 6.69922 7.23438 6.37109 6.87891Z"
-                                  fill="#666666"/>
-                        </svg>
-                        <svg class="hidden" id="clear-slot" width="16" height="16" viewBox="0 0 16 16" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 16C3.5625 16 0 12.4375 0 8C0 3.59375 3.5625 0 8 0C12.4062 0 16 3.59375 16 8C16 12.4375 12.4062 16 8 16ZM5.46875 5.46875C5.15625 5.78125 5.15625 6.25 5.46875 6.53125L6.9375 8L5.46875 9.46875C5.15625 9.78125 5.15625 10.25 5.46875 10.5312C5.75 10.8438 6.21875 10.8438 6.5 10.5312L7.96875 9.0625L9.4375 10.5312C9.75 10.8438 10.2188 10.8438 10.5 10.5312C10.8125 10.25 10.8125 9.78125 10.5 9.46875L9.03125 8L10.5 6.53125C10.8125 6.25 10.8125 5.78125 10.5 5.46875C10.2188 5.1875 9.75 5.1875 9.4375 5.46875L7.96875 6.9375L6.5 5.46875C6.21875 5.1875 5.75 5.1875 5.46875 5.46875Z"
-                                  fill="#999999"/>
-                        </svg>
-                    </div>
         </div>
         <div class="mt-4 hidden text-center" id="empty_upcoming_search">
             <svg class="mx-auto" width="128" height="120" viewBox="0 0 128 120" fill="none"
@@ -291,47 +276,16 @@
 @endpush
 @push("after-scripts")
     <script>
-$(function () {
-    // Assuming dateValue and dateValueEnd are JavaScript variables with date strings like '2025-01-30'
-    const dateValue = "2025-01-27";  // Replace with actual value
-    const dateValueEnd = "2025-07-26"; // Replace with actual value
-
-    // Convert the values into Date objects
-    const minDate = new Date(dateValue);
-    const maxDate = new Date(dateValueEnd);
-
-    // Initialize the datepicker
-    $("#datepicker").datepicker({
-        beforeShow: function (input, inst) {
-            setTimeout(function () {
-                inst.dpDiv.appendTo('.datepicker-container');
-            }, 0);
-        },
-        onSelect: function (dateText) {
-            // Handle the selected date (you can add custom logic here)
-           filerFetchOrganizerUpcomingEvent(dateText)
-            
-        },
-        minDate: minDate,  // Set the minimum date for the datepicker
-        maxDate: maxDate   // Set the maximum date for the datepicker
-    });
-
-    // Custom container click behavior
-    $("#datepicker-cont").on('click', function () {
-        $(this).addClass('border-primary_color_6 border-1 transition-all duration-300 ease-in-out');
-    });
-});
-
-        let upcomingLimit = 9;
-        let previousLimit = 9;
+        let upcomingLimit = 3;
+        let previousLimit = 3;
 
         const updateLimitBasedOnScreenSize = async () => {
             if (window.innerWidth <= 768) { // 1024px is the breakpoint for 'lg' in Tailwind CSS
-                upcomingLimit = 9;
-                previousLimit = 9;
+                upcomingLimit = 2;
+                previousLimit = 2;
             } else {
-                upcomingLimit = 9;
-                previousLimit = 9;
+                upcomingLimit = 3;
+                previousLimit = 3;
             }
         }
 
@@ -339,23 +293,9 @@ $(function () {
             var ovals = {};
             let page = $("#load_more_upcoming").data('page');
             ovals["user_id"] = "{{ $organizer["id"] }}";
-            ovals["limit"] = 9;
+            ovals["limit"] = upcomingLimit;
             $Ajax("fetchOrganizerUpComingEvent", ovals, page);
             setTimeout(initializeEventSwiper, 1000);
-        }
-
-        const filerFetchOrganizerUpcomingEvent = async (date) => {
-            $(".swiper-slide").hide();
-            $("#empty_upcoming_search").hide();
-            var ovals = {};
-            let page = 1;//$("#load_more_upcoming").data('page');
-            ovals["user_id"] = "{{ $organizer["id"] }}";
-            ovals["limit"] = 9;
-            ovals["start_date"] = date;
-            
-            $Ajax("fetchOrganizerUpComingEvent", ovals, page);
-            setTimeout(initializeEventSwiper, 1000);
-            
         }
 
         const loadMoreUpComping = async () => {
@@ -367,12 +307,9 @@ $(function () {
             let page = $("#load_more_previous").data('page');
             ovals["user_id"] = "{{ $organizer["id"] }}";
             ovals["limit"] = previousLimit;
-            $Ajax("fetchOrganizerUpComingEvent", ovals, page);
+            $Ajax("fetchOrganizerUpPreviousEvent", ovals, page);
             setTimeout(initializeEventSwiper, 1000);
         }
-
-
-        
 
         const loadMorePrevious = async () => {
             await fetchOrganizerPreviousEvent();
@@ -380,7 +317,7 @@ $(function () {
 
         $(document).ready(async () => {
             await updateLimitBasedOnScreenSize();
-           // await fetchOrganizerUpcomingEvent();
+            await fetchOrganizerUpcomingEvent();
             await fetchOrganizerPreviousEvent();
         });
 

@@ -131,7 +131,10 @@
                                                     <td>
                                                         <a href="{{ url($item->id . '/' . Str::slug($item->name) . '/tickets') }}"
                                                             class=" btn btn-primary">{{ __('Manage Tickets') }}</a>
+                                                            <a href="{{ url('/event/duplicate?id='.$item->id) }}"
+                                                            class=" btn btn-primary" style="margin-top:10px;">{{ __('Duplicate') }}</a>   
                                                     </td>
+                                                    
                                                 @endif
                                             </tr>
                                         @endforeach

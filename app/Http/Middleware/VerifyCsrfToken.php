@@ -19,6 +19,7 @@ class VerifyCsrfToken extends Middleware
         'guest/subscribe',
         'validate-merchant',
         'process-payment',
-        'createOrder'
+        'createOrder',
+        'tamara-notification'
     ];
 }

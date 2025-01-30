@@ -213,7 +213,8 @@ else
                     <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 10.25C9.40625 10.25 9.75 10.5938 9.71875 11C9.71875 11.4375 9.40625 11.75 9 11.75C8.59375 11.75 8.25 11.4375 8.25 11C8.25 10.5938 8.5625 10.25 9 10.25ZM9 9C8.71875 9 8.5 8.78125 8.5 8.5V4C8.5 3.75 8.75 3.5 9 3.5C9.21875 3.5 9.46875 3.75 9.46875 4V8.5C9.46875 8.78125 9.25 9 9 9ZM16.75 11.4375C17.0625 11.9688 17.0625 12.5938 16.75 13.125C16.4375 13.6875 15.875 14 15.25 14H2.75C2.09375 14 1.53125 13.6875 1.21875 13.125C0.90625 12.5938 0.90625 11.9688 1.21875 11.4375L7.46875 0.875C7.78125 0.34375 8.34375 0 9 0C9.625 0.03125 10.1875 0.34375 10.5 0.875L16.75 11.4375ZM15.875 12.625C16.0312 12.4062 16 12.1562 15.875 11.9375L9.625 1.375C9.5 1.15625 9.25 1.03125 9 1C8.96875 1 9 1 9 1C8.71875 1 8.46875 1.15625 8.34375 1.375L2.09375 11.9375C1.96875 12.1562 1.9375 12.4062 2.09375 12.625C2.21875 12.875 2.46875 13 2.75 13H15.2188C15.5 13 15.75 12.875 15.875 12.625Z" fill="#E55E73" />
                     </svg>
-                    <span class="error-message"> {{ __('This is error') }} </span>
+                    <span class="error-message"> {{ __('Sold Out') }} </span>
+                    
                 </div>
             </div>
             <!-- edafpay -->
@@ -289,7 +290,7 @@ else
             </div>
             <!-- stc  -->
             <!-- Tabby  -->
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <div
                     class="bg-gray_f  w-full rounded-2xl border border-primary_color_o10_1 p-24-16 flex justify-between items-center payments ">
                     <div class="flex gap-4 items-center">
@@ -362,7 +363,7 @@ else
                         new TabbyPromo({});
                     </script>
                 </div>
-            </div>
+            </div> -->
             <!-- Tabby  -->
             <!-- Tamara  -->
             <!-- <tamara-widget type="tamara-summary" inline-type='4' inline-variant='text'></tamara-widget> -->

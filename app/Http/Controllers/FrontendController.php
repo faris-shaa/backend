@@ -25,6 +25,7 @@ use App\Models\Order;
 use App\Models\Setting;
 use App\Models\PaymentSetting;
 use App\Models\NotificationTemplate;
+use App\Models\OrganizerDetails;
 use App\Models\EventReport;
 use App\Models\OrderChild;
 use App\Models\Notification;
@@ -134,7 +135,7 @@ class FrontendController extends Controller
                 ->orderBy('orderby', 'asc')->orderBy('start_time', 'asc')->limit(3)->get();
 
             $pervious_events = Event::with(['category:id,name'])
-                ->where([['status', 1], ['is_deleted', 0], ['is_repeat', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d H:i:s')]])
+                ->where([['status', 1], ['is_deleted', 0],['is_private', 0], ['is_repeat', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d H:i:s')]])
                 ->orderBy('start_time', 'desc')->limit(3)->get();
             $organizer = User::role('Organizer')->orderBy('id', 'DESC')->get();
             $category = Category::where('status', 1)->orderBy('id', 'DESC')->get();
@@ -877,7 +878,7 @@ class FrontendController extends Controller
         $timezone = Setting::find(1)->timezone;
         $date = Carbon::now($timezone);
         $events = Event::with(['category:id,name'])
-            ->where([['status', 1], ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d')]])->limit(10)->get();
+            ->where([['status', 1],['is_private', 0] , ['is_deleted', 0], ['event_status', 'Pending'], ['end_time', '<', $date->format('Y-m-d')]])->limit(10)->get();
 
         return view('frontend.previous_events', compact('events'));
     }
@@ -982,13 +983,13 @@ class FrontendController extends Controller
 
     public function eventDetail($id, $name = null)
     {
-
+        
         $setting = Setting::first(['app_name', 'logo']);
         $currency = "$"; //Setting::first(['currency_sybmol']);
 
         $data = Event::with(['category:id,name,image', 'organization:id,external_id,first_name,organization_name,bio,last_name,image'])->find($id);
         SEOMeta::setTitle($data->name)
-            ->setDescription($data->description)
+            ->setDescription("Buy tikets for ".$data->name)
             ->addMeta('event:category', $data->category->name, 'property')
             ->addKeyword([
                 $setting->app_name,
@@ -999,7 +1000,7 @@ class FrontendController extends Controller
             ]);
 
         OpenGraph::setTitle($data->name)
-            ->setDescription($data->description)
+        ->setDescription("Buy tikets for ".$data->name)
             ->setUrl(url()->current())
             ->addImage($data->imagePath . $data->image)
             ->setArticle([
@@ -1014,12 +1015,12 @@ class FrontendController extends Controller
 
 
         JsonLd::setTitle($data->name)
-            ->setDescription($data->description)
+        ->setDescription("Buy tikets for ".$data->name)
             ->setType('Article')
             ->addImage($data->imagePath . $data->image);
 
         SEOTools::setTitle($data->name);
-        SEOTools::setDescription($data->description);
+        SEOTools::setDescription("Buy tikets for ".$data->name);
         SEOTools::opengraph()->setUrl(url()->current());
         SEOTools::setCanonical(url()->current());
         SEOTools::opengraph()->addProperty('keywords', [
@@ -1250,7 +1251,10 @@ class FrontendController extends Controller
             $total_amount = 0;
             $ticket_amount = 0;
             $ticket_details = array();
+            $ticket_count_limit_price = 0 ; 
+            
             foreach ($tickets as $key => $value) {
+                
                 if ($value['quantity'] > 0) {
                     // Retrieve ticket and event details
                     $ticket = Ticket::find($value['ticket_id']);
@@ -1258,6 +1262,23 @@ class FrontendController extends Controller
                     $event = Event::find($ticket->event_id);
                     if ($event->id == 121 && $value['quantity'] > 1) {
                         $ticket->price = 200;
+
+                    }
+                    
+                    if ( $event->user_id == 199 && $event->set_different_price == 1 ) {
+                        
+                         $quantities_check =  $request->quantities;
+                         $count_amount = 0 ; 
+                         foreach ($quantities_check as $key_amount => $value_amount) {
+                            $count_amount = $count_amount + $value_amount ; 
+                            # code...
+                         }
+                         if($count_amount > 1)
+                         {
+                            $ticket->price = 20;
+                         }
+                        // dd($quantities_check);
+                        
 
                     }
 
@@ -1419,7 +1440,11 @@ class FrontendController extends Controller
             }
 
         }
-
+        
+        if(!isset($event) || $event == null)
+        {
+            $event = $data;
+        }
         
         if ($event->id == 121 ) {
             
@@ -1488,7 +1513,7 @@ class FrontendController extends Controller
                         foreach ($tax as $key => $item) {
                             if ($item->amount_type == 'percentage') {
 
-                                $amount = ($item->price * $subtotal) / 100;
+                                $amount = ($item->price * $total) / 100;
                                 array_push($arr, $amount);
                             }
                             if ($item->amount_type == 'price') {
@@ -1543,6 +1568,64 @@ class FrontendController extends Controller
         //dd($request->all());
         if ($request->payment_type == "ApplePay") {
             $data = $request->token;
+
+            // // Valition for sold out tickets  start 
+            $ticketIdsString = $request->ticket_ids;
+            $quantitiesString = $request->ticket_quantities;
+
+            // /*$ticketIdsString =  "99,98"; 
+            // $quantitiesString = "2,0";*/
+            // // Convert the comma-separated strings into arrays
+            $ticketIds = explode(',', $ticketIdsString);
+            $quantities = explode(',', $quantitiesString);
+
+            // // Check if both arrays have the same length
+            if (count($ticketIds) !== count($quantities)) {
+                // Handle the case where arrays do not match in length
+                return response()->json(['error' => 'Mismatch between ticket IDs and quantities.'], 400);
+            }
+
+            // // Pair the ticket IDs with their quantities
+            $tickets = array_map(function ($ticketId, $quantity) {
+                return [
+                    'ticket_id' => (int)$ticketId,  // Casting to int if necessary
+                    'quantity' => (int)$quantity,  // Casting to int if necessary
+                ];
+            }, $ticketIds, $quantities);
+            foreach ($tickets as $key => $ticket_array) {
+                $ticekt = Ticket::find($ticket_array['ticket_id']);
+
+                $event = Event::find($ticekt->event_id);
+                $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0) {
+                    
+                    Log::info("sold out");
+                    return response()->json([
+                        'error_message' => 'payment_failed',
+                        'type' => 'ApplePay',
+                        'status' => 500
+                    ]);
+                }
+                if($event->is_repeat == 1 )
+                {
+                 
+                    $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                    if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity) {
+                        
+                        Log::info("sold out");
+                        return response()->json([
+                            'error_message' => 'payment_failed',
+                            'type' => 'ApplePay',
+                            'status' => 500
+                        ]);
+                    }
+
+                }
+            }
+
+            // Valition for sold out tickets  End
 
             $publicKeyHash = $data['transactionIdentifier'];
             $identifier = $publicKeyHash;  // Replace with actual identifier
@@ -1621,6 +1704,7 @@ class FrontendController extends Controller
                 return response()->json(['success' => false, 'message' => 'Insufficient balance']);
             }
         }
+        
         $event = Event::find($ticket->event_id);
 
 
@@ -1728,9 +1812,25 @@ class FrontendController extends Controller
                 $event = Event::find($ticekt->event_id);
                 $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
                 $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-                if ($sold_ticket_count + $ticket_array['quantity'] >= $ticekt->quantity && $event->is_repeat == 0) {
-                    $ticekt->update(['status' => 0]);
+                if ($sold_ticket_count + $ticket_array['quantity'] > $ticekt->quantity && $event->is_repeat == 0) {
+                    
                     return response()->json(['success' => false, 'msg' => "ticekts soled out", 'data' => null], 200);
+                }
+                if($event->is_repeat == 1 )
+                {
+                 
+                    $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                    if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity ) {
+                        
+                        Log::info("sold out");
+                        return response()->json([
+                            'error_message' => 'Sold out',
+                            'type' => 'ApplePay',
+                            'status' => 500
+                        ]);
+                    }
+
                 }
 
                 for ($i = 1; $i <= $ticket_array['quantity']; $i++) {
@@ -1741,8 +1841,23 @@ class FrontendController extends Controller
                     $child['customer_id'] = Auth::guard('appuser')->user()->id;
                     $child['checkin'] = $ticket->maximum_checkins ?? null;
                     $child['paid'] = $request->payment_type == 'LOCAL' ? 0 : 1;
+                    if (isset($request->slot_event_date) && !is_null($request->slot_event_date)) {
 
+                        $child['time_slot_id'] = $request->time_slot_id;
+                        $child['event_book_date'] = $request->slot_event_date;
+                    }
+                    
+                    if ( $event->user_id == 199 && $event->set_different_price == 1 && count($tickets) > 1) 
+                    {
+                        
+                            $child['price'] = 20;
+                        
+                    }
+                    else{
+                        $child['price'] = $ticket->price;
+                    }
 
+                    
                     OrderChild::create($child);
 
                 }
@@ -1750,6 +1865,17 @@ class FrontendController extends Controller
                 $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
                 if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
                     $ticekt->update(['status' => 0]);
+                }
+                if($event->is_repeat == 1 )
+                {
+                 
+                    $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                    if (($sold_ticket_count + $ticket_array['quantity']) >= $ticekt->quantity ) {
+                        
+                        $ticekt->update(['status' => 0]);
+
+                    }
                 }
 
             }
@@ -2467,10 +2593,8 @@ class FrontendController extends Controller
         }
     }
 
-    public function sendOrderMailPdf($id)
+    public function sendordermailtest($id)
     {
-
-        //$order_update = Order::where('id',$id)->update(['payment_status'=>1 , 'order_status' =>'Complete']);
         $order = Order::find($id);
 
 
@@ -2485,10 +2609,51 @@ class FrontendController extends Controller
         }
 
         $dataemail['email'] = $dataemail['user']->email;
-
+        $event = Event::where('id', $order->event_id)->first(); 
         $order = Order::with(['customer', 'event', 'organization', 'ticket'])->find($id);
         $order->tax_data = OrderTax::where('order_id', $order->id)->get();
         $order->ticket_data = $oder_child = OrderChild::where('order_id', $order->id)->get();
+        $order->org_details = OrganizerDetails::where('user_id',$event->user_id)->first();
+        foreach ($oder_child as $key => $value) {
+            QrCode::format('png')
+                ->size(300)
+                ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
+        }
+        $customPaper = array(0, 0, 720, 1440);
+        $pdf = FacadePdf::loadView('new-ticketmail', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+        $data["email"] = $order->customer->email;
+        $data["title"] = "Ticket PDF";
+        $data["body"] = "";
+        $tempp = $pdf->output();
+
+        Mail::send(['html' => 'emails.ticketpdf'], $dataemail, function ($message) use ($tempp, $dataemail) {
+            $message->to($dataemail['email'])->subject('Ticket Booked');
+            $message->from('ticketbyksa@gmail.com', 'TicketBy')->attachData($tempp, "ticket.pdf");
+        });
+    }
+
+    public function sendOrderMailPdf($id)
+    {
+
+        $order = Order::find($id);
+
+
+        $dataemail['order'] = $order;
+        $dataemail['event'] = Event::find($dataemail['order']->event_id);
+        $dataemail['user'] = AppUser::find($dataemail['order']->customer_id);
+        $dataemail['email'] = $dataemail['user']->email;
+        if ($dataemail['event']->is_repeat == 1) {
+
+            $dataemail['time_slot'] = EventTime::where('id', $order->time_slot_id)->first();
+            //dd($dataemail['time_slot']);
+        }
+
+        $dataemail['email'] = $dataemail['user']->email;
+        $event = Event::where('id', $order->event_id)->first(); 
+        $order = Order::with(['customer', 'event', 'organization', 'ticket'])->find($id);
+        $order->tax_data = OrderTax::where('order_id', $order->id)->get();
+        $order->ticket_data = $oder_child = OrderChild::where('order_id', $order->id)->get();
+        $order->org_details = OrganizerDetails::where('user_id',$event->user_id)->first();
         foreach ($oder_child as $key => $value) {
             QrCode::format('png')
                 ->size(300)
@@ -2996,6 +3161,7 @@ class FrontendController extends Controller
 
     public function profile()
     {
+        
         $user = Auth::guard('appuser')->user();
         $setting = Setting::first(['app_name', 'logo']);
 
@@ -3309,7 +3475,7 @@ class FrontendController extends Controller
             }
 
 
-            $ticket['upcoming']->event = $event;
+            $ticket['upcoming']->event =     $event;
         }
 
         $ordertax = array();
@@ -4299,7 +4465,8 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "2656";
+        $order_id = "4551";
+        //4242
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');
         dd($data);*/
@@ -4314,11 +4481,11 @@ class FrontendController extends Controller
     {
 
         $order_data['order_id'] = '#' . rand(9999, 100000);
-        $order_data['event_id'] = 202;
+        $order_data['event_id'] = 209;
         $order_data['customer_id'] = 61;
-        $order_data['organization_id'] = 153;
-        $order_data['order_status'] = 'Pending';
-        $order_data['ticket_id'] = 262; // 90 f 91 m
+        $order_data['organization_id'] = 156;
+        $order_data['order_status'] = 'Mannual';
+        $order_data['ticket_id'] = 282; // 90 f 91 m
         $order_data['quantity'] = 1; // 90 f 91 m
         $order_data['tax'] = 0;
         $order_data['payment'] = 0;
@@ -4328,9 +4495,9 @@ class FrontendController extends Controller
 
         $order = Order::create($order_data);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             $child['ticket_number'] = uniqid();
-            $child['ticket_id'] = 262;
+            $child['ticket_id'] = 282;
             $child['order_id'] = $order->id;
             $child['customer_id'] = 61;
             $child['checkin'] = null;
@@ -4597,4 +4764,9 @@ class FrontendController extends Controller
         return $pdf->download('myfile.pdf');
 
     }
+
+	public function fifthSightEvents ()
+	{
+		return view ('fifith');
+	}
 }

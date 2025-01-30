@@ -52,7 +52,6 @@ Route::get('/admin/login', function () {
     return view('auth.login');
 })->name('admin.login');
 
-
 Route::get('/apple-pay', function () {
     return view('apple');
 });
@@ -60,6 +59,9 @@ Route::get('/apple-pay', function () {
 Route::get('/qr-pdf', function () {
     return view('qr_pdf');
 });
+
+//Tamara 
+Route::any('/order/tamara-refund', [OrderController::class, 'tamaraRefund']);
 
 Route::any('/validate-merchant', [ApplePayController::class, 'validateMerchant']);
 Route::any('/process-payment', [ApplePayController::class, 'processPayment']);
@@ -70,6 +72,7 @@ Route::post('/saveEnvData', [LicenseController::class, 'saveEnvData']);
 Route::post('/saveAdminData', [LicenseController::class, 'saveAdminData']);
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::any('/order/testing', [OrderController::class, 'dataTesting']);
+
 Route::any('/order/edfapay', [OrderController::class, 'checkoutEdfapay'])->name('payment.edfapay');
 
 Route::get('/order-invoice-print/{id}', [OrderController::class, 'orderInvoicePrint']);
@@ -85,7 +88,7 @@ Route::get('/login-as-appuser/{id}',[LicenseController::class,'loginAsAppuser'])
 // You can comment the following route to block installer route after site goes live
 Route::any('installer', [LicenseController::class, 'installer'])->name('installer');
 
-Route::group(['middleware' => ['auth']], function () {
+// Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/admin/home', [UserController::class, 'adminDashboard']);
     Route::get('/organization/home', [UserController::class, 'organizationDashboard']);
@@ -177,6 +180,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/wallet-transactions', [WalletController::class, 'allTransactions'])->name('allTransactions');
     Route::any('/orders-create-for-user',[UserController::class,'orderCreateForUser'])->name('orderCreateForUser');
     Route::post('/get-tickets-details',[UserController::class,'getTicketsDetails'])->name('getTicketsDetails');
+
+    Route::get('/event/duplicate', [EventController::class, 'duplicateEvent']);
+
     Route::resources([
 
         // 'roles' => RoleController::class, // Do not enable this
@@ -197,7 +203,7 @@ Route::group(['middleware' => ['auth']], function () {
         'cities' =>  CitiesController::class,
 
     ]);
-});
+// });
 
 Route::get('/edfapay', [NotificationTemplateController::class, 'edfapay']);
 
