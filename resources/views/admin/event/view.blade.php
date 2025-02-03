@@ -21,6 +21,8 @@
                             <div class="col-12 event-description">
                                 <h2 class="mt-3">{{$event->name}} <button type="button" class="btn btn-primary "><a class="text-white" href="{{url($event->id.'/'.preg_replace('/\s+/', '-', $event->name).'/tickets')}}">{{__('Manage Tickets')}}</a></button></h2>
                                 <p> {!!$event->description!!}  </p>
+                                <h2>Terms and condition</h2>
+                                <p> {!!$event->terms_and_condition!!}  </p>
                             </div>
                         </div>
                         <div class="row ml-0 mr-0 mt-4">

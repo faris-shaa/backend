@@ -456,6 +456,7 @@ class UserController extends Controller
         foreach ($monthEvent as $value) {
             $value->tickets = Ticket::where('event_id', $value->id)->sum('quantity');
             $value->sold_ticket = Order::where('event_id', $value->id)->where('order_status',"Complete")->where('payment_status',1)->sum('quantity');
+            //dd($value->sold_ticket);
             $value->average = $value->tickets == 0 ? 0 : $value->sold_ticket * 100 / $value->tickets;
         }
 

@@ -316,12 +316,15 @@
                 </svg>
             </div>
             <div id="terms_conditions" class="hidden h4 mt-4">
-                @if(isset($event["organization"]->organizerDetails->terms_english) && $lang != 'ar')
+                <!-- @if(isset($event["organization"]->organizerDetails->terms_english) && $lang != 'ar')
                 {!!$event["organization"]->organizerDetails->terms_english !!}
                 @endif
                 @if(isset($event["organization"]->organizerDetails->terms_arabic) && $lang == 'ar')
                 {!!$event["organization"]->organizerDetails->terms_arabic !!}
-                @endif
+                @endif -->
+
+                {!! $lang == 'ar' ? $event['terms_and_condition_arabic'] : $event['terms_and_condition']  !!}
+                
                 
                 
             </div>
@@ -473,7 +476,7 @@
                 <div class="container ">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
                         @foreach ($event->paid_ticket as $item)
-                            @if($item->available_qty > 0 )
+                            @if(true )
                                 <input type="hidden" name="" id="available" value="{{$item->available_qty}}">
                                 <input type="hidden" value="{{ $item->available_qty }}" name="tpo" id="tpo">
                                 <div class="bg-primary_color_12  hover:border-primary_color_7 transition-all rounded-2xl border border-primary_color_o25_8  p-2  md:p-32-24 text-center">
@@ -486,9 +489,21 @@
                                     </h3>
                                     <div class="text-gray_9 h6 my-4 flex flex-col">{{$item->description}} 
                                     </div>
+                                    @if($event->set_different_price == 1)
+                                    @php 
+
+                    
+                                    $order_id = App\Models\Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$event->id)->whereDate('created_at',Carbon\Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
+
+                                    $count_sold = App\Models\OrderChild::whereIn('order_id',$order_id)->where('ticket_id',$item->id)->count();
+                                    
+                                    @endphp 
+                                     <div class="text-gray_9 h6 my-4 flex flex-col">Available Quantity  : @if( $item->quantity >=  $count_sold ) {{ $item->quantity -  $count_sold }} @else 0 @endif 
+                                    </div>
+                                    @endif
                                     <div class="f-bri">
                                         <span class="h4">{{ __($currency) }}</span>
-                                        <span class="h5 md:text-h3 font-bold"> {{ $item->price }}</span>
+                                        <span class="h5 md:text-h3 font-bold"> {{ $item->price }} </span>
                                     </div>
                                     <div class="flex mt-4 items-center justify-center gap-4 pro-qty">
                                         <button type="button" class="disable decrement opacity-25 qtybtn"

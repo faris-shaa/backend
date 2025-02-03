@@ -182,7 +182,7 @@ $(document).ready(function () {
         $(".couponerror").html("");
         var p = $(".coupon_code").val();
         if ($("#coupon_code").val() != "") {
-            var currency = $("#currency").val();
+            var currency =  "SAR" ; //$("#currency").val();
             $.ajax({
                 type: "POST",
                 headers: {
@@ -206,7 +206,7 @@ $(document).ready(function () {
                             parseFloat(result.payment).toFixed(2)
                         );
                         $(".payment").text(
-                            currency + parseFloat(result.payment).toFixed(2)
+                             parseFloat(result.payment).toFixed(2)  + " "+ currency
                         );
 
                         // $(".subtotal").text(
@@ -217,29 +217,29 @@ $(document).ready(function () {
                         // );
 
                         $(".ticket-price-amount").text(
-                            currency + parseFloat(result.total_price).toFixed(2)
+                             parseFloat(result.total_price).toFixed(2) + " "+ currency
                         );
                         $("#ticket-price-amount").val(
                             parseFloat(result.total_price).toFixed(2)
                         );
 
                         $(".tax_total").text(
-                            currency + parseFloat(result.total_tax).toFixed(2)
+                             parseFloat(result.total_tax).toFixed(2) + " "+ currency 
                         );
                         $("#tax_total").val(
                             parseFloat(result.total_tax).toFixed(2)
                         );
 
                         $(".tax_total_price").text(
-                            currency + parseFloat(result.total_tax).toFixed(2)
+                             parseFloat(result.total_tax).toFixed(2) + " "+ currency
                         );
 
 
 
 
                         $(".discount").text(
-                            currency +
-                            parseFloat(result.payableamount).toFixed(2)
+                            
+                            parseFloat(result.payableamount).toFixed(2) + " "+ currency
                         );
                         $("#coupon_discount").val(
                             parseFloat(result.discount).toFixed(2)
@@ -1084,6 +1084,7 @@ $(document).ready(function () {
                 }
                 if (data.status != 200 && data.status != 201) {
                     $(".payment-error").show();
+                    
                     $(".error-message").html(data.error_message);
 
                 }

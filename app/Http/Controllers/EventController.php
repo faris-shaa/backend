@@ -280,6 +280,8 @@ class EventController extends Controller
             'status' => 'bail|required',
             'url' => 'bail|required_if:type,online',
             'description' => 'bail|required',
+            'terms_and_condition' => 'bail|required',
+            'terms_and_condition_arabic' => 'bail|required',
             //'scanner_id' => 'bail|required_if:type,offline',
             //'people' => 'bail|required',
             'is_private' => 'required|boolean',
@@ -303,6 +305,11 @@ class EventController extends Controller
         $cleanHtmldescription_arabic = $this->removeInlineCss($request->description_arabic);
         $data['description'] = $cleanHtmldescription; 
         $data['description_arabic'] = $cleanHtmldescription_arabic; 
+
+        $cleanHtmlterms_and_condition = $this->removeInlineCss($request->terms_and_condition);
+        $cleanHtmlterms_and_condition_arabic = $this->removeInlineCss($request->terms_and_condition_arabic);
+        $data['terms_and_condition'] = $cleanHtmlterms_and_condition; 
+        $data['terms_and_condition_arabic'] = $cleanHtmlterms_and_condition_arabic; 
 
         $event_id = $event->id;
         $event = Event::find($event->id)->update($data);

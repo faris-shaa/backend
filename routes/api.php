@@ -55,6 +55,7 @@ Route::get('/user/setting', [ApiController::class, 'allSetting']);
 Route::post('/user/events', [ApiController::class, 'events']);
 Route::get('/city', [ApiController::class, 'cityList']);
 Route::get('/user/event-detail/{id}', [ApiController::class, 'eventDetail']);
+Route::post('/user/event-detail-post', [ApiController::class, 'eventDetailPost']);
 Route::get('/user/ticket-detail/{id}', [ApiController::class, 'ticketDetail']);
 Route::get('/user/event-tickets/{id}', [ApiController::class, 'eventTickets']);
 Route::post('/user/event-from-category', [ApiController::class, 'EventFrmCategory']);

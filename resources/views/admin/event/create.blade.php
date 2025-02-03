@@ -320,6 +320,29 @@
                                         <div class="invalid-feedback block">{{ $message }}</div>
                                     @enderror
                                 </div>
+
+                                <div class="form-group">
+                                    <label>{{ __('Terms & Condition In English') }}</label>
+                                    <textarea name="terms_and_condition" Placeholder="Terms & Condition"
+                                        class="textarea_editor @error('terms_and_condition')? is-invalid @enderror">
+                                {{ old('terms_and_condition') }}
+                            </textarea>
+                                    @error('terms_and_condition')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                 <div class="form-group">
+                                    <label>{{ __('Terms & Condition In Arabic') }}</label>
+                                    <textarea name="terms_and_condition_arabic" Placeholder="Terms & Condition Arabic"
+                                        class="textarea_editor @error('terms_and_condition_arabic')? is-invalid @enderror">
+                                {{ old('terms_and_condition_arabic') }}
+                            </textarea>
+                                    @error('terms_and_condition_arabic')
+                                        <div class="invalid-feedback block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                
                                 <h6 class="text-muted mt-4 mb-4">{{ __('Location Detail') }}</h6>
                                 <div class="form-group">
                                     <div class="selectgroup">

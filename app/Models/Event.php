@@ -29,6 +29,8 @@ class Event extends Model
         'lang',
         'description',
         'description_arabic',
+        'terms_and_condition',
+        'terms_and_condition_arabic',
         'security',
         'status',
         'event_status',

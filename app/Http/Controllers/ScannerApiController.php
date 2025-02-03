@@ -233,6 +233,9 @@ class ScannerApiController extends Controller
         if ($order->order_status != 'Complete') {
             return response()->json(['msg' => 'Ticket is not confirmed by your Organizer yet.', 'success' => false], 200);
         }
+        if ($order->event_id == 240 &&  Carbon::parse($order->created_at )->format("Y-m-d ") != Carbon::now()->format("Y-m-d ") ) {
+            return response()->json(['msg' => 'This is old ticket.', 'success' => false], 200);
+        }
         if ($order->event_id != $event_id) {
             return response()->json(['msg' => 'Ticket can not be found.', 'success' => false], 200);
         }
@@ -244,7 +247,9 @@ class ScannerApiController extends Controller
                 return response()->json(['msg' => 'Ticket date is not match.', 'data' => $data, 'success' => false], 200);
             }
         }
+        
         if ($child->paid == 0) {
+            
             if($child->checkin == NULL) {
                 $data['remaining_check_ins'] = 'Unlimited';
                 OrderChild::find($child->id)->update(['status' => 1, 'paid' => 1]);
@@ -254,7 +259,9 @@ class ScannerApiController extends Controller
                 if ($remainingCheckIns->checkin < 0) {
                     $remainingCheckIns->checkin = 0;
                 }
-                $data['remaining_check_ins'] = $remainingCheckIns->checkin;
+                $data['remaining_check_ins'] = is_string($remainingCheckIns->checkin) 
+    ? $remainingCheckIns->checkin 
+    : strval($remainingCheckIns->checkin);
                 return response()->json(['msg' => 'Please collect from the guest', 'success' => true, 'data' => $data], 200);
             }
         }
@@ -264,7 +271,9 @@ class ScannerApiController extends Controller
             if ($remainingCheckIns->checkin < 0) {
                 $remainingCheckIns->checkin = 0;
             }
-            $data['remaining_check_ins'] = $remainingCheckIns->checkin;
+            $data['remaining_check_ins'] = is_string($remainingCheckIns->checkin) 
+    ? $remainingCheckIns->checkin 
+    : strval($remainingCheckIns->checkin);
         }
         if($child->checkin == NULL) {
             $data['remaining_check_ins'] = 'Unlimited';
