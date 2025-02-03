@@ -1899,20 +1899,32 @@ class FrontendController extends Controller
                     OrderChild::create($child);
 
                 }
-                $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-                if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
-                    $ticekt->update(['status' => 0]);
-                }
-                if($event->is_repeat == 1 )
+                if($event->id == 240 )
                 {
-                 
                     $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
-                    if (($sold_ticket_count + $ticket_array['quantity']) >= $ticekt->quantity ) {
-                        
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
+                    if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
                         $ticekt->update(['status' => 0]);
+                    }
+                   
+                }
+                else{
 
+                    $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                    if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
+                        $ticekt->update(['status' => 0]);
+                    }
+                    if($event->is_repeat == 1 )
+                    {
+                    
+                        $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                        $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                        if (($sold_ticket_count + $ticket_array['quantity']) >= $ticekt->quantity ) {
+                            
+                            $ticekt->update(['status' => 0]);
+
+                        }
                     }
                 }
             }
@@ -4253,6 +4265,10 @@ class FrontendController extends Controller
             if ($responseData['status'] == "DECLINED") {
                 return redirect('/failed');
             }
+            $order->payment_token = $trans_id ; 
+            $order->payment_status = 1 ; 
+            $order->order_status = "Complete" ; 
+            $order->save();
         }
         $this->sendOrderMailPdf($orderId);
         return view('frontend/thankyou');
@@ -4261,8 +4277,8 @@ class FrontendController extends Controller
     public function failed()
     {
         $orderId = Session::get('order_id');
-        // OrderChild::where('order_id', $orderId)->forceDelete();
-        // Order::where('id', $orderId)->forceDelete();
+        OrderChild::where('order_id', $orderId)->forceDelete();
+        Order::where('id', $orderId)->forceDelete();
         return view('frontend/failed');
     }
 
