@@ -52,6 +52,14 @@ Route::get('/admin/login', function () {
     return view('auth.login');
 })->name('admin.login');
 
+
+Route::get('/organization/home', function () {
+    if (Auth::check()) {
+        return redirect('/organization/home');
+    }
+    return view('auth.login');
+})->name('admin.login');
+
 Route::get('/apple-pay', function () {
     return view('apple');
 });

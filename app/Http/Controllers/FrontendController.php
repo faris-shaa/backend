@@ -1061,7 +1061,16 @@ class FrontendController extends Controller
         }
 
         foreach ($data->paid_ticket as $value) {
-            $value->available_qty = $total_paid - $used_paid;
+            $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$id)->pluck('id')->toArray();
+            if($id == 258 )
+            {
+                $used = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$value->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
+                
+            }
+            else{
+                $used = OrderChild::where('ticket_id', $value->id)->whereIn('order_id',$event_orders)->count();
+            }
+            $value->available_qty = $value->quantity - $used;
         }
         //dd($data->paid_ticket);
         foreach ($data->free_ticket as $value) {
@@ -1493,7 +1502,7 @@ class FrontendController extends Controller
                     ]);
                 }
             }
-
+            
             if (Carbon::parse($date)->between(Carbon::parse($coupon->start_date), Carbon::parse($coupon->end_date))) {
                 if ($coupon->max_use > $coupon->use_count) {
                     if ($total > $coupon->minimum_amount) {
@@ -1596,13 +1605,13 @@ class FrontendController extends Controller
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
 
                 $event = Event::find($ticekt->event_id);
-                if($ticekt->event_id == 240 )
+                if($ticekt->event_id == 258 )
                 {   
                     $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
                     $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
                     if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0) {
                         
-                        Log::info("sold out");
+                        Log::info("sold out--11");
                         return response()->json([
                             'error_message' => 'payment_failed',
                             'type' => 'ApplePay',
@@ -1616,7 +1625,7 @@ class FrontendController extends Controller
                     $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
                     if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0) {
                         
-                        Log::info("sold out");
+                        Log::info("sold out--22");
                         return response()->json([
                             'error_message' => 'payment_failed',
                             'type' => 'ApplePay',
@@ -1632,7 +1641,7 @@ class FrontendController extends Controller
                     $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
                     if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity) {
                         
-                        Log::info("sold out");
+                        Log::info("sold out--33");
                         return response()->json([
                             'error_message' => 'payment_failed',
                             'type' => 'ApplePay',
@@ -1702,6 +1711,83 @@ class FrontendController extends Controller
                 ]);
 
             }
+        }
+        if ($request->payment_type == "EDAFPAY" || $request->payment_type == "CARD") {
+           // // Valition for sold out tickets  start 
+           $ticketIdsString = $request->ticket_ids;
+           $quantitiesString = $request->ticket_quantities;
+
+           // /*$ticketIdsString =  "99,98"; 
+           // $quantitiesString = "2,0";*/
+           // // Convert the comma-separated strings into arrays
+           $ticketIds = explode(',', $ticketIdsString);
+           $quantities = explode(',', $quantitiesString);
+
+           // // Check if both arrays have the same length
+           if (count($ticketIds) !== count($quantities)) {
+               // Handle the case where arrays do not match in length
+               return response()->json(['error' => 'Mismatch between ticket IDs and quantities.'], 400);
+           }
+        
+           // // Pair the ticket IDs with their quantities
+           $tickets = array_map(function ($ticketId, $quantity) {
+               return [
+                   'ticket_id' => (int)$ticketId,  // Casting to int if necessary
+                   'quantity' => (int)$quantity,  // Casting to int if necessary
+               ];
+           }, $ticketIds, $quantities);
+           foreach ($tickets as $key => $ticket_array) {
+               $ticekt = Ticket::find($ticket_array['ticket_id']);
+               
+               $event = Event::find($ticekt->event_id);
+               if($ticekt->event_id == 258 )
+               {   
+                   $order_id_check_count = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
+                   $sold_ticket_count = OrderChild::whereIn('order_id', $order_id_check_count)->where('ticket_id', $ticekt->id)->count();
+                   if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0) {
+                       
+                       Log::info("sold out--44");
+                       return response()->json([
+                           'error_message' => 'Tickets Sold out',
+                           'type' => 'ApplePay',
+                           'status' => 500
+                       ]);
+                   }
+
+               }
+               else{
+                   $order_id_check_count = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                   $sold_ticket_count = OrderChild::whereIn('order_id', $order_id_check_count)->where('ticket_id', $ticekt->id)->count();
+                   if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0) {
+                       
+                       Log::info("sold out--55");
+                       return response()->json([
+                           'error_message' => 'Tickets Sold out',
+                           'type' => 'ApplePay',
+                           'status' => 500
+                       ]);
+                   }
+               }
+               
+               if($event->is_repeat == 1 )
+               {
+                
+                   $order_id_check_count = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                   $sold_ticket_count = OrderChild::whereIn('order_id', $order_id_check_count)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                   if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity) {
+                       
+                       Log::info("sold out--66");
+                       return response()->json([
+                           'error_message' => 'Tickets Sold out',
+                           'type' => 'ApplePay',
+                           'status' => 500
+                       ]);
+                   }
+
+               }
+           }
+
+           // Valition for sold out tickets  End
         }
 
         $data = $request->all();
@@ -1833,7 +1919,7 @@ class FrontendController extends Controller
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
 
                 $event = Event::find($ticekt->event_id);
-                if($ticekt->event_id == 240 )
+                if($ticekt->event_id == 258 )
                 {   
                     $order_id = Order::where('order_status', "Complete")->where('event_id',$ticekt->event_id)->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
                     
@@ -1861,7 +1947,7 @@ class FrontendController extends Controller
                     $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
                     if (($sold_ticket_count + $ticket_array['quantity']) > $ticekt->quantity ) {
                         
-                        Log::info("sold out");
+                        Log::info("sold out--777");
                         return response()->json([
                             'error_message' => 'Sold out',
                             'type' => 'ApplePay',
@@ -1899,32 +1985,20 @@ class FrontendController extends Controller
                     OrderChild::create($child);
 
                 }
-                if($event->id == 240 )
-                {
-                    $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
-                    if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
-                        $ticekt->update(['status' => 0]);
-                    }
-                   
+                $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
+                $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
+                if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
+                    $ticekt->update(['status' => 0]);
                 }
-                else{
-
+                if($event->is_repeat == 1 )
+                {
+                 
                     $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
-                    if ($sold_ticket_count >= $ticekt->quantity && $event->is_repeat == 0) {
+                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
+                    if (($sold_ticket_count + $ticket_array['quantity']) >= $ticekt->quantity ) {
+                        
                         $ticekt->update(['status' => 0]);
-                    }
-                    if($event->is_repeat == 1 )
-                    {
-                    
-                        $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->pluck('id')->toArray();
-                        $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->where('time_slot_id',$request->time_slot_id)->where('event_book_date',$request->slot_event_date)->count();
-                        if (($sold_ticket_count + $ticket_array['quantity']) >= $ticekt->quantity ) {
-                            
-                            $ticekt->update(['status' => 0]);
 
-                        }
                     }
                 }
             }
@@ -4178,7 +4252,7 @@ class FrontendController extends Controller
 
         $orderId = Session::get('order_id');
         $order = Order::findOrFail($orderId);
-
+        
        // if ($order->payment_type == "TAMARA" && isset($order->tamara_order_id)) {
         if ($order->payment_type == "TAMARA" ) {
             $order = Order::findOrFail(2272);
@@ -4265,20 +4339,24 @@ class FrontendController extends Controller
             if ($responseData['status'] == "DECLINED") {
                 return redirect('/failed');
             }
-            $order->payment_token = $trans_id ; 
-            $order->payment_status = 1 ; 
-            $order->order_status = "Complete" ; 
-            $order->save();
+            
         }
+
         $this->sendOrderMailPdf($orderId);
+        \Log::error('order sucess ------'.$order->id);
         return view('frontend/thankyou');
     }
 
     public function failed()
     {
+        // save token for sucess
+        // $order->payment_token = $trans_id ; 
+            // $order->payment_status = 1 ; 
+            // $order->order_status = "Complete" ; 
+            // $order->save();
         $orderId = Session::get('order_id');
-        OrderChild::where('order_id', $orderId)->forceDelete();
-        Order::where('id', $orderId)->forceDelete();
+        // OrderChild::where('order_id', $orderId)->forceDelete();
+        // Order::where('id', $orderId)->forceDelete();
         return view('frontend/failed');
     }
 
@@ -4479,6 +4557,11 @@ class FrontendController extends Controller
     public function logicTesting(Request $request)
     {
 
+        $orders_id_failed = Order::where('event_id',233)->where('payment_status',0)->where('order_status',"Pending")->pluck('id')->toArray();
+        dd($orders_id_failed,count($orders_id_failed));
+        $orders_child_removed = OrderChild::whereIn('order_id',$orders_id_failed)->forceDelete();
+        $orders_removed = Order::whereIn('id',$orders_id_failed)->where('payment_status',0)->where('order_status',"Pending")->forceDelete();
+        
         // Define the variables
         $trans_id = "   e109c886-9210-11ef-a1c7-ba82b61470f7";
         $PASSWORD = "a92f7b7f0d869d3e676c5facda5262ae";
@@ -4519,7 +4602,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "5418";
+        $order_id = "6492";
         //4242
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');

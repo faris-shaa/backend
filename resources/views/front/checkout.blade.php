@@ -368,7 +368,7 @@ else
             <!-- Tamara  -->
             <!-- <tamara-widget type="tamara-summary" inline-type='4' inline-variant='text'></tamara-widget> -->
             <!-- <div class=" hidden mb-4"> -->
-            <div class="@if(auth()->guard('appuser')->user()->email != "hitarth.rc@gmail.com") hidden @endif mb-4">
+            <!-- <div class=" mb-4">
                 
                     
             
@@ -391,7 +391,7 @@ else
                 </div>
                 
                 
-            </div> 
+            </div>  -->
             <!-- Tamara  -->
             @endif
         </div>

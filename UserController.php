@@ -426,10 +426,6 @@ class UserController extends Controller
 
     public function organizationDashboard(Request $request)
     {
-        if(!isset(Auth::user()->id))
-        {
-            return redirect('admin/login');
-        }
         if(isset($request->selected_event_id) )
         {
             $selected_event_id = $request->selected_event_id ;

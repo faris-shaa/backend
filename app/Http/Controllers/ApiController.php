@@ -535,7 +535,7 @@ class ApiController extends Controller
             }
             
             $order_id = Order::where('event_id', $value->event_id)->where('payment_status',1)->where('order_status','Complete')->pluck('id')->toArray();
-            $value->sold = OrderChild::whereIn('order_id',$order_id)->count();
+            $value->sold = OrderChild::whereIn('order_id',$order_id)->where('ticket_id',$value->id)->count();
             
             $ticket_array[] = $value ; 
         }
@@ -607,13 +607,14 @@ class ApiController extends Controller
             if(isset($request->date))
             {
                 
-                $order_id = Order::where('event_id', $value->event_id)->where('ticket_id',$value->id)->where('payment_status',1)->where('order_status','Complete')->whereDate('created_at',Carbon::parse($request->date)->format("Y-m-d"))->pluck('id')->toArray();
+                $order_id = Order::where('event_id', $value->event_id)->where('payment_status',1)->where('order_status','Complete')->whereDate('created_at',Carbon::parse($request->date))->pluck('id')->toArray();
                 
-                $value->dateby_sold_ticket_count = OrderChild::whereIn('order_id',$order_id)->where('ticket_id',$value->id)->count();
+                $value->dateby_sold_ticket_count = OrderChild::whereIn('order_id',$order_id)->where('ticket_id',$value->id)->whereDate('created_at',Carbon::parse($request->date)->format("Y-m-d"))->count();
             }
             
             $order_id = Order::where('event_id', $value->event_id)->where('payment_status',1)->where('order_status','Complete')->pluck('id')->toArray();
-            $value->sold = OrderChild::whereIn('order_id',$order_id)->count();
+            $value->sold = OrderChild::whereIn('order_id',$order_id)->where('ticket_id',$value->id)->count();
+            //->where('ticket_id',$value->id)
             
             $ticket_array[] = $value ; 
         }
@@ -1456,7 +1457,7 @@ class ApiController extends Controller
             
             // Check Ticket validation 
             
-            if($request->event_id == 240)
+            if($request->event_id == 258)
             {
                 $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
                 $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
@@ -1571,18 +1572,29 @@ class ApiController extends Controller
                 }
                 
                 // make ticket inactive
-                $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
-                $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->count();
-                if($count_sold_out_ticekt >= $ticekt->quantity && $event->is_repeat == 0)
+                if($request->event_id == 258)
                 {
-                      $ticekt->update(['status'=> 0 ]);
-                }
-                if(isset($request->phone) || isset($request->customeremail))
-                {
-                     
-                    if($count_sold_out_ticekt >= $ticekt->quantity )
+                    $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
+                    $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
+                    if(($count_sold_out_ticekt + $ticket_array['quantity']) > $ticekt->quantity && $event->is_repeat == 0)
                     {
                         $ticekt->update(['status'=> 0 ]);
+                    }
+                }
+                else{
+                    $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
+                    $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->count();
+                    if($count_sold_out_ticekt >= $ticekt->quantity && $event->is_repeat == 0)
+                    {
+                        $ticekt->update(['status'=> 0 ]);
+                    }
+                    if(isset($request->phone) || isset($request->customeremail))
+                    {
+                        
+                        if($count_sold_out_ticekt >= $ticekt->quantity )
+                        {
+                            $ticekt->update(['status'=> 0 ]);
+                        }
                     }
                 }
 
@@ -1720,15 +1732,15 @@ class ApiController extends Controller
         //$dataemail['qrcode'] = $order->order_id ;
         $child_qr =  OrderChild::where('order_id', $order->id)->get();
         foreach ($child_qr as $key => $value) {
-           $dataemail['qrcode'] = QrCode::format('png')
-            ->size(300)
-            ->generate($value->ticket_number, public_path('qrcodes/qr-'.$value->id.'.png'));
-            $dataemail['qr_id'] = $value->id ; 
-             Mail::send(['html'=>'emails.ticketbooked'], $dataemail, function($message) use ($dataemail) {
-            $message->to($dataemail['email'])->subject
-                ('Ticket Booked');
-            $message->from('ticketbyksa@gmail.com','TicketBy');
-            });
+        //    $dataemail['qrcode'] = QrCode::format('png')
+        //     ->size(300)
+        //     ->generate($value->ticket_number, public_path('qrcodes/qr-'.$value->id.'.png'));
+        //     $dataemail['qr_id'] = $value->id ; 
+        //      Mail::send(['html'=>'emails.ticketbooked'], $dataemail, function($message) use ($dataemail) {
+        //     $message->to($dataemail['email'])->subject
+        //         ('Ticket Booked');
+        //     $message->from('ticketbyksa@gmail.com','TicketBy');
+        //     });
 
 
 

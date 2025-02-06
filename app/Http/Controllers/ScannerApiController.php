@@ -240,6 +240,20 @@ class ScannerApiController extends Controller
             return response()->json(['msg' => 'Ticket can not be found.', 'success' => false], 200);
         }
         if ($child->checkin === 0) {
+            $pos_order = PosOrder::where('order_id',$child->order_id)->first();
+            if($pos_order)
+            {
+                $data['customer_details']['customer_name'] = $pos_order->customername;
+                $data['customer_details']['customer_email'] = $pos_order->customeremail;
+                $data['customer_details']['customer_phone'] = $pos_order->phone;
+            }
+            else
+            {
+                $customer = AppUser::find($order->customer_id);
+                $data['customer_details']['customer_name'] = $customer->name." ".$customer->last_name;
+                $data['customer_details']['customer_email'] = $customer->email;
+                $data['customer_details']['customer_phone'] = $customer->phone;
+            }
             return response()->json(['msg' => 'Check-in limit exceeded!', 'data' => $data, 'success' => false], 200);
         }
         if ($ticket->allday == 0) {
