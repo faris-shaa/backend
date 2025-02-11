@@ -1051,7 +1051,7 @@ class ApiController extends Controller
                 // dd("jj");
                 $data = (array) $order_request;
 
-                $data['order_id'] = '#' . rand(9999, 100000);
+                $data['order_id'] = '#' . rand(99999, 10000000);
                 $data['organization_id'] = Event::findOrFail($order_request->event_id)->user_id;
                 $data['customer_id'] = Auth::user()->id;
                 if ($order_request->payment_type == "LOCAL") {
@@ -1357,7 +1357,7 @@ class ApiController extends Controller
         }
         else
         {
-            $data['order_id'] =  '#' . rand(9999, 100000);    
+            $data['order_id'] =  '#' . rand(99999, 10000000);    
         }
 
           
@@ -1788,7 +1788,7 @@ class ApiController extends Controller
         }
         // dd("jj");
         $data = $request->all();
-        $data['order_id'] = '#' . rand(9999, 100000);
+        $data['order_id'] = '#' . rand(99999, 10000000);
         $data['organization_id'] = Event::findOrFail($request->event_id)->user_id;
         $data['customer_id'] = Auth::user()->id;
         if ($request->payment_type == "LOCAL") {

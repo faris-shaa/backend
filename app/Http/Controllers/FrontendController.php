@@ -1656,7 +1656,7 @@ class FrontendController extends Controller
 
             $publicKeyHash = $data['transactionIdentifier'];
             $identifier = $publicKeyHash;  // Replace with actual identifier
-            $order_id = '#' . rand(9999, 100000);  // Replace with actual order ID
+            $order_id = '#' . rand(99999, 10000000);  // Replace with actual order ID
             $order_amount = (string)number_format($request->amount, 2, '.', '');
             $order_currency = 'SAR';  // Replace with actual order currency
             $password = 'a92f7b7f0d869d3e676c5facda5262ae';  // Replace with your actual password 
@@ -1817,7 +1817,7 @@ class FrontendController extends Controller
         if (isset($order_id)) {
             $data['order_id'] = $order_id;
         } else {
-            $data['order_id'] = '#' . rand(9999, 100000);
+            $data['order_id'] = '#' . rand(99999, 10000000);
         }
 
         $data['event_id'] = $event->id;
@@ -2744,7 +2744,7 @@ class FrontendController extends Controller
                 ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
         }
         $customPaper = array(0, 0, 720, 1440);
-        $pdf = FacadePdf::loadView('new-ticketmail', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+       // $pdf = FacadePdf::loadView('new-ticketmail', compact('order'))->save()->setPaper($customPaper, $orientation = 'portrait');
         $data["email"] = $order->customer->email;
         $data["title"] = "Ticket PDF";
         $data["body"] = "";
@@ -2784,7 +2784,17 @@ class FrontendController extends Controller
                 ->generate($value->ticket_number, public_path('qrcodes/qr-' . $value->id . '.png'));
         }
         $customPaper = array(0, 0, 720, 1440);
-        $pdf = FacadePdf::loadView('ticketmail', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+        // if($order->customer_id == 4339)
+        // {
+        //     $pdf = FacadePdf::loadView('ticketmailnew', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+        // }
+        // else{
+        //     $pdf = FacadePdf::loadView('ticketmail', compact('order'))->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+        // }
+        //dd(public_path('/fonts'));
+        $pdf = FacadePdf::loadView('ticketmailnew', compact('order'))
+        ->save(public_path("ticket.pdf"))->setPaper($customPaper, $orientation = 'portrait');
+        
         $data["email"] = $order->customer->email;
         $data["title"] = "Ticket PDF";
         $data["body"] = "";
@@ -2855,7 +2865,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (true) {
+        if (false) {
             try {
                 $curl = curl_init();
 
@@ -2903,7 +2913,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (true) {
+        if (false) {
             try {
                 $curl = curl_init();
 
@@ -2952,7 +2962,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (true) {
+        if (false) {
             try {
                 $curl = curl_init();
 
@@ -3958,7 +3968,7 @@ class FrontendController extends Controller
 
         $org = User::find($event->user_id);
         $user = AppUser::find(Auth::guard('appuser')->user()->id);
-        $data['order_id'] = '#' . rand(9999, 100000);
+        $data['order_id'] = '#' . rand(99999, 10000000);
         $data['event_id'] = $event->id;
         $data['customer_id'] = $user->id;
         $data['organization_id'] = $org->id;
@@ -4557,11 +4567,15 @@ class FrontendController extends Controller
     public function logicTesting(Request $request)
     {
 
-        $orders_id_failed = Order::where('event_id',233)->where('payment_status',0)->where('order_status',"Pending")->pluck('id')->toArray();
-        dd($orders_id_failed,count($orders_id_failed));
-        $orders_child_removed = OrderChild::whereIn('order_id',$orders_id_failed)->forceDelete();
-        $orders_removed = Order::whereIn('id',$orders_id_failed)->where('payment_status',0)->where('order_status',"Pending")->forceDelete();
+        $orders_id_failed = Order::where('event_id',251)->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();;////->sum('quantity');//->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->sum('quantity');////
         
+        $orders_child_removed = OrderChild::whereIn('order_id',$orders_id_failed)->count();
+        dd($orders_child_removed);
+        //dd($orders_id_failed, count($orders_id_failed));
+        // $orders_child_removed = OrderChild::whereIn('order_id',$orders_id_failed)->count();
+        // $orders_removed = Order::whereIn('id',$orders_id_failed)->where('payment_status',0)->where('order_status',"Pending")->forceDelete();
+        dd($orders_id_failed , count($orders_id_failed));
+      
         // Define the variables
         $trans_id = "   e109c886-9210-11ef-a1c7-ba82b61470f7";
         $PASSWORD = "a92f7b7f0d869d3e676c5facda5262ae";
@@ -4602,7 +4616,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "6492";
+        $order_id = "7947";
         //4242
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');

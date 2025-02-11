@@ -42,7 +42,7 @@ use App\Http\Controllers\ApplePayController;
 |
 */
 
-//Auth::routes();
+Auth::routes();
 //Auth::routes(['verify' => true]);
 
 Route::get('/admin/login', function () {
@@ -50,7 +50,7 @@ Route::get('/admin/login', function () {
         return redirect('/admin/home');
     }
     return view('auth.login');
-})->name('admin.login');
+});
 
 
 Route::get('/organization/home', function () {
@@ -58,7 +58,7 @@ Route::get('/organization/home', function () {
         return redirect('/organization/home');
     }
     return view('auth.login');
-})->name('admin.login');
+});
 
 Route::get('/apple-pay', function () {
     return view('apple');

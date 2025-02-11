@@ -726,7 +726,7 @@ class UserController extends Controller
     {
         $events_dropdown = Event::with(['category:id,name'])
             ->where([ ['user_id', Auth::user()->id], ['event_status', 'Pending']])->get();
-        $data = Order::with(['customer:id,name,last_name,email', 'event:id,name'])->where('payment_status', 1);
+        $data = Order::with(['customer:id,name,last_name,email', 'event:id,name'])->where('payment_status', 1)->where('order_status',"Complete");
         $data->where('organization_id', Auth::user()->id);
 
         
