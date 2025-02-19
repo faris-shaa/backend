@@ -89,6 +89,9 @@
                                                         <option @if( $item->orderby == 1) selected="selected" @endif value="1">1</option>
                                                         <option @if( $item->orderby == 2) selected="selected" @endif value="2">2</option>
                                                         <option @if( $item->orderby == 3) selected="selected" @endif value="3">3</option>
+                                                        <option @if( $item->orderby == 4) selected="selected" @endif value="4">4</option>
+                                                        <option @if( $item->orderby == 5) selected="selected" @endif value="5">5</option>
+                                                        <option @if( $item->orderby == 6) selected="selected" @endif value="6">6</option>
                                                     </select>   
                                                 </td>
                                                 @if (Gate::check('event_edit') || Gate::check('event_delete'))

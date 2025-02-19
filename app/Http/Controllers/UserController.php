@@ -147,6 +147,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        
         $request->validate([
             'first_name' => 'bail|required',
             'last_name' => 'bail|required',
@@ -181,6 +182,7 @@ class UserController extends Controller
         $data['email'] = $request->email;
         $data['phone'] = $request->phone;
         $data['org_id'] = $request->organization;
+        $data['ticketby_commision'] = $request->ticketby_commision;
         $user->update($data);
         $user->syncRoles($request->input('roles', []));
 
@@ -724,10 +726,22 @@ class UserController extends Controller
     }
     public function orgincome(Request $request)
     {
-        $events_dropdown = Event::with(['category:id,name'])
-            ->where([ ['user_id', Auth::user()->id], ['event_status', 'Pending']])->get();
+        
+        
         $data = Order::with(['customer:id,name,last_name,email', 'event:id,name'])->where('payment_status', 1)->where('order_status',"Complete");
-        $data->where('organization_id', Auth::user()->id);
+        
+        if (Auth::user()->hasRole('admin')) 
+        {
+            $events_dropdown = Event::with(['category:id,name'])->where([ ['event_status', 'Pending']])->orderby('id','desc')->get();
+
+        }
+        else{
+            $events_dropdown = Event::with(['category:id,name'])
+            ->where([ ['user_id', Auth::user()->id], ['event_status', 'Pending']])->orderby('id','desc')->get();
+
+            $data->where('organization_id', Auth::user()->id);
+        }
+        
 
         
         $selected_event = $selected_event_id = null ;
@@ -756,7 +770,7 @@ class UserController extends Controller
                 $data = $data->whereIn('payment_type',$tabby_status);
             }
         }
-        $data = $data->orderBy('id', 'DESC')->get();
+        $data = $data->orderBy('id', 'DESC')->limit(500)->get();
         foreach ($data as $key => $value) {
             $ticket_total = 0 ; 
             $order_child = OrderChild::where('order_id',$value->id)->get();

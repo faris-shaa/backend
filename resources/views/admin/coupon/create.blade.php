@@ -1,6 +1,9 @@
 @extends('master')
 
 @section('content')
+
+
+
     <section class="section">
         @include('admin.layout.breadcrumbs', [
             'title' => __('Add Coupon'),

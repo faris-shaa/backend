@@ -159,6 +159,9 @@ $currency = \App\Models\Setting::first()->currency;
                                  <option  value="Pending" {{ $item->order_status == "Pending"? 'selected':''}}> {{ __('Pending') }} </option>
                                  <option  value="Complete" {{ $item->order_status == "Complete"? 'selected':''}}> {{ __('Complete') }} </option>
                                  <option  value="Cancel" {{ $item->order_status == "Cancel"? 'selected':''}}> {{ __('Cancel') }} </option>
+                                 @if(Auth::user()->hasRole("admin"))
+                                 <option value="1" {{ $item->order_status == "Hide"? 'selected':''}}> {{ __('Hide') }} </option>
+                                 @endif
                                  </select>
                               </td>
                               @if ($item->payment_status == 0)
@@ -172,6 +175,9 @@ $currency = \App\Models\Setting::first()->currency;
                                  <select name="payment_status" id="payment-{{ $item->id }}" class="form-control p-2" onchange="changePaymentStatus({{$item->id}})" {{ $item->payment_status == 1? 'disabled':'' }}>
                                  <option value="0" {{ $item->payment_status == 0? 'selected':''}}> {{ __('Pending') }} </option>
                                  <option value="1" {{ $item->payment_status == 1? 'selected':''}}> {{ __('Complete') }} </option>
+                                 @if(Auth::user()->hasRole("admin"))
+                                 <option value="1" {{ $item->order_status == "Hide"? 'selected':''}}> {{ __('Hide') }} </option>
+                                 @endif
                                  </select>
                               </td>
                               <td class="dropdown-parent">

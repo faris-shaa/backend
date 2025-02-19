@@ -880,7 +880,7 @@ class ApiController extends Controller
         //New Code
         $total = $request->amount;
         $date = Carbon::now()->format('Y-m-d');
-        $coupon = Coupon::where([['coupon_code', $request->coupon_code], ['status', 1], ['event_id', $request->event_id]])->first();
+        $coupon = Coupon::where([['name', $request->coupon_code], ['status', 1], ['event_id', $request->event_id]])->first();
         if ($coupon) {
             $couponHistory = CouponUsageHistory::where([['coupon_id', $coupon->id], ['appuser_id', Auth::guard('userApi')->user()->id]])->get();
             
@@ -1457,7 +1457,7 @@ class ApiController extends Controller
             
             // Check Ticket validation 
             
-            if($request->event_id == 258)
+            if($request->event_id == 249)
             {
                 $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
                 $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
@@ -1572,7 +1572,7 @@ class ApiController extends Controller
                 }
                 
                 // make ticket inactive
-                if($request->event_id == 258)
+                if($request->event_id == 249)
                 {
                     $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$request->event_id)->pluck('id')->toArray();
                     $count_sold_out_ticekt = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$ticket_array['ticket_id'])->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
@@ -2837,7 +2837,14 @@ class ApiController extends Controller
 
    public function posEvent ( Request $request )
    {
-    $events = Event::where('user_id',$request->organizer_id)->where('show_pos',1)->whereDate('end_time',">=",Carbon::now())->orderBy('start_time','ASC')->where('is_deleted',0)->get();
+    if($request->organizer_id == 203)
+    {
+        $events = Event::where('user_id',$request->organizer_id)->where('show_pos',1)->orderBy('start_time','ASC')->where('is_deleted',0)->get();
+    }
+    else{
+        $events = Event::where('user_id',$request->organizer_id)->where('show_pos',1)->whereDate('end_time',">=",Carbon::now())->orderBy('start_time','ASC')->where('is_deleted',0)->get();
+    }
+    
 
     return response()->json(['msg' => 'Event listing', 'data' => $events, 'success' => true], 200);
 

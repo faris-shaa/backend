@@ -41,7 +41,8 @@ class AppUser extends Authenticatable implements Wallet
         'provider_token',
         'device_token',
         'language',
-        'deleted_at ','is_verify'
+        'deleted_at ','is_verify',
+        'organizer_id'
     ];
 
     protected $hidden = [

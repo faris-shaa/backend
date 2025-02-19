@@ -76,6 +76,23 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
+                                                    <label>{{ __('Organizer') }}</label>
+                                                    <select name="organizer_id" class="form-control select2">
+                                                        <option value="0">{{ __('Select if POS user') }}</option>
+                                                        @if(count($organizers))
+                                                        @foreach($organizers as $organizer )
+                                                        <option value="{{$organizer->id}}" >
+                                                        {{$organizer->first_name }} {{$organizer->last_name}} </option>
+                                                        @endforeach
+                                                        @endif
+                                                    </select>
+                                                    @error('status')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
                                                     <label>{{ __('status') }}</label>
                                                     <select name="status" class="form-control select2">
                                                         <option value="1">{{ __('Active') }}</option>

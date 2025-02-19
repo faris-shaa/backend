@@ -485,7 +485,7 @@
                                            id="quantity-{{ $item->id }}">
                                     <input value="0" type="hidden" name="google_login" id="google_login"
                                            class="google_login">
-                                    <h3 class="font-bold"> {{ $lang == 'ar' ? $item->name_arabic : $item->name }}
+                                    <h3 class="font-bold"> {{ $lang == 'ar' ? $item->arabic_name : $item->name }}
                                     </h3>
                                     <div class="text-gray_9 h6 my-4 flex flex-col">{{$item->description}} 
                                     </div>

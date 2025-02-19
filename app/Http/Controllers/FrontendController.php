@@ -1062,7 +1062,7 @@ class FrontendController extends Controller
 
         foreach ($data->paid_ticket as $value) {
             $event_orders =  Order::where('order_status',"Complete")->where('payment_status',1)->where('event_id',$id)->pluck('id')->toArray();
-            if($id == 258 )
+            if($id == 249 )
             {
                 $used = OrderChild::whereIn('order_id',$event_orders)->where('ticket_id',$value->id)->whereDate('created_at',Carbon::now()->format('Y-m-d'))->count();
                 
@@ -1488,9 +1488,65 @@ class FrontendController extends Controller
 
     public function applyCoupon(Request $request)
     {
+       
+
+
+        
         $total = $request->total;
         $date = Carbon::now()->format('Y-m-d');
-        $coupon = Coupon::where([['name', $request->coupon_code], ['status', 1]])->first();
+        $coupon = Coupon::where([['name', $request->coupon_code], ['status', 1]])->where('event_id',$request->event_id)->first();
+
+
+        // ticket validation 
+        if(isset($coupon->ticket_id ) && $coupon->ticket_id != null )
+        {
+             // // Valition for sold out tickets  start 
+            $ticketIdsString = $request->ticket_ids;
+            $quantitiesString = $request->ticket_quantities;
+
+            // /*$ticketIdsString =  "99,98"; 
+            // $quantitiesString = "2,0";*/
+            // // Convert the comma-separated strings into arrays
+            $ticketIds = explode(',', $ticketIdsString);
+            $quantities = explode(',', $quantitiesString);
+
+            // // Check if both arrays have the same length
+            if (count($ticketIds) !== count($quantities)) {
+                // Handle the case where arrays do not match in length
+                return response()->json(['error' => 'Mismatch between ticket IDs and quantities.'], 400);
+            }
+
+            // // Pair the ticket IDs with their quantities
+            $tickets = array_map(function ($ticketId, $quantity) {
+                if($quantity > 0 )
+                {
+                    return 
+                    (int)$ticketId
+                    ;
+                }
+                
+            }, $ticketIds, $quantities);
+
+            // Remove null values
+            $tickets = array_filter($tickets, function($value) {
+                return $value !== null;
+            });
+
+            // Reindex the array (optional, but helpful for clean keys)
+            $tickets = array_values($tickets);
+
+
+            $coupon_ticket_id = explode(",",$coupon->ticket_id);
+
+            if (!empty(array_diff($tickets, $coupon_ticket_id))) {
+                return response([
+                    'success' => false,
+                    'message' => 'This coupon can not be used for selected tickets'
+                ]);
+            }
+
+        }
+        //ticekt validation 
         if ($coupon) {
             if (isset(Auth::guard('appuser')->user()->id)) {
 
@@ -1518,7 +1574,9 @@ class FrontendController extends Controller
 
                         $subtotal = $total - $discount;
                         $arr = [];
-                        $tax = Tax::where([['allow_all_bill', 1], ['status', 1]])->orderBy('id', 'DESC')->get()->makeHidden(['created_at', 'updated_at']);
+                        $event = Event::find($request->event_id);
+                        if($event->is_tax == 1)
+                        {$tax = Tax::where([['allow_all_bill', 1], ['status', 1]])->orderBy('id', 'DESC')->get()->makeHidden(['created_at', 'updated_at']);
                         foreach ($tax as $key => $item) {
                             if ($item->amount_type == 'percentage') {
 
@@ -1529,7 +1587,7 @@ class FrontendController extends Controller
                                 $amount = $item->price;
                                 array_push($arr, $amount);
                             }
-                        }
+                        }}
 
                         $total_tax = array_sum($arr);
 
@@ -1574,10 +1632,15 @@ class FrontendController extends Controller
 
     public function createOrder(Request $request)
     {
+        // Log::info("web payment data -start");
+        // Log::info(Auth::guard('appuser')->user()->id);
+        // Log::info($request->event_id);
+        // Log::info("Web payment data -end");
         //dd($request->all());
         if ($request->payment_type == "ApplePay") {
             $data = $request->token;
-
+            Log::info("apple_pay here");
+            Log::info($request->event_id);
             // // Valition for sold out tickets  start 
             $ticketIdsString = $request->ticket_ids;
             $quantitiesString = $request->ticket_quantities;
@@ -1605,7 +1668,7 @@ class FrontendController extends Controller
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
 
                 $event = Event::find($ticekt->event_id);
-                if($ticekt->event_id == 258 )
+                if($ticekt->event_id == 249 )
                 {   
                     $order_id = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
                     $sold_ticket_count = OrderChild::whereIn('order_id', $order_id)->where('ticket_id', $ticekt->id)->count();
@@ -1686,7 +1749,7 @@ class FrontendController extends Controller
                     'payer_city' => 'Riyadh',
                     'payer_zip' => '123221',
                     'payer_email' => $request->email,
-                    'payer_phone' => $request->phone,
+                    'payer_phone' => !empty($request->phone) ? $request->phone : 966565897862,
                     'payer_birth_date' => '1987-12-12',
                     'payer_ip' => '176.44.76.100',
                     'return_url' => 'https://ticketby.co',
@@ -1696,21 +1759,32 @@ class FrontendController extends Controller
                     'payer_address2' => 'test',
                     'payer_middle_name' => 'test',
                 ]);
-
-            if ($response['result'] == 'SUCCESS') {
-                $data['payment_status'] = 1;
-                $data['order_status'] = 'Complete';
-            } else {
-                $data['payment_status'] = 0;
-                $data['order_status'] = 'Pending';
-
-                return response()->json([
-                    'error_message' => 'payment_failed',
-                    'type' => 'ApplePay',
-                    'status' => 500
-                ]);
-
-            }
+                Log::info("apple_pay---result--here");
+                
+            // if(!isset($response['result']))
+            // {
+            //     Log::info("apple_pay---no result");
+            //     $data['payment_status'] = 0;
+            //     $data['order_status'] = 'Pending';
+            //     Log::info('Response result:', ['result' => $response]);
+            // }else{
+                if ($response['result'] == 'SUCCESS') { 
+                    Log::info("apple_pay---complete");
+                    $data['payment_status'] = 1;
+                    $data['order_status'] = 'Complete';
+                } else {
+                    Log::info("apple_pay--pending");
+                    $data['payment_status'] = 0;
+                    $data['order_status'] = 'Pending';
+    
+                    return response()->json([
+                        'error_message' => 'payment_failed',
+                        'type' => 'ApplePay',
+                        'status' => 500
+                    ]);
+    
+                }
+            //}
         }
         if ($request->payment_type == "EDAFPAY" || $request->payment_type == "CARD") {
            // // Valition for sold out tickets  start 
@@ -1740,7 +1814,7 @@ class FrontendController extends Controller
                $ticekt = Ticket::find($ticket_array['ticket_id']);
                
                $event = Event::find($ticekt->event_id);
-               if($ticekt->event_id == 258 )
+               if($ticekt->event_id == 249 )
                {   
                    $order_id_check_count = Order::where([['order_status', 'Complete']])->where('order_status', "Complete")->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
                    $sold_ticket_count = OrderChild::whereIn('order_id', $order_id_check_count)->where('ticket_id', $ticekt->id)->count();
@@ -1845,15 +1919,22 @@ class FrontendController extends Controller
 
 
         $com = Setting::find(1, ['org_commission_type', 'org_commission']);
+        
         $p = $request->payment - $request->tax;
         if ($request->payment_type == "FREE") {
             $data['org_commission'] = 0;
         } else {
-            if ($com->org_commission_type == "percentage") {
-                $data['org_commission'] = $p * $com->org_commission / 100;
-            } else if ($com->org_commission_type == "amount") {
-                $data['org_commission'] = $com->org_commission;
+            $org_user = User::find($event->user_id);
+            
+            if(isset($org_user->ticketby_commision ) && $org_user->ticketby_commision  != 0 )
+            {
+                //if ($com->org_commission_type == "percentage") {
+                    $data['org_commission'] = $p * $org_user->ticketby_commision/ 100;
+                // } else if ($com->org_commission_type == "amount") {
+                //     $data['org_commission'] = $com->org_commission;
+                // }
             }
+            
         }
 
         if ($request->coupon_code != null) {
@@ -1919,7 +2000,7 @@ class FrontendController extends Controller
                 $ticekt = Ticket::find($ticket_array['ticket_id']);
 
                 $event = Event::find($ticekt->event_id);
-                if($ticekt->event_id == 258 )
+                if($ticekt->event_id == 249 )
                 {   
                     $order_id = Order::where('order_status', "Complete")->where('event_id',$ticekt->event_id)->where('payment_status', 1)->whereDate('created_at',Carbon::now()->format("Y-m-d"))->pluck('id')->toArray();
                     
@@ -2865,7 +2946,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (false) {
+        if (true) {
             try {
                 $curl = curl_init();
 
@@ -2913,7 +2994,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (false) {
+        if (true) {
             try {
                 $curl = curl_init();
 
@@ -2962,7 +3043,7 @@ class FrontendController extends Controller
         // Convert the data array to JSON
         $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);  // Ensure Arabic characters are kept intact
 
-        if (false) {
+        if (true) {
             try {
                 $curl = curl_init();
 
@@ -4567,7 +4648,7 @@ class FrontendController extends Controller
     public function logicTesting(Request $request)
     {
 
-        $orders_id_failed = Order::where('event_id',251)->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();;////->sum('quantity');//->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->sum('quantity');////
+        $orders_id_failed = Order::where('event_id',257)->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();;////->sum('quantity');//->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->pluck('id')->toArray();//->where('payment_status',1)->where('order_status',"Complete")->sum('quantity');////
         
         $orders_child_removed = OrderChild::whereIn('order_id',$orders_id_failed)->count();
         dd($orders_child_removed);
@@ -4616,7 +4697,7 @@ class FrontendController extends Controller
 
     public function ordarMailSender()
     {
-        $order_id = "7947";
+        $order_id = "9771";
         //4242
         $this->sendOrderMailPdf($order_id);
         /*$data = Order::where('event_id',150)->sum('quantity');
@@ -4920,4 +5001,27 @@ class FrontendController extends Controller
 	{
 		return view ('fifith');
 	}
+
+    public function taxSettle ()
+    {
+        $orders = Order::where('coupon_id',"!=",null)->get();
+        $order_id =array();
+        foreach ($orders as $key => $order) {
+            $tiket = Ticket::find($order->ticket_id);
+            if($tiket)
+            {
+                $coupon = Coupon::where('id',$order->coupon_id)->first();
+                if($coupon)
+                {
+                    $order_id[] =  $order->id;
+                    $discount = (($tiket->price * $order->quantity )  * $coupon->discount) / 100 ; 
+                    
+                    //$order->coupon_discount = $discount ; 
+                    $order->update(['coupon_discount' => $discount]);
+                }
+            }
+        }
+        return $order_id;
+    }
+
 }

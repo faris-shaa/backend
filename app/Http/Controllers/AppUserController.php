@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Role;
 
 class AppUserController extends Controller
 {
@@ -26,11 +27,19 @@ class AppUserController extends Controller
     public function create()
     {
         abort_if(Gate::denies('app_user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        return view('admin.appUser.create');
+        // Get users who have a specific role
+        $role = Role::findByName('Organizer'); // replace 'admin' with your desired role name
+        $usersWithRole = $role->users; // get users with the 'admin' role
+
+        // Or if you want users with multiple roles
+        $organizers = User::role('Organizer')->orderBy('id','desc')->get();
+        
+        return view('admin.appUser.create',compact('organizers'));
     }
 
     public function store(Request $request)
     {
+     
         $request->validate([
             'name' => 'bail|required',
             'last_name' => 'bail|required',
@@ -54,6 +63,7 @@ class AppUserController extends Controller
         $data['provider'] = 'LOCAL';
         $data['language'] = Setting::first()->language;
         $data['is_verify'] = 1;
+        $data['organizer_id'] = $request->organizer_id ? $request->organizer_id : 0 ;
         AppUser::create($data);
         return redirect()->route('app-user.index')->withStatus(__('User is added successfully.'));
     }

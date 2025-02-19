@@ -25,9 +25,9 @@
                     <div class="row mb-4 mt-2">
                         <div class="col-lg-8"><h2 class="section-title mt-0"> {{__('View Coupon')}}</h2></div>
                         <div class="col-lg-4 text-right">
-                            @can('coupon_create')
+                            
                             <button class="btn btn-primary add-button"><a href="{{url('coupon/create')}}"><i class="fas fa-plus"></i> {{__('Add New')}}</a></button>
-                            @endcan
+                            
                         </div>
                     </div>
                   <div class="table-responsive">

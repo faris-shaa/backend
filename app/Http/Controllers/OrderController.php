@@ -41,6 +41,10 @@ use App\Rules\UniqueEmailWithStatus;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index( Request $request )
     {
         //dd($request->all());
@@ -49,7 +53,7 @@ class OrderController extends Controller
              $events_dropdown = Event::with(['category:id,name'])
             ->where('event_status', 'Pending')->where('is_deleted',0)->orderBy('id','DESC')->get();
         } elseif (Auth::user()->hasRole('Organizer')) {
-            $orders = Order::with(['customer', 'event'])->where('organization_id', Auth::user()->id)->OrderBy('id', 'DESC');
+            $orders = Order::with(['customer', 'event'])->where('organization_id', Auth::user()->id)->where('order_status',"Complete")->OrderBy('id', 'DESC');
              $events_dropdown = Event::with(['category:id,name'])
             ->where([ ['user_id', Auth::user()->id], ['event_status', 'Pending']])->get();
         }
@@ -91,7 +95,7 @@ class OrderController extends Controller
             }
         }
 
-        $orders = $orders->limit(400)->get();
+        $orders = $orders->limit(500)->get();
         
         return view('admin.order.index', compact('orders','events_dropdown','selected_event_id','selected_event','selected_payment'));
     }

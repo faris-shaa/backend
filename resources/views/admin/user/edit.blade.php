@@ -118,8 +118,16 @@
                                     @endif
                             </div>
                         </div>
-                          <div class="col-lg-6  @if(!$user->roles->contains(2)) display-none  @endif  organizer-class ">
+                        <div class="col-lg-6  @if(!$user->roles->contains(2)) display-none  @endif  organizer-class ">
+                            <div class="form-group">
+                                    <label>{{__('Ticket By Commission %')}}</label>
+                                    <input type="text" name="ticketby_commision" placeholder="{{__('Ticket By Commission')}}" value="{{$user->ticketby_commision}}" class="form-control @error('Ticket By Commission')? is-invalid @enderror">
+                                    @error('ticketby_commision')
+                                        <div class="invalid-feedback">{{$message}}</div>
+                                    @endif
+                            </div>
                         </div>
+                        
 
                           <div class="col-lg-6  @if(!$user->roles->contains(2)) display-none  @endif  organizer-class ">
                             <div class="form-group">

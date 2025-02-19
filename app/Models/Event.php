@@ -42,6 +42,7 @@ class Event extends Model
         'is_show_dashboard',
         'orderby',
         'is_repeat',
+        'show_pos'
     ];
 
     protected $table = 'events';

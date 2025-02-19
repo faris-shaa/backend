@@ -112,6 +112,14 @@
                                             </select> 
                                         </div>
 
+                                        <div class="form-group">
+                                            <label>{{ __('Show On POS') }}</label>
+                                            <select name="show_pos" class="form-control select2" id="is_private" onchange="toggleEmailFields()">
+                                                <option value="1" @if( $event->show_pos == 1 )selected="selected" @endif>{{ __('Yes') }}</option>
+                                                <option value="0" @if( $event->show_pos == 0 )selected="selected" @endif>{{ __('No') }}</option> 
+                                            </select> 
+                                        </div>
+
                                         <div id="email-fields" @if( $event->is_private == 0 ) style="display: none; @endif">
                                             <div id="email-container">
                                                 @if(count($event_emails) > 0)

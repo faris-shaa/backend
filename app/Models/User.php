@@ -38,7 +38,8 @@ class User extends Authenticatable
         'language',
         'is_verify',
         'is_delete',
-        'external_id'
+        'external_id',
+        'ticketby_commision'
     ];
 
     /**

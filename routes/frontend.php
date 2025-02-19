@@ -16,6 +16,10 @@ use App\Http\Controllers\Frontend\OrganizerController;
 use App\Http\Controllers\Frontend\EventOrgananizerController;
 use App\Http\Controllers\Frontend\AjaxController;
 
+
+Route::get('taxSettle', [FrontendController::class, 'taxSettle']);
+
+
 Route::post('/ajax', [AjaxController::class, "index"]);
 Route::get('fifthSightEvents', [FrontendController::class, 'fifthSightEvents']);
 Route::get('auth/google', [FrontendController::class, 'redirectToGoogle']);

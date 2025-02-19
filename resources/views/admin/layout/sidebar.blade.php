@@ -113,13 +113,13 @@
                     </a>
                 </li>
             @endif
-            @if (Auth::user()->hasRole('Organizer'))
+            
                 <li class="{{ request()->is('organization/income') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('/organization/income') }}">
                         <i class="fa-solid fa-money-bill-wave"></i> <span>{{ __('Income') }}</span>
                     </a>
                 </li>
-            @endif
+            
             @can('blog_access')
                 <li class="{{ request()->is('blog*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('blog') }}">
@@ -127,13 +127,13 @@
                     </a>
                 </li>
             @endcan
-            @can('coupon_access')
+            
                 <li class="{{ request()->is('coupon*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('coupon') }}">
                         <i class="fas fa-tags"></i> <span>{{ __('Coupon') }}</span>
                     </a>
                 </li>
-            @endcan
+            
             @can('banner_access')
                 <li class="{{ request()->is('banner*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('banner') }}">

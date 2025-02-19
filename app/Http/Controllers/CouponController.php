@@ -13,9 +13,13 @@ use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
-        abort_if(Gate::denies('coupon_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('coupon_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if(Auth::user()->hasRole('admin')){
             $coupon = Coupon::with(['event'])->OrderBy('id','DESC')->get();
         }
@@ -28,7 +32,7 @@ class CouponController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('coupon_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
         if(Auth::user()->hasrole('admin')){
             $event = Event::where([['is_deleted', 0],['status', 1],['event_status','Pending'],['end_time', '>=' , Carbon::now()]])->orderBy('id','DESC')->get();
         }
