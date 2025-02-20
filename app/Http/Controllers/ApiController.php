@@ -1330,9 +1330,22 @@ class ApiController extends Controller
         {
             return response()->json(['success' => false, 'msg' => "Invalid orderid " , 'data' => null], 200);
         }
+        // Payment token is needed to change the order status 
+        if(!isset($request->payment_token) || is_null($request->payment_token) || $request->payment_token == ""  )
+        {
+            return response()->json(['success' => false, 'msg' => "Payment Token is missing  " , 'data' => null], 200);
+        }
 
         $order->payment_token = $request->payment_token ;
-        $order->payment_status = $request->payment_status ;
+        
+        // if token is present and status is completed then payment status is 1 
+        if($request->order_status == "Completed")
+        {
+            $order->payment_status = 1 ;
+        }
+        else{
+            $order->payment_status = $request->payment_status ;
+        }
         $order->order_status = $request->order_status == "Completed" ?  "Complete"  : $request->order_status;
         $order->save();
 

@@ -41,10 +41,7 @@ use App\Rules\UniqueEmailWithStatus;
 
 class OrderController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+   
     public function index( Request $request )
     {
         //dd($request->all());

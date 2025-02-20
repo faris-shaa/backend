@@ -4394,6 +4394,7 @@ class FrontendController extends Controller
                 else{
                     return redirect('/failed');
                 }
+            
             }
             else{
                 return redirect('/failed');
@@ -4430,6 +4431,10 @@ class FrontendController extends Controller
             if ($responseData['status'] == "DECLINED") {
                 return redirect('/failed');
             }
+            $order->payment_token = $trans_id ; 
+            $order->payment_status = 1 ; 
+            $order->order_status = "Complete" ; 
+            $order->save();
             
         }
 
